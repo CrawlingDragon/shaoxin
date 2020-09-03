@@ -1,16 +1,29 @@
 <template>
   <!-- 首页推荐医院列表 -->
-  <div class="recommend-hospital-wrap">recommend_hospital</div>
+  <div class="recommend-hospital-wrap" @click="goToIndexHospital">
+    <van-image :src="list.logo" fit="cover" class="image" lazy-load />
+    <p class="p1">{{list.title}}</p>
+    <p class="p2">{{list.level}}·{{list.issort}}医院</p>
+    <p class="p3" v-show="list.zuowu != '暂未设置'">科室：{{list.zuowu}}</p>
+    <div class="number">
+      <div class="expert">专家 {{list.num_expert}}</div>
+      <div class="line">|</div>
+      <div class="online" v-if="list.isstore == 1">处方 {{list.num_chufang}}</div>
+      <div class="online" v-else>网诊 {{list.num_wen}}</div>
+    </div>
+    <div class="icon" v-show="list.isstore == 1"></div>
+  </div>
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: "Recommend_hospital",
   components: {},
   props: {
     list: {
-      type: Array,
+      type: Object,
       default: function () {
-        return [];
+        return {};
       },
     },
   },
@@ -21,7 +34,63 @@ export default {
   watch: {},
   mounted() {},
   destroyed() {},
-  methods: {},
+  methods: {
+    ...mapMutations(["setMid"]),
+    goToIndexHospital() {
+      // 去医院首页
+      this.setMid(this.list.mid);
+      this.$router.push({
+        path: "/hospital",
+        query: { mid: this.list.mid },
+      });
+    },
+  },
 };
 </script>
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.recommend-hospital-wrap
+  position relative
+  padding-bottom 15px
+  background #F5F5F5
+  .image
+    width 100%
+    height 105px
+    margin-bottom 5px
+  .p1
+    font-size 14px
+    color #343434
+    line-height 14px
+    padding-left 10px
+    margin-bottom 13px
+  .p2
+    color #9A9A9A
+    font-size 12px
+    line-height 12px
+    margin-bottom 10px
+    padding-left 10px
+  .p3
+    color #9A9A9A
+    font-size 12px
+    line-height 16px
+    padding-left 10px
+  .number
+    font-size 12px
+    color #343434
+    margin-top 10px
+    display flex
+    align-items center
+    padding-left 10px
+    .expert
+      margin-right 10px
+    .online
+      margin-left 10px
+  .icon
+    width 45px
+    height 15px
+    background url('./icon.png') no-repeat
+    background-size cover
+    background-position center
+    position absolute
+    right 0
+    top 5px
+</style>

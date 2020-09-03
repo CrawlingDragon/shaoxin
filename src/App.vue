@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <div id="nav">
-    </div>
-    <router-view />
+    <keep-alive>
+      <router-view />
+    </keep-alive>
+
   </div>
 </template>
 
@@ -11,7 +12,8 @@
   font-family Avenir, Helvetica, Arial, sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
+  text-align left
+  background #EBEBEB
+  min-height 100%
+  position relative
 </style>

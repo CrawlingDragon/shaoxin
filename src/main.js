@@ -10,15 +10,22 @@ import "@/common/css/base.styl";
 import "@/common/css/reseat.styl";
 import Vant from "vant";
 import "vant/lib/index.css";
-Vue.use(Vant);
+import { Lazyload } from "vant";
+
+Vue.use(Vant, Lazyload);
 
 import axios from "@/http.js";
+
 Vue.prototype.$axios = axios; // 全局重定义axios
 
 import VueMeta from "vue-meta";
 Vue.use(VueMeta, {
   refreshOnceOnNavigation: true
 }); //动态设置title 插件
+
+Vue.use(Lazyload, {
+  lazyComponent: true
+});
 
 new Vue({
   router,

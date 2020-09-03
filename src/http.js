@@ -6,8 +6,8 @@ axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded;charset=utf-8";
 axios.defaults.baseURL =
   process.env.NODE_ENV === "production"
-    ? "sx.test.com"
-    : "http://demotv.114nz.com/";
+    ? "http:sx.test.com/"
+    : "http://beta.sx.114nz.com/";
 //配置接口地址
 //console.log(process.env.VUE_APP_URL)
 

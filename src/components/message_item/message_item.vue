@@ -1,12 +1,23 @@
 <template>
   <!-- 资讯相关item -->
-  <div>Message_item</div>
+  <div class="Message_item-container">
+    <div class="t">{{list.title}}</div>
+    <van-image class="img" :src="list.thumb" radius="8px" fit="cover" v-if="list.thumb != ''"></van-image>
+    <div class="time">{{list.inputtime}}</div>
+  </div>
 </template>
 <script>
 export default {
   name: "Message_item",
   components: {},
-  props: {},
+  props: {
+    list: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
+  },
   data() {
     return {};
   },
@@ -17,4 +28,26 @@ export default {
   methods: {},
 };
 </script>
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.Message_item-container
+  padding 15px 0
+  padding-right 12px
+  margin-left 12px
+  .t
+    font-size 14px
+    color #333333
+    line-height 16px
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+    word-break break-all
+  .img
+    width 100%
+    height 115px
+    border-radius 8px
+    margin 7px 0 2px 0
+  .time
+    font-size 12px
+    color #999999
+    margin-top 8px
+</style>

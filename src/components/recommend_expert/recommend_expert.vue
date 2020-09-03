@@ -1,27 +1,114 @@
 <template>
   <!-- 首页推荐专家列表 -->
-  <div class="recommend_expert-container">Recommend_expert</div>
+  <div class="recommend_expert-container" @click="goToExpert(list.uid)">
+    <div class="top">
+      <van-image class="img" :src="list.avatar" fit="cover"></van-image>
+      <div class="right">
+        <div class="name">{{list.realname}}</div>
+        <div class="title">{{list.groupname}}</div>
+        <div class="address" v-if="list.company">{{list.company}}</div>
+        <div class="address" v-if="list.addtime">{{list.addtime}}</div>
+      </div>
+    </div>
+    <div class="kind" v-if="list.skill != ''">
+      <div class="item" v-for="item in skillArr" :key="item">{{item}}</div>
+    </div>
+    <div class="join">
+      <div class="answer-number">{{list.cnt_answer}}次解答</div>
+      <div class="join-number" v-if="list.cnt_joinhospital">{{list.cnt_joinhospital}}家加入医院</div>
+    </div>
+  </div>
 </template>
 <script>
 export default {
   name: "Recommend_expert",
   components: {},
-  props: {},
-  data() {
-    return {
-      list: {
-        type: Array,
-        default: function () {
-          return [];
-        },
+  props: {
+    list: {
+      type: Object,
+      default: function () {
+        return {};
       },
-    };
+    },
   },
-  computed: {},
+  data() {
+    return {};
+  },
+  computed: {
+    skillArr() {
+      if (!this.list.skill) {
+        return [];
+      }
+      let skill = this.list.skill;
+      let arr = skill.split(",");
+      return arr;
+    },
+  },
   watch: {},
   mounted() {},
   destroyed() {},
-  methods: {},
+  methods: {
+    goToExpert(id) {
+      this.$router.push({
+        path: "/expert",
+        query: { id: id },
+      });
+    },
+  },
 };
 </script>
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.recommend_expert-container
+  background #F5F5F5
+  padding 10px 7px 14px 10px
+  border-radius 8px
+  .top
+    display flex
+    padding-bottom 15px
+    .img
+      width 60px
+      height 60px
+      margin-right 10px
+      overflow hidden
+      border-radius 10px
+    .right
+      flex 1
+      min-width 0
+      .name
+        font-size 14px
+        color #333333
+        line-height 14px
+        margin-bottom 9px
+      .title
+        font-size 12px
+        line-height 12px
+        margin-bottom 5px
+        color #999999
+      .address
+        font-size 12px
+        line-height 12px
+        margin-bottom 5px
+        color #999999
+        line-height 14px
+  .kind
+    font-size 0
+    .item
+      display inline-block
+      padding 2px 5px
+      margin-right 3px
+      font-size 12px
+      background #F7D9C5
+      color #FF6500
+      border-radius 14px
+      margin-bottom 3px
+  .join
+    display flex
+    color #333333
+    font-size 12px
+    margin-top 10px
+    .answer-number
+      padding-right 10px
+    .join-number
+      border-left 1px solid #999999
+      padding-left 10px
+</style>
