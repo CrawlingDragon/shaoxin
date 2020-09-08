@@ -2,87 +2,116 @@
   <div class="me-container">
     <Header :indexHeader="false"></Header>
     <div class="user-box">
-      <van-image class="avator" round fit="cover"></van-image>
+      <van-image class="avator" round fit="cover" :src="info.avatar"></van-image>
       <div class="mid">
-        <p class="p1">某某某<span>种植专家</span></p>
-        <p class="p2">用户名:13450297220</p>
+        <p class="p1">{{info.realname}}<span>{{info.grouptitle}}</span></p>
+        <p class="p2">用户名:{{info.username}}</p>
       </div>
-      <div class="right">编辑 ></div>
+      <div class="right" @click="goToEdit">编辑 ></div>
     </div>
     <div class="my-ul">
-      <van-cell title="加入的医院" to="/hospital" is-link>
+      <van-cell title="加入的医院" to="/me_hospital" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon01"></div>
         </template>
       </van-cell>
-      <van-cell title="挂号记录" to="/hospital" is-link>
+      <van-cell title="挂号记录" to="/me_registration" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon02"></div>
         </template>
       </van-cell>
-      <van-cell title="我的基地" to="/hospital" is-link>
+      <van-cell title="我的基地" to="/me_base" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon03"></div>
         </template>
       </van-cell>
-      <van-cell title="土壤检测" to="/hospital" is-link>
+      <van-cell title="土壤检测" to="/cetu_list" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon04"></div>
         </template>
       </van-cell>
-      <van-cell title="坐诊巡诊" to="/hospital" is-link>
+      <van-cell title="坐诊巡诊" to="/whole_zuozhen_list" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon05"></div>
         </template>
       </van-cell>
-      <van-cell title="问答管理" to="/hospital" is-link>
+      <van-cell title="问答管理" to="/me_answer" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon06"></div>
         </template>
       </van-cell>
     </div>
-    <van-cell title="个人主页" to="/hospital" is-link style="margin-top:10px">
+    <van-cell title="个人主页" :to="`/expert?id=${uid}`" is-link style="margin-top:10px">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon07"></div>
       </template>
     </van-cell>
-    <van-cell title="我的关注" to="/hospital" is-link>
+    <van-cell title="我的关注" to="/me_attention" is-link>
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon08"></div>
       </template>
     </van-cell>
-    <van-cell title="联系客服 4008596318" to="/hospital" is-link style="margin-top:10px">
+    <van-cell title="联系客服 4008596318" is-link style="margin-top:10px" @click="callPhone">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon09"></div>
+        <a href="tel:4008596318" ref="tel"></a>
       </template>
     </van-cell>
-    <Foot :active="4"></Foot>
+    <Foot :active="active"></Foot>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
 import Foot from "@/components/foot/foot";
+import { mapState } from "vuex";
+
 export default {
   name: "me",
+  metaInfo: { title: "我的" },
   components: { Header, Foot },
   props: {},
   data() {
-    return {};
+    return {
+      info: "",
+      active: 4,
+    };
   },
-  computed: {},
+  computed: {
+    ...mapState(["uid"]),
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getInfo();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getInfo() {
+      this.$axios
+        .fetchPost("/Mobile/User/userCenter", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.info = res.data.data;
+          }
+        });
+    },
+    goToEdit() {
+      this.$router.push({
+        path: "/me_edit",
+      });
+    },
+    callPhone() {
+      this.$refs.tel.click();
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>
@@ -117,8 +146,6 @@ export default {
       font-size 14px
       padding 0 12px 0 12px
   .my-ul
-    .van-cell
-      align-items center
     .icon01
       width 18px
       height 18px
@@ -182,4 +209,6 @@ export default {
   background-size 100%
   background-position center
   margin-right 10px
+.van-cell
+  align-items center
 </style>

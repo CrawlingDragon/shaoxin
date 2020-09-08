@@ -1,12 +1,15 @@
 <template>
   <div class="cetu_list-container">
-    <Header header="indexHeader" navHeader="测土配方"></Header>
+    <Header :header="headerKind" navHeader="测土配方"></Header>
     <ul class="cetu_ul">
       <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
-        <div class="title">
-          {{item.title}}
+        <div class="top">
+          <div class="title">
+            {{item.title}}
+          </div>
+          <div class="time">{{item.showtime}}</div>
         </div>
-        <div class="time">{{item.showtime}}</div>
+        <div class="hospital" v-if="headerKind == 'logoHeader'">{{item.mpublic}}</div>
       </li>
     </ul>
   </div>
@@ -19,33 +22,70 @@ export default {
   name: "cetuList",
   components: { Header },
   props: {},
+  beforeRouteEnter(to, from, next) {
+    console.log("from.name :>> ", from.name);
+    if (from.name == null) {
+      next();
+      return;
+    }
+    if (from.name == "me") {
+      next((vm) => {
+        vm.headerKind = "logoHeader";
+        window.localStorage.setItem("headerKind", "logoHeader");
+      });
+    } else {
+      next((vm) => {
+        vm.headerKind = "indexHeader";
+        window.localStorage.setItem("headerKind", "indexHeader");
+      });
+    }
+  },
   metaInfo() {
     return {
-      title: "ss医院",
+      title: "土壤检测",
     };
   },
   data() {
     return {
+      headerKind: window.localStorage.getItem("headerKind"),
       list: [],
     };
   },
   computed: {
-    ...mapState(["mid"]),
+    ...mapState(["mid", "uid"]),
   },
   watch: {
     $route() {
-      this.getList(this.mid);
+      if (this.headerKind == "indexHeader") {
+        this.getList(this.mid);
+      } else {
+        this.getMeList(this.uid);
+      }
     },
   },
   mounted() {
-    this.getList(this.mid);
+    if (this.headerKind == "indexHeader") {
+      this.getList(this.mid);
+    } else {
+      this.getMeList(this.uid);
+    }
   },
   destroyed() {},
   methods: {
     getList(mid) {
-      // 获取测土配方列表
+      // 获取测土配方列表 医院
       this.$axios
         .fetchPost("/Mobile/Treatment/getTestingsoil", { mId: mid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+          }
+        });
+    },
+    getMeList(uid) {
+      // 获取测土配方列表  个人
+      this.$axios
+        .fetchPost("/Mobile/Treatment/getTestingsoil", { uId: uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
@@ -69,18 +109,30 @@ export default {
     margin-top 10px
     li
       border-bottom 1px solid #e5e5e5
-      height 50px
-      display flex
-      align-items center
+      padding 14px 0 12px
+      min-height 50px
       &:last-child
         border none
-      .title
-        min-width 0
-        flex 1
-        overflow hidden
-        text-overflow ellipsis
-        white-space nowrap
-      .time
-        width 100px
-        margin-left 15px
+      .top
+        display flex
+        align-items center
+        flex-wrap nowrap
+        .title
+          min-width 0
+          flex 1
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
+          font-size 15px
+          color #000
+        .time
+          width 100px
+          margin-left 15px
+          font-size 12px
+          color #999
+      .hospital
+        width 100%
+        color #999999
+        font-size 12px
+        line-height 22px
 </style>

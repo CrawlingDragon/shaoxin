@@ -2,7 +2,7 @@
   <div class="look_expert-container">
     <Header :indexHeader="false"></Header>
     <ul class="expert-ul">
-      <li v-for="item in list" :key="item">
+      <li v-for="item in list" :key="item.id">
         <RecommendExpert :list="item"></RecommendExpert>
       </li>
     </ul>
@@ -44,7 +44,6 @@ export default {
         .fetchPost("/Mobile/User/expertList", { mId: "" })
         .then((res) => {
           if (res.data.code == 0) {
-            console.log("this.list :>> ", res.data.data);
             this.list = res.data.data;
           }
         });

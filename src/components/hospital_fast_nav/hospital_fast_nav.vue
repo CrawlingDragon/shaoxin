@@ -22,12 +22,12 @@
           <van-grid-item text="简介" @click="goToIntro" />
         </van-grid>
       </div>
-      <div class="join-btn" v-if="true">
+      <div class="join-btn" v-if="importuser == 0">
         申请加入医院
         <span class="free">免费</span>
       </div>
       <div class="joined" v-else>2017-10-29 加入医院成为会员</div>
-      <div class="know-vip">了解更多会员权益 ></div>
+      <div class="know-vip" @click="goToVip">了解更多会员权益 ></div>
       <div class="go-index" @click="gotoIndex">
         <van-image class="logo" :src="require('./1.png')"></van-image>
         柯桥新型庄稼医院首页
@@ -49,12 +49,16 @@ export default {
       type: Number,
       default: 1,
     },
+    importuser: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {};
   },
   computed: {
-    ...mapState(["mid"]),
+    ...mapState(["mid", "uid"]),
   },
   watch: {},
   mounted() {},
@@ -158,6 +162,14 @@ export default {
       this.$router
         .push({
           path: "/hospital",
+        })
+        .catch((err) => err);
+      this.$emit("changeFlag", false);
+    },
+    goToVip() {
+      this.$router
+        .push({
+          path: "/vip",
         })
         .catch((err) => err);
       this.$emit("changeFlag", false);

@@ -2,7 +2,7 @@
   <div class="video_list-container">
     <Header :indexHeader="false"></Header>
     <ul class="video-ul">
-      <li v-for="item in 4" :key="item">
+      <li v-for="item in list" :key="item.catid">
         <van-image class="img" fit="cover" src="" radius="5px"></van-image>
         <p class="p1">培训视频标题培训视频标题培训视频标题培训视频标题培训视频标题</p>
       </li>
@@ -16,13 +16,27 @@ export default {
   components: { Header },
   props: {},
   data() {
-    return {};
+    return {
+      list: [],
+    };
   },
   computed: {},
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getList();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getList() {
+      this.$axios
+        .fetchPost("Mobile/Video/getVideoList", { catId: 54255 })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+          }
+        });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

@@ -28,6 +28,9 @@ export default {
   computed: {
     ...mapState(["mid"]),
   },
+  created() {
+    this.$emit("footer", false);
+  },
   watch: {},
   mounted() {
     this.getList(this.mid);

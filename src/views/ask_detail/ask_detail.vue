@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="answer-box">
-      <div class="title">解答 3</div>
+      <div class="title">解答 {{detail.comments_count}}</div>
       <ul class="answer-ul">
         <li v-for="item in detail.answers" :key="item.id">
           <div class="top">
@@ -109,7 +109,12 @@ export default {
   computed: {
     ...mapState(["uid"]),
   },
-  watch: {},
+  watch: {
+    $route() {
+      this.tid = this.$route.query.tid;
+      this.getDetail();
+    },
+  },
   mounted() {
     this.getDetail();
   },

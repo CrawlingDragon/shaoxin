@@ -28,7 +28,6 @@
         </li>
       </ul>
     </div>
-    <Foot :active="1"></Foot>
     <!-- <div class="look-more">查看更多 ></div> -->
   </div>
 </template>
@@ -38,7 +37,6 @@ import HospitalNav from "@/components/hospital_nav/hospital_nav";
 import MessageItem from "@/components/message_item/message_item";
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
-import Foot from "@/components/foot/foot";
 import { mapState } from "vuex";
 import { ImagePreview } from "vant";
 export default {
@@ -49,7 +47,6 @@ export default {
     MessageItem,
     RecommendExpert,
     OnlineItem,
-    Foot,
     [ImagePreview.Component.name]: ImagePreview.Component,
   },
   metaInfo() {
@@ -60,20 +57,19 @@ export default {
   props: {},
   data() {
     return {
-      mid: this.$route.query.mid,
       title: "",
       messageList: [],
       expertList: [],
       wenList: [],
     };
   },
+  created() {},
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "mid"]),
   },
   watch: {
     $route(newVal) {
       this.getHospitalData(newVal.query.mid);
-      this.mid = this.$route.query.mid;
     },
   },
   mounted() {

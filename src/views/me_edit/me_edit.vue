@@ -5,13 +5,13 @@
       <li>
         <div class="left">头像</div>
         <div class="mid">
-          <van-image class="avator" fit="cover" round></van-image>
+          <van-image class="avator" fit="cover" round :src="avatar"></van-image>
         </div>
         <van-icon name="arrow" class="arrow" />
       </li>
       <li>
         <div class="left">用户名</div>
-        <div class="mid">13450797340</div>
+        <div class="mid">{{userName}}</div>
       </li>
       <li>
         <div class="left">名字</div>
@@ -31,7 +31,7 @@
     </ul>
     <van-dialog v-model="nameShow" title="修改名字" show-cancel-button>
       <!-- 修改用户名 -->
-      <van-field v-model="name" placeholder="请输入用户名" class="name" />
+      <van-field v-model="names" placeholder="请输入用户名" class="name" />
     </van-dialog>
     <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelect" />
     <!-- 选择性别 -->
@@ -39,6 +39,8 @@
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapState } from "vuex";
+
 export default {
   name: "meEdit",
   metaInfo: {
@@ -48,17 +50,40 @@ export default {
   props: {},
   data() {
     return {
+      info: "",
+      avatar: "",
+      userName: "",
+      name: "",
+      sex: "请选择",
       nameShow: false,
-      name: "施德",
       sexShow: false,
+      names: "",
       actions: [{ name: "男" }, { name: "女" }],
     };
   },
-  computed: {},
+  computed: { ...mapState(["uid"]) },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getInfo();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getInfo() {
+      this.$axios
+        .fetchPost("/Mobile/User/userCenter", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            let data = res.data.data;
+            console.log("data :>> ", data);
+            this.avatar = data.avatar;
+            this.userName = data.username;
+            this.name = data.realname;
+            this.sex = data.sex;
+          }
+        });
+    },
+    onSelect() {},
+  },
 };
 </script>
 <style lang="stylus" scoped>

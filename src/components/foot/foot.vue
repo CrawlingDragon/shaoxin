@@ -1,6 +1,6 @@
 <template>
   <div class="foot-container">
-    <van-tabbar v-model="active">
+    <van-tabbar v-model="myActive">
       <van-tabbar-item @click="goToIndex">
         <template #icon="props">
           <div class="icon" :class="props.active ? icon01.active : icon01.inactive"></div>
@@ -46,6 +46,7 @@ export default {
   },
   data() {
     return {
+      myActive: this.active,
       icon01: {
         active: "icon01_active",
         inactive: "icon01_inactive",
@@ -69,7 +70,11 @@ export default {
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    active() {
+      console.log("1 :>> ", 1);
+    },
+  },
   mounted() {},
   destroyed() {},
   methods: {

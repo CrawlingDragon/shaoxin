@@ -31,12 +31,11 @@ export default {
   },
   data() {
     return {
-      mid: this.$route.query.mid,
       list: [],
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "mid"]),
   },
   watch: {},
   mounted() {

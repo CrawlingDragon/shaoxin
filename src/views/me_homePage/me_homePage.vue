@@ -12,7 +12,7 @@
           <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}</div>
         <div class="btn-ask" v-if="expertData.identity == 1 && expertData.id != uid" @click="goToAsk">
           <van-icon name="records" class="records" />提问</div>
-        <div class="edit" v-if="expertData.id == uid" @click="goToMeEdit">编辑资料</div>
+        <div class="edit" v-if="expertData.id == uid">编辑资料</div>
       </div>
       <div class="fans">
         <div class="item">关注 {{expertData.tofollower}}</div>
@@ -71,10 +71,10 @@ import { mapState } from "vuex";
 export default {
   metaInfo() {
     return {
-      title: "专家" + this.expertData.name,
+      title: "个人主页",
     };
   },
-  name: "expert",
+  name: "meHomePage",
   components: {
     Header,
     OnlineItem,
@@ -102,20 +102,20 @@ export default {
     },
   },
   mounted() {
-    this.getExpertData(this.id);
+    this.getExpertData();
   },
   destroyed() {},
   methods: {
-    getExpertData(id) {
+    getExpertData() {
       this.$axios
-        .fetchPost("Mobile/user/homepage", { id: id, uId: this.uid })
+        .fetchPost("Mobile/user/homepage", { id: this.uid, uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.expertData = res.data.data;
             this.status = res.data.data.status;
             setTimeout(() => {
-              this.getIAsked(id);
-              this.getAskMe(id);
+              this.getIAsked();
+              this.getAskMe();
             }, 100);
           }
         });
@@ -177,11 +177,6 @@ export default {
       // 点击提问按钮
       this.$router.push({
         path: "/ask",
-      });
-    },
-    goToMeEdit() {
-      this.$router.push({
-        path: "/me_edit",
       });
     },
     goToPersondetail() {

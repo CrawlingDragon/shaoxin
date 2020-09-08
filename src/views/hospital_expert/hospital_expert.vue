@@ -13,6 +13,9 @@ import Header from "@/components/hospital_header/hospital_header";
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import { mapState } from "vuex";
 export default {
+  metaInfo: {
+    title: "专家列表",
+  },
   name: "hospitalExpert",
   components: { Header, RecommendExpert },
   props: {},

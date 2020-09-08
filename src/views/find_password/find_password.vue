@@ -3,17 +3,20 @@
     <Header :indexHeader="false"></Header>
     <div class="title">找回密码</div>
     <van-form @submit="onSubmit" class="from">
-      <van-field v-model="username" name="手机号" placeholder="请输入手机号" :rules="[{ required: true, message: '请填写手机号' }]" />
-      <van-field v-model="sms" center clearable placeholder="请输入6位验证码">
+      <van-field v-model="findPhone" name="手机号" type="tel" placeholder="请输入手机号" :rules="[{validator:validatorPhone, message: '请填写正确的手机号' },{ required: true, message: '请填写手机号' }]" />
+      <van-field v-model="findCode" name="验证码" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true, message: '请输入验证码' }]">
         <template #button>
-          <div class="btn" v-if="showBtn">发送验证码</div>
-          <van-count-down ref="countDown" millisecond :time="60000" :auto-start="false" format="ss" @finish="finish" v-else />
+          <div class=" btn" v-if="showBtn" @click="start">发送验证码
+          </div>
+          <div v-show="!showBtn">
+            <van-count-down ref="countDown" millisecond :time="60000" :auto-start="false" format="ss秒后重试" @finish="finish" />
+          </div>
         </template>
       </van-field>
-      <van-field v-model="password" type="password" name="密码" placeholder="请输入密码" :rules="[{ required: true, message: '请输入新密码（6-20位） ' }]" />
-      <van-field v-model="password" type="password" name="密码" placeholder="请输入密码" :rules="[{ required: true, message: '再次输入新密码 ' }]" />
+      <van-field v-model="findPassword" type="password" name="密码" placeholder="请输入密码（6-20位）" maxlength="20" :rules="[{ required: true, message: '请输入新密码（6-20位） ' }]" />
+      <van-field v-model="findPassword2" type="password" name="密码" placeholder="请确认密码" maxlength="20" :rules="[{validator:validatorPw2,message:'两次密码不相同'},{ required: true, message: '再次输入新密码 ' }]" />
       <div style="margin: 16px;margin-top:45px">
-        <van-button round block type="info" native-type="submit">
+        <van-button round block type="info" native-type="submit" class="sub">
           保存
         </van-button>
       </div>
@@ -22,23 +25,92 @@
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapMutations } from "vuex";
+
 export default {
+  metaInfo: {
+    title: "找回密码",
+  },
   name: "findPassword",
   components: { Header },
   props: {},
   data() {
-    return { showBtn: true, username: "", sms: "", password: "" };
+    return {
+      showBtn: true,
+      clickTrue: false,
+      findPhone: "",
+      findCode: "",
+      findPassword: "",
+      findPassword2: "",
+    };
   },
   computed: {},
   watch: {},
   mounted() {},
   destroyed() {},
   methods: {
-    finish() {
-      this.$oast("倒计时结束");
+    ...mapMutations(["setUid"]),
+    validatorPhone(val) {
+      // 验证手机号码
+      if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val)) {
+        this.clickTrue = true;
+      } else {
+        this.clickTrue = false;
+      }
+      return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
     },
-    onSubmit(val) {
-      console.log("val :>> ", val);
+    validatorPw2() {
+      if (this.findPassword2 != "" && this.findPassword2 == this.findPassword) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    finish() {
+      this.$refs.countDown.reset();
+      this.showBtn = true;
+      this.clickTrue = true;
+    },
+    onSubmit() {
+      this.lookForPwd(this.findPhone, this.findCode, this.findPassword);
+    },
+    start() {
+      if (!this.clickTrue) {
+        return;
+      }
+      this.sendPhone();
+      this.clickTrue = false;
+      this.showBtn = false;
+      setTimeout(() => {
+        this.$refs.countDown.start();
+      }, 100);
+    },
+    sendPhone() {
+      //发送验证码
+      this.$axios
+        .fetchPost("Mobile/Member/ServerSmsCode", {
+          mobile: this.findPhone,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.$toast(res.data.message);
+          } else {
+            this.$toast(res.data.message);
+          }
+        });
+    },
+    lookForPwd(mobile, code, password) {
+      this.$axios
+        .fetchPost("/Mobile/Member/Backuppasswd", { mobile, code, password })
+        .then((res) => {
+          this.$toast(res.data.message);
+          if (res.data.code == 0) {
+            this.setUid(res.data.data.uid);
+            this.$router.push({
+              path: "/",
+            });
+          }
+        });
     },
   },
 };
@@ -62,9 +134,18 @@ export default {
   .from
     width 80%
     margin 0 auto
+    .sub
+      background #BBBBBB
+      border none
+      &.success
+        background #ff6600
+        color #fff
   .go-login
     margin 15px 0
     text-align center
     color #ff6600
     font-size 15px
+  .van-count-down
+    color #999
+    font-size 13px
 </style>

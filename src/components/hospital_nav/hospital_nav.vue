@@ -54,22 +54,20 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   name: "hospitalNav",
   components: {},
-  props: {
-    mid: {
-      type: String,
-      default: "",
-    },
-  },
+  props: {},
   data() {
     return {
       isistore: 1,
       vip: 0,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(["mid"]),
+  },
   watch: {},
   mounted() {},
   destroyed() {},
@@ -79,7 +77,6 @@ export default {
       this.$router
         .push({
           path: "hospital_online",
-          query: { mid: this.mid },
         })
         .catch((err) => err);
     },
@@ -88,7 +85,6 @@ export default {
       this.$router
         .push({
           path: "zuozhen_list",
-          query: { mid: this.mid },
         })
         .catch((err) => err);
     },
@@ -97,7 +93,6 @@ export default {
       this.$router
         .push({
           path: "cetu_list",
-          query: { mid: this.mid },
         })
         .catch((err) => err);
     },
@@ -130,7 +125,6 @@ export default {
       this.$router
         .push({
           path: "/good_base",
-          query: { mid: this.mid },
         })
         .catch((err) => err);
     },

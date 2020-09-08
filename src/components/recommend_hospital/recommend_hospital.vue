@@ -41,7 +41,6 @@ export default {
       this.setMid(this.list.mid);
       this.$router.push({
         path: "/hospital",
-        query: { mid: this.list.mid },
       });
     },
   },

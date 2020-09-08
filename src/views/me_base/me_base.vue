@@ -2,19 +2,19 @@
   <div class="good_base-container">
     <Header :indexHeader="false"></Header>
     <ul class="base-ul">
-      <li v-for="item in 3" :key="item">
-        <div class="status">金牌认证</div>
+      <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
+        <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
         <van-image class="img"></van-image>
         <div class="text">
-          <div class="h2">浙江省衢州市常山县大宝山柑橘专 业合作社</div>
-          <div class="p2">黄桃 100-500亩</div>
+          <div class="h2">{{item.name}}</div>
+          <div class="p2">{{item.zwtype}} {{item.guimo}}亩</div>
           <div class="join-time">
-            <van-image class="avator" round></van-image>
-            <div class="time">2020-12-30加入医院</div>
+            <van-image class="avator" round :src="item.logo"></van-image>
+            <div class="time">{{item.addtime}}加入医院</div>
           </div>
           <div class="name">
             <div class="icon"></div>
-            常山胡柚专科医院
+            {{item.mpublic}}
           </div>
         </div>
       </li>
@@ -23,18 +23,43 @@
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapState } from "vuex";
+
 export default {
   name: "meBase",
+  metaInfo: {
+    title: "我的基地",
+  },
   components: { Header },
   props: {},
   data() {
-    return {};
+    return { list: [] };
   },
-  computed: {},
+  computed: {
+    ...mapState(["uid"]),
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getList();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getList() {
+      this.$axios
+        .fetchPost("Mobile/Mpublic/getFineBaseCom", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+          }
+        });
+    },
+    goToBaseDetail(id) {
+      this.$router.push({
+        path: "/base_detail",
+        query: { id: id },
+      });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

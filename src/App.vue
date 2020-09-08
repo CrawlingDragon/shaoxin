@@ -1,12 +1,27 @@
 <template>
   <div id="app">
-    <keep-alive>
-      <router-view />
+    <keep-alive exclude="Login,mLogin,findPassword,sign">
+      <router-view @footer="footer" />
     </keep-alive>
-
+    <Foot v-if="footShow"></Foot>
   </div>
 </template>
-
+<script>
+import Foot from "@/components/foot/foot";
+export default {
+  data() {
+    return {
+      footShow: true,
+    };
+  },
+  components: { Foot },
+  methods: {
+    footer(bool) {
+      this.footShow = bool;
+    },
+  },
+};
+</script>
 <style lang="stylus">
 #app
   font-family Avenir, Helvetica, Arial, sans-serif

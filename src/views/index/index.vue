@@ -61,7 +61,6 @@
         </li>
       </ul>
     </div>
-    <Foot></Foot>
   </div>
 </template>
 <script>
@@ -69,7 +68,6 @@ import Header from "@/components/header/header.vue";
 import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
-import Foot from "@/components/foot/foot";
 import { ImagePreview } from "vant";
 export default {
   metaInfo: {
@@ -81,7 +79,6 @@ export default {
     RecommendHospital,
     OnlineItem,
     RecommendExpert,
-    Foot,
     [ImagePreview.Component.name]: ImagePreview.Component,
   },
   props: {},
@@ -93,6 +90,7 @@ export default {
       onlineArr: [],
     };
   },
+  created() {},
   computed: {},
   watch: {},
   mounted() {
@@ -105,7 +103,6 @@ export default {
       this.$axios
         .fetchPost("/Mobile/Index/index", { mId: 56915 })
         .then((res) => {
-          console.log("object :>> ", res.data.data.list_ad);
           if (res.data.code == 0) {
             this.swiperArr = res.data.data.list_ad;
             this.hospitalArr = res.data.data.list_mpublic;

@@ -2,27 +2,53 @@
   <div class="zuozhen_list-container">
     <Header :indexHeader="false"></Header>
     <ul>
-      <li v-for="item in 3" :key="item">
-        <p class="p1">白菜出现这种情况什么病？怎么用药</p>
-        <p class="p2">白菜·坐诊·2018-10-20 <span>黄则黄桃黄桃医院</span></p>
+      <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
+        <p class="p1">{{item.title}}白菜出现这种情况什么病？怎么用药</p>
+        <p class="p2">{{item.showtime}}白菜·坐诊·2018-10-20<span class="hospital">黄泽黄桃专科医院</span></p>
       </li>
     </ul>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapState } from "vuex";
 export default {
   name: "wholeZuoZhenList",
+  metaInfo: {
+    title: "我的坐诊巡诊",
+  },
   components: { Header },
   props: {},
   data() {
-    return {};
+    return {
+      list: [],
+    };
   },
-  computed: {},
+  computed: {
+    ...mapState(["uid"]),
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getOnlineList();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getOnlineList() {
+      this.$axios
+        .fetchPost("/Mobile/Treatment/getWenzhen", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+          }
+        });
+    },
+    goToDetail(id) {
+      this.$router.push({
+        path: "zuozhen_detail",
+        query: { id: id },
+      });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

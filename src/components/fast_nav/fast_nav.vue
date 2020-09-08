@@ -1,3 +1,4 @@
+import { mapState } from 'vuex';
 <template>
   <div class="fast_nav-conatiner" v-show="showFlag">
     <div class="title van-hairline--top van-hairline--bottom">
@@ -65,13 +66,13 @@
         </van-grid-item>
       </van-grid>
     </div>
-    <div class="btns" v-if="logined">
+    <div class="btns" v-if="!uid">
       <div class="btn1">登录</div>
       <div class="btn2">注册</div>
     </div>
     <div class="logined" e-else>
-      <van-image width="35" height="35" round src="https://img.yzcdn.cn/vant/cat.jpeg" class="avator" fit="cover" />
-      <p class="name">章秋霞章秋霞章秋霞章秋霞</p>
+      <van-image width="35" height="35" round :src="user.avatar" class="avator" fit="cover" />
+      <p class="name">{{user.username}}</p>
       <div class="login-out">退出登录</div>
     </div>
     <div class="index-btn" @click="goToIndex">
@@ -81,6 +82,7 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   name: "fast_nav",
   components: {},
@@ -89,13 +91,19 @@ export default {
       type: Boolean,
       default: false,
     },
+    user: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
   },
   data() {
-    return {
-      logined: false,
-    };
+    return {};
   },
-  computed: {},
+  computed: {
+    ...mapState(["uid"]),
+  },
   watch: {},
   mounted() {},
   destroyed() {},

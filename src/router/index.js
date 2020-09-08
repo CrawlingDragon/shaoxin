@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/login/login.vue";
 import MLogin from "../views/m_login/m_login.vue";
-
+import store from "@/store/index";
 Vue.use(VueRouter);
 
 const routes = [
@@ -25,7 +25,7 @@ const routes = [
     component: Login
   },
   {
-    path: "/mLogin",
+    path: "/m_login",
     name: "mLogin",
     component: MLogin
   },
@@ -289,6 +289,22 @@ const routes = [
       import(/*webpackChunkName:"me_base" */ "@/views/me_base/me_base")
   },
   {
+    path: "/me_homePage",
+    name: "meHomePage",
+    component: () =>
+      import(
+        /*webpackChunkName:"me_homePage" */ "@/views/me_homePage/me_homePage"
+      )
+  },
+  {
+    path: "/me_attention",
+    name: "meAttention",
+    component: () =>
+      import(
+        /*webpackChunkName:"me_attention" */ "@/views/me_attention/me_attention"
+      )
+  },
+  {
     path: "/diseases",
     name: "diseases",
     component: () =>
@@ -333,11 +349,14 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name == from.name) {
-    next(false);
-  } else {
-    next(true);
+  let uid = store.state.uid;
+  if (to.name == "Login" || to.name == "mLogin") {
+    if (uid) {
+      next("/");
+    }
   }
+  // console.log("store :>> ", store.state.uid);
+  next(true);
 });
 
 export default router;

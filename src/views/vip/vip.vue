@@ -58,6 +58,9 @@ export default {
   data() {
     return {};
   },
+  created() {
+    this.$emit("footer", false);
+  },
   computed: {},
   watch: {},
   mounted() {},

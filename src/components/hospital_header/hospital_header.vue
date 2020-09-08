@@ -25,8 +25,8 @@
         <van-icon name="qr" @click="flag = true" />
       </div>
     </div>
-    <fastNav :showFlag="flag" @changeFlag="closeFast"></fastNav>
-    <hospitalFastNav :showFlag="flagHospital" @changeFlag="close"></hospitalFastNav>
+    <fastNav :showFlag="flag" @changeFlag="closeFast" :user="user"></fastNav>
+    <hospitalFastNav :showFlag="flagHospital" @changeFlag="close" :importuser="user.importuser"></hospitalFastNav>
   </div>
 </template>
 <script>
@@ -51,15 +51,27 @@ export default {
     return {
       flag: false,
       flagHospital: false,
+      user: {},
     };
   },
   computed: {
-    ...mapState(["mid"]),
+    ...mapState(["mid", "uid"]),
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getUserInfo();
+  },
   destroyed() {},
   methods: {
+    getUserInfo() {
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.user = res.data.data;
+          }
+        });
+    },
     closeFast() {
       // 主要二级快速导航关闭
       this.flag = false;

@@ -20,11 +20,12 @@
         <van-icon name="qr" />
       </div>
     </div>
-    <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav"></fastNav>
+    <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav" :user="user"></fastNav>
   </div>
 </template>
 <script>
 import fastNav from "@/components/fast_nav/fast_nav";
+import { mapState } from "vuex";
 export default {
   name: "headers",
   components: { fastNav },
@@ -37,13 +38,25 @@ export default {
   data() {
     return {
       fastNavShowFlag: false,
+      user: {},
     };
   },
-  computed: {},
+  computed: { ...mapState(["uid"]) },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getUserInfo();
+  },
   destroyed() {},
   methods: {
+    getUserInfo() {
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.user = res.data.data;
+          }
+        });
+    },
     goToSearch() {
       // 路由  搜索网诊
       this.$router.push({

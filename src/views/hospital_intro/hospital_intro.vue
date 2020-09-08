@@ -55,12 +55,11 @@ export default {
   props: {},
   data() {
     return {
-      mid: this.$route.query.mid,
       intro: "",
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "mid"]),
   },
   watch: {},
   mounted() {
