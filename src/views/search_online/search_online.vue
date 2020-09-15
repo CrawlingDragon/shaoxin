@@ -2,27 +2,27 @@
   <div class="search-online">
     <Header :indexHeader="false"></Header>
     <form action="/">
-      <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" />
+      <van-search v-model="value" show-action clearable placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" />
     </form>
-    <div class="content01" @click="goToCrop">
+    <div class="content01" v-if="zuowu != ''">
       <div class="title">作物</div>
-      <div class="text-box">
-        <van-image class="img"></van-image>
+      <div class="text-box" v-for="item in zuowu" :key="item.fid" @click="goToCrop(item.name)">
+        <van-image class="img" :src="item.icon"></van-image>
         <div class="text">
-          <div class="p1">番茄</div>
-          <div class="p2">网诊：250次</div>
+          <div class="p1">{{item.name}}</div>
+          <div class="p2">网诊：{{item.threads}}次</div>
         </div>
       </div>
     </div>
-    <div class="content02" v-if="true">
+    <div class="content02" v-if="online.length != ''">
       <div class="title">线上网诊</div>
       <ul class="online-ul">
-        <li v-for="item in 2" :key="item">
-          <OnlineItem></OnlineItem>
+        <li v-for="item in online" :key="item.id">
+          <OnlineItem :list="item"></OnlineItem>
         </li>
       </ul>
     </div>
-    <van-empty image="error" description="未搜索到符合条件的内容" v-else />
+    <!-- <van-empty image="error" description="未搜索到符合条件的内容" v-else /> -->
   </div>
 </template>
 <script>
@@ -36,7 +36,10 @@ export default {
   components: { Header, OnlineItem },
   props: {},
   data() {
-    return { value: "" };
+    return { value: "", zuowu: [], online: [] };
+  },
+  created() {
+    this.$emit("footer", false);
   },
   computed: {},
   watch: {},
@@ -44,12 +47,28 @@ export default {
   destroyed() {},
   methods: {
     onSearch(val) {
-      console.log("val :>> ", val);
+      // console.log("val :>> ", val);
+      if (val != "") {
+        this.getSearchResult(val);
+      }
     },
-    onCancel() {},
-    goToCrop() {
+    getSearchResult(keyword) {
+      this.$axios.fetchPost("Mobile/Wen/index", { keyword }).then((res) => {
+        if (res.data.code == 0) {
+          this.zuowu = res.data.zwdata;
+          this.online = res.data.data;
+        }
+      });
+    },
+    onCancel() {
+      this.$router.push({
+        path: "/index",
+      });
+    },
+    goToCrop(name) {
       this.$router.push({
         path: "/searchOnlineCrop",
+        query: { crop: name },
       });
     },
   },

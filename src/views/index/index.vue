@@ -21,7 +21,7 @@
         <div class="icon i3"></div>
         <p>找专家</p>
       </div>
-      <div class="item" @click=" goToBase">
+      <div class="item" @click="goToBase">
         <div class="icon i4"></div>
         <p>找基地</p>
       </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="look-bar" @click="lookMoreHospital">找医院 ></div>
     <div class="vip-box">
-      <img src="./49.png" alt="">
+      <img src="./49.png" alt="" />
     </div>
     <div class="online-box">
       <div class="title">推荐专家</div>
@@ -54,7 +54,9 @@
     </div>
     <div class="look-bar" @click="goToExpert">找专家 ></div>
     <div class="online-box">
-      <div class="title">网诊</div>
+      <van-sticky @scroll="goToOnline">
+        <div class="title">网诊</div>
+      </van-sticky>
       <ul class="o-ul">
         <li v-for="item in onlineArr" :key="item.id">
           <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
@@ -69,9 +71,10 @@ import RecommendHospital from "@/components/recommend_hospital/recommend_hospita
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
 import { ImagePreview } from "vant";
+import { mapMutations } from "vuex";
 export default {
   metaInfo: {
-    title: "绍兴市为农服务平台",
+    title: "绍兴市为农服务平台"
   },
   name: "index",
   components: {
@@ -79,7 +82,7 @@ export default {
     RecommendHospital,
     OnlineItem,
     RecommendExpert,
-    [ImagePreview.Component.name]: ImagePreview.Component,
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   props: {},
   data() {
@@ -87,10 +90,18 @@ export default {
       swiperArr: [],
       hospitalArr: [],
       expertArr: [],
-      onlineArr: [],
+      onlineArr: []
     };
   },
-  created() {},
+  beforeRouteEnter(to, from, next) {
+    // ...
+    next(vm => {
+      vm.$emit("footer", true);
+    });
+  },
+  created() {
+    this.$emit("footer", true);
+  },
   computed: {},
   watch: {},
   mounted() {
@@ -98,49 +109,55 @@ export default {
   },
   destroyed() {},
   methods: {
+    ...mapMutations(["setMid"]),
     getIndexData() {
       // 获取首页数据
-      this.$axios
-        .fetchPost("/Mobile/Index/index", { mId: 56915 })
-        .then((res) => {
-          if (res.data.code == 0) {
-            this.swiperArr = res.data.data.list_ad;
-            this.hospitalArr = res.data.data.list_mpublic;
-            this.expertArr = res.data.data.list_expert;
-            this.onlineArr = res.data.data.list_wen;
-          }
-        });
+      this.$axios.fetchPost("/Mobile/Index/index", { mId: 56915 }).then(res => {
+        if (res.data.code == 0) {
+          this.swiperArr = res.data.data.list_ad;
+          this.hospitalArr = res.data.data.list_mpublic;
+          this.expertArr = res.data.data.list_expert;
+          this.onlineArr = res.data.data.list_wen;
+          this.setMid("56915");
+        }
+      });
     },
     goToLive() {
-      this.$router.push({ path: "/live" });
+      this.$router.push({ path: "/live", query: { from: "index" } });
     },
     preverImg(item) {
       //网诊的图片预览
       ImagePreview({
         images: item.arr,
         startPosition: item.index,
-        closeable: true,
+        closeable: true
       });
     },
     goToAnswer() {
       //  去首页的的网诊
-      // this.$router.push({ path: "/me_base" }).catch((err) => err);
+      this.$router.push({ path: "/index_online" }).catch(err => err);
     },
     goToExpert() {
       // 找专家
       this.$router
         .push({ path: "/look_expert", query: { mid: "" } })
-        .catch((err) => err);
+        .catch(err => err);
     },
     goToBase() {
       // 找基地
-      this.$router.push({ path: "/me_base" }).catch((err) => err);
+      this.$router.push({ path: "/whole_base_list" }).catch(err => err);
     },
     lookMoreHospital() {
       // 查找更多的医院
-      this.$router.push({ path: "/into_hospital" }).catch((err) => err);
+      this.$router.push({ path: "/into_hospital" }).catch(err => err);
     },
-  },
+    goToOnline(val) {
+      // 去首页的网诊
+      if (val.isFixed) {
+        this.$router.push({ path: "/index_online" }).catch(err => err);
+      }
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -240,6 +257,7 @@ export default {
       line-height 40px
       padding-left 12px
       border-bottom 1px solid #e5e5e5
+      background #fff
     .o-ul
       margin-left 12px
       li

@@ -1,15 +1,9 @@
 <template>
   <div class="choose_crop-container">
+
     <form action="/" class="from">
       <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
     </form>
-    <div class="history-box">
-      <div class="title">当前选择：{{cropName}}</div>
-      <div class="history-ul">
-        <div class="small-title">最近选择/全部作物</div>
-        <li v-for="item in hispitalList" :key="item.fid" @click="choose(item)">{{item.name}}</li>
-      </div>
-    </div>
     <van-index-bar class="bar" :index-list="letterList">
       <div v-for="item in list" :key="item.id">
         <van-index-anchor :index="item.letter" />
@@ -27,7 +21,7 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "chooseCrop",
+  name: "askChooseCrop",
   metaInfo: {
     title: "搜索作物",
   },
@@ -83,17 +77,12 @@ export default {
     },
     choose(item) {
       //搜索历史 选择作物
-      this.$router.push({
-        path: "/index_online",
-        query: { fid: item.fid, name: item.name },
-      });
+      this.$router.go(-1);
+      this.$emit("getCrop", item);
       this.searchResultShow = false;
     },
     onCancel() {
-      this.$router.push({
-        path: "/index_online",
-        query: { fid: "", name: "" },
-      });
+      this.$router.go(-1);
       this.searchResultShow = false;
     },
     getCropList() {
@@ -113,6 +102,16 @@ export default {
 .choose_crop-container
   padding-top 54px
   position relative
+  position fixed
+  background #fff
+  left 0
+  top 0
+  right 0
+  bottom 0
+  z-index 333333
+  overflow auto
+  .content
+    height auto
   .from
     position fixed
     top 0px

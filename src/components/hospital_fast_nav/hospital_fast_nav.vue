@@ -22,7 +22,7 @@
           <van-grid-item text="简介" @click="goToIntro" />
         </van-grid>
       </div>
-      <div class="join-btn" v-if="importuser == 0">
+      <div class="join-btn" v-if="importuser == 0" @click="goToApply">
         申请加入医院
         <span class="free">免费</span>
       </div>
@@ -170,6 +170,14 @@ export default {
       this.$router
         .push({
           path: "/vip",
+        })
+        .catch((err) => err);
+      this.$emit("changeFlag", false);
+    },
+    goToApply() {
+      this.$router
+        .push({
+          path: "/apply_vip",
         })
         .catch((err) => err);
       this.$emit("changeFlag", false);

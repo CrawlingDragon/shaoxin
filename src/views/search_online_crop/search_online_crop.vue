@@ -1,10 +1,10 @@
 <template>
   <div class="searchOnlineCrop-container">
     <Header :indexHeader="false"></Header>
-    <div class="title">共250次{{crop}}网诊记录</div>
+    <div class="title">共{{online.length}}次{{crop}}网诊记录</div>
     <ul class="crop-ul">
-      <li v-for="item in 3" :key="item">
-        <OnlineItem></OnlineItem>
+      <li v-for="item in online" :key="item.id">
+        <OnlineItem :list="item"></OnlineItem>
       </li>
     </ul>
   </div>
@@ -24,14 +24,30 @@ export default {
   props: {},
   data() {
     return {
-      crop: "xx",
+      crop: this.$route.query.crop,
+      online: [],
     };
+  },
+  created() {
+    this.$emit("footer", false);
   },
   computed: {},
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getSearchResult(this.crop);
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getSearchResult(keyword) {
+      this.$axios
+        .fetchPost("Mobile/Wen/index", { keyword, pagesize: 30 })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.online = res.data.data;
+          }
+        });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>
@@ -45,4 +61,6 @@ export default {
     background #fff
     li
       border-bottom 1px solid #e5e5e5
+      &:last-child
+        border none
 </style>

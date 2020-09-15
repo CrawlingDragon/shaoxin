@@ -2,60 +2,138 @@
   <div class="search_hospital-container">
     <Header :indexHeader="false"></Header>
     <form action="/">
-      <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" />
+      <van-search
+        v-model="value"
+        show-action
+        placeholder="请输入搜索关键词"
+        @search="onSearch"
+        @cancel="onCancel"
+      />
     </form>
     <div class="hot">
       <div class="title">热搜词</div>
       <ul class="hot-ul">
-        <li>黄泽黄桃专科医院</li>
-        <li>嵊州蔬菜专科医院 </li>
+        <li
+          v-for="item in hot"
+          :key="item.title"
+          @click="goToHospital(item.mid)"
+        >
+          {{ item.title }}
+        </li>
       </ul>
     </div>
-    <div class="hot">
+    <div class="hot" v-if="hispital.length != 0">
       <div class="title">历史搜索</div>
       <ul class="history-ul">
-        <li>安吉新型庄稼医院</li>
-        <li>秀洲</li>
+        <li
+          v-for="item in hispital"
+          :key="item.title"
+          @click="goToHospital(item.mid)"
+        >
+          {{ item.title }}
+        </li>
       </ul>
       <div class="clear">清空历史</div>
     </div>
     <div class="result-box">
       <div class="title">搜索结果</div>
       <ul>
-        <li v-for="item in 4" :key="item">
-          <van-image class="img"></van-image>
+        <li
+          v-for="item in list"
+          :key="item.mid"
+          @click="goToHospital(item.mid)"
+        >
+          <van-image class="img" :src="item.logo" fit="cover"></van-image>
           <div class="right">
-            <div class="name">黄泽黄桃专科医院<span>实体店</span></div>
-            <div class="knid">科室：黄桃 </div>
+            <div class="name">
+              {{ item.title }}<span v-show="item.isstore == 1">实体店</span>
+            </div>
+            <div class="knid">科室：{{ item.zuowu }}</div>
           </div>
         </li>
       </ul>
     </div>
-    <van-empty image="error" description="未搜索到符合条件的内容" />
+    <van-empty
+      image="error"
+      description="未搜索到符合条件的内容"
+      v-if="noData"
+    />
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "searchHospital",
   metaInfo: {
-    title: "搜索网诊",
+    title: "搜索网诊"
   },
   components: { Header },
   props: {},
   data() {
-    return { value: "" };
+    return {
+      value: "",
+      location: this.$route.query.location,
+      list: [],
+      hispital: [],
+      hot: [],
+      noData: false
+    };
   },
-  computed: {},
+  computed: {
+    ...mapState(["uid"])
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getHispital();
+    this.gerHot();
+  },
   destroyed() {},
   methods: {
+    ...mapMutations(["setMid"]),
     onSearch(val) {
-      console.log("val :>> ", val);
+      this.getSearchresult(val);
     },
     onCancel() {},
-  },
+    getSearchresult(keyword) {
+      this.noData = false;
+      this.$axios
+        .fetchPost("Mobile/Entrance/lists", {
+          keyword: keyword,
+          location: this.location
+        })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+            if (res.data.data.length == 0) {
+              this.noData = true;
+            }
+          }
+        });
+    },
+    getHispital() {
+      this.$axios
+        .fetchPost("Mobile/Entrance/getHistory", { uId: this.uid })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.hispital = res.data.data;
+          }
+        });
+    },
+    gerHot() {
+      this.$axios.fetchPost("Mobile/Entrance/getHotwords").then(res => {
+        if (res.data.code == 0) {
+          this.hot = res.data.data;
+        }
+      });
+    },
+    goToHospital(mid) {
+      this.setMid(mid);
+      this.$router.push({
+        path: "/hospital"
+      });
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

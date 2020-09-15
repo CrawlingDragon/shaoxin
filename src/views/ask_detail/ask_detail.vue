@@ -28,16 +28,16 @@
       </div>
     </div>
     <div class="answer-box">
-      <div class="title">解答 {{detail.comments_count}}</div>
+      <div class="title">解答 {{detail.replies}}</div>
       <ul class="answer-ul">
-        <li v-for="item in detail.answers" :key="item.id">
+        <li v-for="item in detail.answers" :key="item.pid">
           <div class="top">
             <van-image round fit="cover" :src="item.avatar" class="avator"></van-image>
             <div class="name">{{item.author}}({{item.groupname}})</div>
             <div class="time">{{item.addtime}}</div>
           </div>
           <div class="text">{{item.content}}</div>
-          <div class="rote" @click="showPopupRote" v-if="item.score == ''">
+          <div class="rote" @click="showPopupRote(item)" v-if="item.isself == 1">
             <div class="icon"></div>
             评分
           </div>
@@ -72,7 +72,7 @@
       </div>
     </van-popup>
     <van-popup v-model="showRote" position="bottom" :style="{ height: '234px' }" class="rotes">
-      <div class="sub">发表</div>
+      <div class="sub" @click="subRemark">发表</div>
       <div class="title">评价 常山胡柚专科医院的解答</div>
       <van-rate v-model="roteValue" color="#ff6600" size="27px" @change="onChangeRote" />
       <span v-if="roteValue == 1" class="rote-text">解答非常差</span>
@@ -104,10 +104,14 @@ export default {
       roteValue: 1,
       messageRote: "",
       detail: "",
+      pid: "",
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "uid"]),
+  },
+  created() {
+    this.$emit("footer", false);
   },
   watch: {
     $route() {
@@ -134,10 +138,45 @@ export default {
       this.show = true;
     },
     sub() {
-      alert(1);
+      // 提交回复
+      if (this.message == "") {
+        return;
+      }
+      this.$axios
+        .fetchPost("/Mobile/Wen/addQuestionAnswers", {
+          uId: this.uid,
+          content: this.message,
+          tId: this.tid,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.getDetail();
+          }
+          this.show = false;
+          this.$toast(res.data.message);
+        });
     },
-    showPopupRote() {
+    showPopupRote(item) {
+      this.pid = item.pid;
       this.showRote = true;
+    },
+    subRemark() {
+      // 发表评级
+      this.$axios
+        .fetchPost("Mobile/User/pushAppraises", {
+          uId: this.uid, // 用户id
+          tId: this.tid, //问题id
+          pId: this.pid, // 问题pid
+          score: this.roteValue, //星级
+          comment: this.messageRote, //回答内容
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.showRote = false;
+            this.getDetail();
+          }
+          this.$toast(res.data.message);
+        });
     },
     onChangeRote(value) {
       console.log("1 :>> ", value);

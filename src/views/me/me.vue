@@ -2,10 +2,17 @@
   <div class="me-container">
     <Header :indexHeader="false"></Header>
     <div class="user-box">
-      <van-image class="avator" round fit="cover" :src="info.avatar"></van-image>
+      <van-image
+        class="avator"
+        round
+        fit="cover"
+        :src="info.avatar"
+      ></van-image>
       <div class="mid">
-        <p class="p1">{{info.realname}}<span>{{info.grouptitle}}</span></p>
-        <p class="p2">用户名:{{info.username}}</p>
+        <p class="p1">
+          {{ info.realname }}<span>{{ info.grouptitle }}</span>
+        </p>
+        <p class="p2">用户名:{{ info.username }}</p>
       </div>
       <div class="right" @click="goToEdit">编辑 ></div>
     </div>
@@ -47,7 +54,7 @@
         </template>
       </van-cell>
     </div>
-    <van-cell title="个人主页" :to="`/expert?id=${uid}`" is-link style="margin-top:10px">
+    <van-cell title="个人主页" to="/expert" is-link style="margin-top:10px">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon07"></div>
@@ -59,34 +66,40 @@
         <div class="icon08"></div>
       </template>
     </van-cell>
-    <van-cell title="联系客服 4008596318" is-link style="margin-top:10px" @click="callPhone">
+    <van-cell
+      title="联系客服 4008596318"
+      is-link
+      style="margin-top:10px"
+      @click="callPhone"
+    >
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon09"></div>
         <a href="tel:4008596318" ref="tel"></a>
       </template>
     </van-cell>
-    <Foot :active="active"></Foot>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
-import Foot from "@/components/foot/foot";
 import { mapState } from "vuex";
 
 export default {
   name: "me",
   metaInfo: { title: "我的" },
-  components: { Header, Foot },
+  components: { Header },
   props: {},
   data() {
     return {
       info: "",
-      active: 4,
+      active: 4
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid"])
+  },
+  created() {
+    this.$emit("footer", true);
   },
   watch: {},
   mounted() {
@@ -97,7 +110,7 @@ export default {
     getInfo() {
       this.$axios
         .fetchPost("/Mobile/User/userCenter", { uId: this.uid })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.info = res.data.data;
           }
@@ -105,13 +118,13 @@ export default {
     },
     goToEdit() {
       this.$router.push({
-        path: "/me_edit",
+        path: "/me_edit"
       });
     },
     callPhone() {
       this.$refs.tel.click();
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

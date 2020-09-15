@@ -66,14 +66,14 @@ import { mapState } from 'vuex';
         </van-grid-item>
       </van-grid>
     </div>
-    <div class="btns" v-if="!uid">
-      <div class="btn1">登录</div>
-      <div class="btn2">注册</div>
+    <div class="btns" v-if="uid == ''">
+      <div class="btn1" @click="goToLogin">登录</div>
+      <div class="btn2" @click="goToSign">注册</div>
     </div>
-    <div class="logined" e-else>
+    <div class="logined" v-else>
       <van-image width="35" height="35" round :src="user.avatar" class="avator" fit="cover" />
       <p class="name">{{user.username}}</p>
-      <div class="login-out">退出登录</div>
+      <div class="login-out" @click="loginOut">退出登录</div>
     </div>
     <div class="index-btn" @click="goToIndex">
       <div class="logo"></div>
@@ -82,7 +82,8 @@ import { mapState } from 'vuex';
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
+import { Dialog } from "vant";
 export default {
   name: "fast_nav",
   components: {},
@@ -108,16 +109,40 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
+    ...mapMutations(["setUid"]),
     closeBox() {
       this.$emit("changeFlag", false);
     },
+    goToLogin() {
+      this.$router.push({
+        path: "/login",
+      });
+    },
+    goToSign() {
+      this.$router.push({
+        path: "/sign",
+      });
+    },
+    loginOut() {
+      Dialog.confirm({
+        title: "提示",
+        message: "确认要退出登录吗",
+      })
+        .then(() => {
+          // on confirm
+          this.setUid("");
+          this.$router.push({
+            path: "/",
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
     goToIndex() {
       // 路由 去首页
-      this.$router
-        .push({
-          path: "/",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/" }).catch((err) => err);
+      this.closeBox();
     },
     goToHospital() {
       this.$router.push({ path: "/into_hospital" }).catch((err) => err);

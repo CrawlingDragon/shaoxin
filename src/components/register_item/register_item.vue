@@ -2,19 +2,19 @@
   <!-- 挂号记录item -->
   <div class="register_item">
     <div class="top">
-      <div class="left">2020-08-06 上午 第5号</div>
-      <div class="right">待就诊</div>
+      <div class="left">{{list.subtime}} {{list.apm}} 第{{list.position}}号</div>
+      <div class="right">{{list.status}}</div>
     </div>
     <div class="mid">
-      <van-image class="img" fit="cover" radius="5px"></van-image>
+      <van-image class="img" fit="cover" radius="5px" :src="list.logo"></van-image>
       <div class="p2">
-        <div class="name">柯桥新型庄稼医院</div>
-        <div class="expert">王汉荣专家 </div>
+        <div class="name">{{list.name}}</div>
+        <div class="expert">{{list.expertname}}</div>
       </div>
     </div>
     <div class="bottom">
-      <div class="left">挂号时间: 2020-08-01 16:00</div>
-      <div class="right">NO:7200000038</div>
+      <div class="left">挂号时间: {{list.addtime}}</div>
+      <div class="right">NO:{{list.order_number}}</div>
     </div>
   </div>
 </template>
@@ -22,7 +22,14 @@
 export default {
   name: "Register_item",
   components: {},
-  props: {},
+  props: {
+    list: {
+      type: Object,
+      default: function () {
+        return {};
+      },
+    },
+  },
   data() {
     return {};
   },

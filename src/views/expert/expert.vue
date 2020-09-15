@@ -9,9 +9,11 @@
       </div>
       <div class="btns">
         <div class="btn-look" v-if="expertData.id != uid" @click="attention">
-          <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}</div>
+          <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}
+        </div>
         <div class="btn-ask" v-if="expertData.identity == 1 && expertData.id != uid" @click="goToAsk">
-          <van-icon name="records" class="records" />提问</div>
+          <van-icon name="records" class="records" />提问
+        </div>
         <div class="edit" v-if="expertData.id == uid" @click="goToMeEdit">编辑资料</div>
       </div>
       <div class="fans">
@@ -28,7 +30,7 @@
       <p class="explan">
         {{expertData.introduce}}</p>
     </div>
-    <van-tabs v-model="active" sticky class="tabs" color="#155BBB" @click="onClickTab">
+    <van-tabs v-model="active" sticky class="tabs" color="#155BBB">
       <van-tab>
         <template #title>
           解答 {{expertData.posts}}
@@ -96,6 +98,9 @@ export default {
   computed: {
     ...mapState(["uid"]),
   },
+  created() {
+    this.$emit("footer", false);
+  },
   watch: {
     id(newVal) {
       this.getExpertData(newVal);
@@ -108,23 +113,24 @@ export default {
   methods: {
     getExpertData(id) {
       this.$axios
-        .fetchPost("Mobile/user/homepage", { id: id, uId: this.uid })
+        .fetchPost("Mobile/User/homepage", { id: id, uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.expertData = res.data.data;
             this.status = res.data.data.status;
             setTimeout(() => {
-              this.getIAsked(id);
-              this.getAskMe(id);
+              this.getIAsked(res.data.data.uid);
+              this.getAskMe(res.data.data.uid);
+              this.getHospitalList(res.data.data.uid);
             }, 100);
           }
         });
     },
-    getIAsked(id) {
+    getIAsked(uid) {
       // 解答，==> 就是我答的接口
       this.$axios
-        .fetchPost("/Mobile/user/getWenList", {
-          uId: id,
+        .fetchPost("/Mobile/User/getWenList", {
+          uId: uid,
           page: 1,
           pagesize: 12,
           action: "answer",
@@ -135,11 +141,11 @@ export default {
           }
         });
     },
-    getAskMe(id) {
+    getAskMe(uid) {
       //提问 ===> 就是我
       this.$axios
-        .fetchPost("/Mobile/user/getWenList", {
-          uId: id,
+        .fetchPost("/Mobile/User/getWenList", {
+          uId: uid,
           page: 1,
           pagesize: 12,
           action: "tome",
@@ -150,10 +156,10 @@ export default {
           }
         });
     },
-    getHospitalList() {
+    getHospitalList(uid) {
       // 我加入的 医院
       this.$axios
-        .fetchPost("/Mobile/user/myJoinHospital", { uId: this.id })
+        .fetchPost("/Mobile/User/myJoinHospital", { uId: uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.hospitalList = res.data.data.list;
@@ -168,15 +174,16 @@ export default {
         closeable: true,
       });
     },
-    onClickTab(name) {
-      if (name == 2) {
-        this.getHospitalList();
-      }
-    },
+    // onClickTab(name) {
+    //   // if (name == 2) {
+    //   //   this.getHospitalList();
+    //   // }
+    // },
     goToAsk() {
       // 点击提问按钮
       this.$router.push({
         path: "/ask",
+        query: { expert: this.expertData.name, expertId: this.expertData.id },
       });
     },
     goToMeEdit() {

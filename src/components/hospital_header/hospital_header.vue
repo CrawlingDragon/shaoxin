@@ -2,7 +2,7 @@
   <!-- 医院推荐的header -->
   <div class="header-container van-hairline--top van-hairline--bottom">
     <div class="left-bar" v-if="header == 'indexHeader'">
-      <p class="p1">{{navHeader}}</p>
+      <p class="p1">{{ navHeader }}</p>
       <van-icon name="wap-nav" class="hospital-icon" @click="showNavFast" />
     </div>
     <div class="left-bar" v-if="header == 'logoHeader'">
@@ -11,10 +11,14 @@
     </div>
     <div class="left-bar" v-if="header == 'searchHeader'">
       <van-icon name="location-o" class="address-icon" />
-      <div class="address">柯桥区</div>
-      <van-icon name="search" class="search" />
+      <div class="address">{{ address }}</div>
+      <van-icon name="search" class="search" @click="goToSearchHospital" />
     </div>
-    <div class="left-bar" v-if="header != 'indexHeader' && header != 'logoHeader' && header != 'searchHeader'">
+    <div class="left-bar" v-if="
+        header != 'indexHeader' &&
+          header != 'logoHeader' &&
+          header != 'searchHeader'
+      ">
       <slot></slot>
     </div>
     <div class="right-nav van-hairline--left">
@@ -33,7 +37,7 @@
 import fastNav from "@/components/fast_nav/fast_nav";
 import hospitalFastNav from "@/components/hospital_fast_nav/hospital_fast_nav";
 import { mapState } from "vuex";
-
+import AMapLoader from "@amap/amap-jsapi-loader";
 export default {
   name: "hospitalHeaders",
   components: { fastNav, hospitalFastNav },
@@ -52,6 +56,7 @@ export default {
       flag: false,
       flagHospital: false,
       user: {},
+      address: "",
     };
   },
   computed: {
@@ -60,6 +65,35 @@ export default {
   watch: {},
   mounted() {
     this.getUserInfo();
+    let that = this;
+    AMapLoader.load({
+      key: "23a2a13dc7fdd9a8af2ec7683b2f333e&AMap.CitySearch", // 申请好的Web端开发者Key，首次调用 load 时必填
+      version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+      plugins: ["AMap.CitySearch"], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+      Loca: {
+        // 是否加载 Loca， 缺省不加载
+        version: "1.3.2", // Loca 版本，缺省 1.3.2
+      },
+    })
+      .then((AMap) => {
+        var citysearch = new AMap.CitySearch();
+        //自动获取用户IP，返回当前城市
+        citysearch.getLocalCity(function (status, result) {
+          if (status === "complete" && result.info === "OK") {
+            if (result && result.city && result.bounds) {
+              var cityinfo = result.city;
+              // var citybounds = result.bounds;
+              that.address = cityinfo;
+              //地图显示当前城市
+            }
+          } else {
+            that.address = result.info;
+          }
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   },
   destroyed() {},
   methods: {
@@ -87,7 +121,15 @@ export default {
     goToIndex() {
       this.$router
         .push({
-          path: "/",
+          path: "/index",
+        })
+        .catch((err) => err);
+    },
+    goToSearchHospital() {
+      this.$router
+        .push({
+          path: "/search_hospital",
+          query: { location: this.address },
         })
         .catch((err) => err);
     },

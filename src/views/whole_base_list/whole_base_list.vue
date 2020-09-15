@@ -1,6 +1,6 @@
 <template>
   <div class="good_base-container">
-    <Header indexHeader="indexHeader" navHeader="优质基地"></Header>
+    <Header :indexHeader="false"></Header>
     <ul class="base-ul">
       <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
         <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
@@ -15,15 +15,14 @@
         </div>
       </li>
     </ul>
-    <div class="tip">申请庄稼医院会员，提交基地认证</div>
   </div>
 </template>
 <script>
-import Header from "@/components/hospital_header/hospital_header";
+import Header from "@/components/header/header";
 import { mapState } from "vuex";
 
 export default {
-  name: "goodBase",
+  name: "wholeBaseList",
   components: { Header },
   props: {},
   metaInfo: {
@@ -51,7 +50,6 @@ export default {
       this.$axios
         .fetchPost("/Mobile/Mpublic/getFineBaseCom", {
           mId: mid,
-          uId: this.uid,
         })
         .then((res) => {
           if (res.data.code == 0) {

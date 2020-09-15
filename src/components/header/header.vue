@@ -5,8 +5,8 @@
       <van-icon name="search" />
     </div>
     <div class="tabbar" v-if="indexHeader">
-      <div class="item active">推荐</div>
-      <div class="item">网珍</div>
+      <div class="item" :class="{'active':tabbarActive == 0}" @click="goToIndex">推荐</div>
+      <div class="item" :class="{'active':tabbarActive == 1}" @click="goToOnline">网诊</div>
     </div>
     <div class="no_index_header" v-if="!indexHeader">
       <van-image :src="require('./1.png')" class="logo"></van-image>
@@ -34,6 +34,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    tabbarActive: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -59,17 +63,30 @@ export default {
     },
     goToSearch() {
       // 路由  搜索网诊
-      this.$router.push({
-        path: "/search_online",
-      });
+      this.$router
+        .push({
+          path: "/search_online",
+        })
+        .catch((err) => err);
+      this.fastNavShowFlag = false;
+    },
+    goToOnline() {
+      // 路由  网诊
+      this.$router
+        .push({
+          path: "/index_online",
+        })
+        .catch((err) => err);
+      this.fastNavShowFlag = false;
     },
     goToIndex() {
       // 路由 首页
       this.$router
         .push({
-          path: "/",
+          path: "/index",
         })
         .catch((err) => err);
+      this.fastNavShowFlag = false;
     },
     openFastNav() {
       // 打开快速导航

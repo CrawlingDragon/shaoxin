@@ -44,6 +44,9 @@ export default {
       findPassword2: "",
     };
   },
+  created() {
+    this.$emit("footer", false);
+  },
   computed: {},
   watch: {},
   mounted() {},

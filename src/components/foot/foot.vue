@@ -1,31 +1,32 @@
 <template>
   <div class="foot-container">
-    <van-tabbar v-model="myActive">
-      <van-tabbar-item @click="goToIndex">
+    <van-tabbar v-model="myActive" route>
+      <van-tabbar-item :to=indexRoute>
+        <!-- @click="goToIndex"  -->
         <template #icon="props">
           <div class="icon" :class="props.active ? icon01.active : icon01.inactive"></div>
         </template>
         首页
       </van-tabbar-item>
-      <van-tabbar-item @click="goToHospital">
+      <van-tabbar-item :to=hospital>
         <template #icon="props">
           <div class="icon" :class="props.active ? icon02.active : icon02.inactive"></div>
         </template>
         进院
       </van-tabbar-item>
-      <van-tabbar-item @click="goToAsk">
+      <van-tabbar-item to="/ask">
         <template #icon="props">
           <div class="icon" :class="props.active ? icon03.active : icon03.inactive"></div>
         </template>
         提问
       </van-tabbar-item>
-      <van-tabbar-item @click="goToMessage">
+      <van-tabbar-item to="/message">
         <template #icon="props">
           <div class="icon" :class="props.active ? icon04.active : icon04.inactive"></div>
         </template>
         资讯
       </van-tabbar-item>
-      <van-tabbar-item @click="goToMe">
+      <van-tabbar-item replace to="/me">
         <template #icon="props">
           <div class="icon" :class="props.active ? icon05.active : icon05.inactive"></div>
         </template>
@@ -38,15 +39,12 @@
 export default {
   name: "foot",
   components: {},
-  props: {
-    active: {
-      type: Number,
-      default: 0,
-    },
-  },
+  props: {},
   data() {
     return {
-      myActive: this.active,
+      hospital: "/hospital",
+      indexRoute: "/index",
+      myActive: "",
       icon01: {
         active: "icon01_active",
         inactive: "icon01_inactive",
@@ -71,8 +69,25 @@ export default {
   },
   computed: {},
   watch: {
-    active() {
-      console.log("1 :>> ", 1);
+    $route(newVal) {
+      switch (newVal.name) {
+        case "hospital":
+          this.hospital = "/hospital";
+          this.indexRoute = "/index";
+          break;
+        case "intoHospital":
+          this.hospital = "/into_hospital";
+          this.indexRoute = "/index";
+          break;
+        case "index":
+          this.indexRoute = "/index";
+          this.hospital = "/hospital";
+          break;
+        case "indexOnline":
+          this.indexRoute = "/index_online";
+          this.hospital = "/hospital";
+          break;
+      }
     },
   },
   mounted() {},
@@ -82,7 +97,7 @@ export default {
       // 路由 首页
       this.$router
         .push({
-          path: "/",
+          path: "/index",
         })
         .catch((err) => err);
     },

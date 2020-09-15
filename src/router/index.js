@@ -8,6 +8,10 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
+    component: () => import(/*webpackChunkName:"index" */ "@/views/index/index")
+  },
+  {
+    path: "/index",
     name: "index",
     component: () => import(/*webpackChunkName:"index" */ "@/views/index/index")
   },
@@ -107,7 +111,16 @@ const routes = [
   {
     path: "/ask",
     name: "ask",
-    component: () => import(/*webpackChunkName:"ask" */ "@/views/ask/ask")
+    component: () => import(/*webpackChunkName:"ask" */ "@/views/ask/ask"),
+    children: [
+      {
+        path: "/ask/ask_choose_crop",
+        component: () =>
+          import(
+            /*webpackChunkName:"ask_choose_crop" */ "@/views/ask_choose_crop/ask_choose_crop"
+          )
+      }
+    ]
   },
   {
     path: "/ask_detail",
@@ -149,7 +162,16 @@ const routes = [
     path: "/apply_vip",
     name: "applyVip",
     component: () =>
-      import(/*webpackChunkName:"apply_vip" */ "@/views/apply_vip/apply_vip")
+      import(/*webpackChunkName:"apply_vip" */ "@/views/apply_vip/apply_vip"),
+    children: [
+      {
+        path: "/apply_vip/ask_choose_crop",
+        component: () =>
+          import(
+            /*webpackChunkName:"ask_choose_crop" */ "@/views/ask_choose_crop/ask_choose_crop"
+          )
+      }
+    ]
   },
   {
     path: "/vip",
@@ -231,6 +253,14 @@ const routes = [
     component: () =>
       import(
         /*webpackChunkName:"expert_detail" */ "@/views/expert_detail/expert_detail"
+      )
+  },
+  {
+    path: "/whole_base_list",
+    name: "wholeBaseList",
+    component: () =>
+      import(
+        /*webpackChunkName:"whole_base_list" */ "@/views/whole_base_list/whole_base_list"
       )
   },
   {

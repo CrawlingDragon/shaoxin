@@ -3,17 +3,17 @@
     <Header :indexHeader="false"></Header>
     <van-tabs v-model="active" sticky color="#155BBB" title-active-color="#155BBB" class="tabs">
       <van-tab title="我问的" class="tab">
-        <div class="item" v-for="item in ask" :key="item">
+        <div class="item" v-for="item in ask" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </div>
       </van-tab>
       <van-tab title="我答的" class="tab">
-        <div class="item" v-for="item in answer" :key="item">
+        <div class="item" v-for="item in answer" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </div>
       </van-tab>
       <van-tab title="咨询我的" class="tab">
-        <div class="item" v-for="item in information" :key="item">
+        <div class="item" v-for="item in information" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </div>
       </van-tab>

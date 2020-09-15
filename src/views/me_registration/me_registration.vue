@@ -2,8 +2,8 @@
   <div class="me_registration-container">
     <Header :indexHeader="false"></Header>
     <ul>
-      <li v-for="item in 4" :key="item">
-        <RegistrationItem></RegistrationItem>
+      <li v-for="item in list" :key="item.id">
+        <RegistrationItem :list="item"></RegistrationItem>
       </li>
     </ul>
   </div>
@@ -11,18 +11,42 @@
 <script>
 import Header from "@/components/header/header";
 import RegistrationItem from "@/components/register_item/register_item";
+import { mapState } from "vuex";
+
 export default {
   name: "meRegistration",
   components: { Header, RegistrationItem },
   props: {},
-  data() {
-    return {};
+  metaInfo: {
+    title: "我的挂号记录",
   },
-  computed: {},
+  data() {
+    return {
+      list: [],
+    };
+  },
+  created() {
+    this.$emit("footer", false);
+  },
+  computed: {
+    ...mapState(["uid"]),
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getRegistration();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getRegistration() {
+      this.$axios
+        .fetchPost("/Mobile/User/getSubscribe", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+          }
+        });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

@@ -1,6 +1,8 @@
 <template>
   <div class="live-container">
-    <Header indexHeader="indexHeader" navHeader="直播"></Header>
+    <Header :indexHeader="false" v-if="from == 'index'"></Header>
+    <HospitalHeader indexHeader="indexHeader" navHeader="直播" v-else></HospitalHeader>
+
     <div class="program" @click="goLive" v-if="menum == 1">直播节目单</div>
     <ul class="live-ul">
       <li v-for="item in list" :key="item.id" @click="liveHref(item.linkurl)">
@@ -15,10 +17,12 @@
   </div>
 </template>
 <script>
-import Header from "@/components/hospital_header/hospital_header";
+import Header from "@/components/header/header";
+import HospitalHeader from "@/components/hospital_header/hospital_header";
+import { mapState } from "vuex";
 export default {
   name: "live",
-  components: { Header },
+  components: { Header, HospitalHeader },
   metaInfo() {
     return {
       title: "直播",
@@ -28,12 +32,17 @@ export default {
   data() {
     return {
       list: [],
-      mid: this.$route.query.mid,
       menum: "",
+      from: this.$route.query.from,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(["mid"]),
+  },
   watch: {},
+  created() {
+    this.$emit("footer", false);
+  },
   mounted() {
     this.getList();
   },

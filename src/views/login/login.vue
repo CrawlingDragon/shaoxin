@@ -33,6 +33,9 @@ export default {
       password: "",
     };
   },
+  created() {
+    this.$emit("footer", false);
+  },
   computed: {},
   watch: {},
   mounted() {

@@ -8,21 +8,21 @@
         <div class="right">下午</div>
       </div>
       <div class="item-box">
-        <div class="item" v-for="item in 6" :key="item">
+        <div class="item" v-for="item in list" :key="item.week">
           <div class=" left">
-            周四 <br /> <span class="days">07/23</span>
+            {{item.week}} <br /> <span class="days">{{item.ymd}}</span>
           </div>
           <div class="mid">
-            <div class="number" v-if="forenoon">总10 剩10</div>
-            <div class="p1" v-else>无号源</div>
-            <div class="now">即将开发</div>
-            <div class="expert" v-if="forenoon">王汉荣专家</div>
+            <div class="p1" v-if="item.data.am.realname == '无号源'">无号源</div>
+            <div class="now" v-if="item.data.am.realname == '即将放号'" @click="rightNow">{{item.data.am.realname}}</div>
+            <div class="number" v-if="item.data.am.realname != '无号源' && item.data.am.realname != '即将放号'" @click="registration(item.data.am,'上午')">总{{item.data.am.nums}} 剩{{item.data.am.surplus}}</div>
+            <div class="expert" v-if="item.data.am.realname != '无号源'">{{item.data.am.realname}}专家</div>
           </div>
           <div class="right">
-            <div class="number" v-if="afternoon">总10 剩10</div>
-            <div class="p1" v-else>无号源</div>
-            <div class="now">即将开发</div>
-            <div class="expert" v-if="afternoon">王汉荣专家</div>
+            <div class="p1" v-if="item.data.pm.realname == '无号源'">无号源</div>
+            <div class="now" v-if="item.data.pm.realname == '即将放号'" @click="rightNow">{{item.data.pm.realname}}</div>
+            <div class="number" v-if="item.data.pm.realname != '无号源' && item.data.pm.realname != '即将放号'" @click="registration(item.data.pm,'下午')">总{{item.data.pm.nums}} 剩{{item.data.pm.surplus}}</div>
+            <div class=" expert" v-if="item.data.pm.realname != '无号源'">{{item.data.pm.realname}}专家</div>
           </div>
         </div>
       </div>
@@ -31,21 +31,111 @@
 </template>
 <script>
 import Header from "@/components/hospital_header/hospital_header";
+import { mapState } from "vuex";
+import { Dialog } from "vant";
 export default {
   name: "expertRegistration",
-  components: { Header },
+  components: { Header, [Dialog.Component.name]: Dialog.Component },
   props: {},
+  metaInfo: {
+    title: "专家挂号",
+  },
   data() {
     return {
-      afternoon: true,
-      forenoon: true,
+      list: [],
     };
   },
-  computed: {},
+  created() {
+    this.$emit("footer", false);
+  },
+  computed: {
+    ...mapState(["mid", "uid"]),
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getList();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getList() {
+      // 获取挂号-医院排版
+      this.$axios
+        .fetchPost("Mobile/Mpublic/getSubscribeData", { mId: this.mid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = res.data.data;
+          }
+        });
+    },
+    registration(item, halfDay) {
+      if (item.surplus == 0) {
+        this.$toast("抱歉,该时间段没有专家号！");
+        return;
+      }
+      let title = `${this.timeFormat(parseInt(item.ymd) * 1000)}${halfDay}${
+        item.realname
+      }专家的号吗?`;
+
+      let obj = {
+        mId: this.mid,
+        eId: item.eid,
+        uId: this.uid,
+        ymd: item.ymd,
+        apm: item.apm,
+      };
+
+      this.$dialog
+        .confirm({
+          title: "提示",
+          message: title,
+        })
+        .then(() => {
+          // on confirm
+          this.$axios
+            .fetchPost("Mobile/Mpublic/AddSubscribeData", obj)
+            .then((res) => {
+              if (res.data.code == 0) {
+                this.getList();
+                this.$dialog
+                  .confirm({
+                    title: "挂号成功",
+                    message: res.data.message,
+                    confirmButtonText: "挂号记录",
+                    cancelButtonText: "关闭",
+                  })
+                  .then(() => {
+                    // on confirm
+
+                    this.$router.push({
+                      path: "/me_registration",
+                    });
+                  })
+                  .catch(() => {
+                    // on cancel
+                  });
+              }
+            });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    rightNow() {
+      // 即将放号
+      this.$toast("每天7点开始放号");
+    },
+    //时间戳转化成时间格式
+    timeFormat(timestamp) {
+      function add0(m) {
+        return m < 10 ? "0" + m : m;
+      }
+      //timestamp是整数，否则要parseInt转换,不会出现少个0的情况
+      var time = new Date(timestamp);
+      var month = time.getMonth() + 1;
+      var date = time.getDate();
+      return month + "月" + add0(date) + "日";
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

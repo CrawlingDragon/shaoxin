@@ -1,57 +1,104 @@
 <template>
   <div class="index_online-container">
-    <Header></Header>
+    <Header :tabbarActive="1"></Header>
     <div class="choose-box">
       <div class="back" @click="goBack"></div>
-      <div class="all" @click="openBox">全部
+      <div class="all" @click="openBox">{{areaName}}
         <van-icon name="arrow-down" class="down" />
       </div>
-      <div class="crop" @click="goToChooseCrop">作物
+      <div class="crop" @click="goToChooseCrop">{{crop}}
         <van-icon name="arrow-down" class="down" />
       </div>
       <div class="address-box" v-show="addressFlag">
-        <div class="item">全部地区</div>
-        <div class="item">绍兴市</div>
+        <div class="item" @click="chooseAddress(9999,'全部地区')">全部地区</div>
+        <div class="item" @click="chooseAddress(1111,'绍兴市')">绍兴市</div>
         <van-icon name="cross" class="cross" @click="addressFlag = false" />
       </div>
     </div>
     <div class="online-box">
       <ul class="o-ul">
-        <li v-for="item in 3" :key="item.id">
+        <li v-for="item in onlineArr" :key="item.id">
           <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
         </li>
       </ul>
     </div>
-    <Foot></Foot>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header.vue";
-import Foot from "@/components/foot/foot";
 import OnlineItem from "@/components/online_item/online_item";
+import { ImagePreview } from "vant";
+import { mapState } from "vuex";
+
 export default {
   name: "indexOnline",
-  components: { Header, Foot, OnlineItem },
+  metaInfo: {
+    title: "网诊",
+  },
+  components: {
+    Header,
+    OnlineItem,
+    [ImagePreview.Component.name]: ImagePreview.Component,
+  },
   props: {},
   data() {
     return {
       addressFlag: false,
+      onlineArr: "",
+      fid: this.$route.query.fid,
+      crop: this.$route.query.name || "作物",
+      areaName: "全部",
     };
   },
-  computed: {},
-  watch: {},
-  mounted() {},
+  computed: {
+    ...mapState(["mid"]),
+  },
+  watch: {
+    fid() {
+      console.log("1 :>> ", 1);
+    },
+  },
+  created() {
+    this.$emit("footer", true);
+  },
+  mounted() {
+    this.getIndexData(this.mid, this.fid);
+  },
   destroyed() {},
   methods: {
+    getIndexData(mid = "", fid = "", area = "") {
+      // 获取首页数据
+      this.$axios
+        .fetchPost("/Mobile/Wen/index", { mId: mid, fId: fid, area: area })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.onlineArr = res.data.data;
+          }
+        });
+    },
+    chooseAddress(area, name) {
+      this.getIndexData(this.mid, this.fid, area);
+      this.areaName = name;
+      this.addressFlag = false;
+    },
     goBack() {
-      this.$router.go(-1);
+      this.$router.push({ path: "/index" });
     },
     openBox() {
       this.addressFlag = !this.addressFlag;
     },
+    preverImg(item) {
+      //网诊的图片预览
+      ImagePreview({
+        images: item.arr,
+        startPosition: item.index,
+        closeable: true,
+      });
+    },
     goToChooseCrop() {
       this.$router.push({
         path: "/choose_crop",
+        query: { crop: this.crop },
       });
     },
   },
@@ -59,6 +106,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .index_online-container
+  padding-bottom 50px
   .choose-box
     height 40px
     display flex
@@ -66,6 +114,7 @@ export default {
     background #fff
     border-bottom 1px solid #e5e5e5
     position relative
+    margin-top 10px
     .back
       width 25px
       height 25px

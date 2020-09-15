@@ -11,6 +11,7 @@
 <script>
 import Header from "@/components/header/header";
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
+import { mapState } from "vuex";
 
 export default {
   metaInfo() {
@@ -23,16 +24,16 @@ export default {
   props: {},
   data() {
     return {
-      mid: this.$route.query.mid,
       list: [],
     };
   },
-  computed: {},
-  watch: {
-    mid() {
-      this.mid = this.$route.query.mid;
-    },
+  created() {
+    this.$emit("footer", false);
   },
+  computed: {
+    ...mapState(["mid"]),
+  },
+  watch: {},
   mounted() {
     this.getExpertList();
   },
@@ -41,7 +42,7 @@ export default {
     getExpertList() {
       // 获取专家列表
       this.$axios
-        .fetchPost("/Mobile/User/expertList", { mId: "" })
+        .fetchPost("/Mobile/User/expertList", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

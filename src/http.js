@@ -16,7 +16,7 @@ axios.interceptors.request.use(
   config => {
     //在发送请求之前做什么事
 
-    if (config.url === "/member/upload/image") {
+    if (config.url === "/Mobile/Wen/OssUploadFile") {
       return config;
     }
     if (config.method === "post") {

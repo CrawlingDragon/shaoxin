@@ -5,8 +5,9 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    uid: window.localStorage.getItem("uid") || 64467,
-    mid: window.localStorage.getItem("mid"),
+    //64467
+    uid: window.localStorage.getItem("uid"),
+    mid: window.localStorage.getItem("mid") || 56915,
     token: window.localStorage.getItem("token") || undefined // 从缓存中获取token
   },
   mutations: {
