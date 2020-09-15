@@ -5,11 +5,11 @@ axios.defaults.timeout = 8000;
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded;charset=utf-8";
 axios.defaults.baseURL =
-  process.env.NODE_ENV === "production"
-    ? "http:sx.test.com/"
+  process.env.NODE_ENV == "production"
+    ? "http://beta.sx.114nz.com/"
     : "http://beta.sx.114nz.com/";
 //配置接口地址
-//console.log(process.env.VUE_APP_URL)
+// console.log(axios.defaults.baseURL);
 
 //post 传参序列化，（添加请求拦截器）
 axios.interceptors.request.use(

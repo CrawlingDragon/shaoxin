@@ -43,7 +43,7 @@ export default {
   data() {
     return {
       hospital: "/hospital",
-      indexRoute: "/index",
+      indexRoute: "/",
       myActive: "",
       icon01: {
         active: "icon01_active",
@@ -81,6 +81,10 @@ export default {
           break;
         case "index":
           this.indexRoute = "/index";
+          this.hospital = "/hospital";
+          break;
+        case "/":
+          this.indexRoute = "/";
           this.hospital = "/hospital";
           break;
         case "indexOnline":

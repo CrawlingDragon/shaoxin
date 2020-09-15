@@ -3,22 +3,22 @@
     <Header header="indexHeader" navHeader="申请会员"></Header>
     <van-form @submit="onSubmit">
       <van-field v-model="name" name="name" label="姓名" placeholder="请输入姓名" required :rules="[{ required: true, message: '请输入姓名' }]" />
-      <van-field v-model="phone" name="phone" label="手机号" placeholder="请输入手机号" :rules="[{ validator: validatorPhone, message: '请填写正确的手机号' }]" />
-      <van-field v-model="card" name="card" label="身份证" placeholder="请输入身份证" @touchstart.native.stop="cardShow = true" />
-      <van-number-keyboard v-model="card" :show="cardShow" extra-key="X" close-button-text="完成" @blur="cardShow = false" @input="onInput" @delete="onDelete" />
+      <van-field v-model="phone" name="phone" label="手机号" readonly />
+      <van-field v-model="card" name="card" label="身份证" placeholder="请输入身份证号码" @click="cardShow = true" />
+      <van-number-keyboard :show="cardShow" extra-key="X" close-button-text="完成" @blur="cardShow = false" v-model="card" />
       <van-field v-model="sex" name="sex" @click="sexShow = true" label="性别" placeholder="请选择" required readonly />
       <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelectSex" />
-      <van-field readonly clickable name="area" :value="address" label="地区选择" placeholder="点击选择省市区" @click="showArea = true" required :rules="[{ required: true, message: '请选择地区' }]" />
+      <van-field readonly required clickable name="area" :value="address" label="地区选择" placeholder="点击选择省市区" @click="showArea = true" :rules="[{ required: true, message: '请选择地区' }]" />
       <van-popup v-model="showArea" position="bottom">
         <van-area :area-list="areaList" @confirm="onConfirm" @cancel="showArea = false" />
       </van-popup>
       <van-field v-model="detailAddress" name="详细地址" label="详细地址" placeholder="请输入详细地址" required :rules="[{ required: true, message: '请输入详细地址' }]" />
       <div class="title">种植作物情况</div>
       <div class="add-box" v-for="(item, index) in addList" :key="index">
-        <van-field v-model="item.addCrop" name="作物名" label="作物名" placeholder="请选择" readonly @click="goToChooseCrop(index)" />
-        <van-field v-model="item.addNumber" name="种养数量" label="种养数量" placeholder="请选择" type="number">
+        <van-field v-model="item.name" name="作物名" label="作物名" placeholder="请选择" readonly @click="goToChooseCrop(index)" />
+        <van-field v-model="item.mushu" name="种养数量" label="种养数量" placeholder="请选择" type="number">
           <template #button>
-            <select name="" id="" class="select">
+            <select name="" id="" class="select" v-model="item.unit">
               <option value="亩">亩</option>
               <option value="尾">尾</option>
               <option value="箱">箱</option>
@@ -45,6 +45,7 @@
 <script>
 import Header from "@/components/hospital_header/hospital_header";
 import areaList from "@/common/js/area";
+import { mapState } from "vuex";
 export default {
   name: "applyVip",
   components: { Header },
@@ -54,37 +55,39 @@ export default {
   props: {},
   data() {
     return {
+      userInfo: "",
       name: "",
       phone: "",
       card: "",
       sex: "",
+      province: "",
+      city: "",
+      town: "",
       address: "",
       cardShow: false,
       sexShow: false,
       detailAddress: "",
       showArea: false,
-      addList: [{ addCrop: " ", addNumber: " " }],
+      addList: [{ fid: "", name: "", mushu: "", unit: "亩" }],
       areaList: areaList, // 数据格式见 Area 组件文档
       actions: [{ name: "男" }, { name: "女" }],
       choosedIndex: 0, //选中的作物 数组index
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(["mid", "uid"]),
+  },
   watch: {},
   created() {
     this.$emit("footer", false);
   },
-  mounted() {},
+  mounted() {
+    this.getUserInfo();
+  },
   destroyed() {},
   methods: {
     add() {
-      this.addList.push({ addCrop: "", addNumber: "" });
-    },
-    onInput() {
-      //输入身份证
-    },
-    onDelete() {
-      //删除身份证
+      this.addList.push({ fid: "", name: "", mushu: "", unit: "亩" });
     },
     onSelectSex(val) {
       this.sex = val.name;
@@ -92,13 +95,40 @@ export default {
     },
     onConfirm(values) {
       this.address = values.map((item) => item.name).join("/");
+      this.province = values[0].name;
+      this.city = values[1].name;
+      this.town = values[2].name;
       this.showArea = false;
     },
     onSubmit(values) {
       console.log("submit", values);
       if (values.sex == "") {
         this.$toast("请先选择性别");
+        return;
       }
+      this.apply();
+    },
+    apply() {
+      this.$axios
+        .fetchPost("Mobile/Mpublic/joinMpublic", {
+          mId: this.mid,
+          uId: this.uid,
+          username: this.name,
+          mobile: this.phone,
+          idcard: this.card,
+          sex: this.sex,
+          province: this.province,
+          city: this.city,
+          town: this.town,
+          address: this.detailAddress,
+          zuowu: this.addList,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.$toast(res.data.message);
+            this.$router.go();
+          }
+        });
     },
     validatorPhone(val) {
       if (val == "") {
@@ -111,15 +141,23 @@ export default {
     },
     choosedCrop(item) {
       // 选中了作物
-      this.addList[this.choosedIndex].addCrop = item.name;
+      this.addList[this.choosedIndex].name = item.name;
+      this.addList[this.choosedIndex].fid = item.fid;
     },
     goToChooseCrop(index) {
       this.choosedIndex = index;
-      console.log("index :>> ", index);
-      console.log("goindex :>> ", this.choosedIndex);
       this.$router.push({
         path: "/apply_vip/ask_choose_crop",
       });
+    },
+    getUserInfo() {
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.phone = res.data.data.username;
+          }
+        });
     },
   },
 };

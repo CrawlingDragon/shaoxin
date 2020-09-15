@@ -53,7 +53,7 @@ export default {
   background #F5F5F5
   .image
     width 100%
-    height 105px
+    height 135px
     margin-bottom 5px
   .p1
     font-size 14px
