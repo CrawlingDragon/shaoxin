@@ -75,7 +75,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["mid", "uid"]),
+    ...mapState(["mid", "uid", "initMid"]),
   },
   watch: {},
   created() {
@@ -152,7 +152,10 @@ export default {
     },
     getUserInfo() {
       this.$axios
-        .fetchPost("Mobile/User/userCenter", { uId: this.uid })
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.initMid,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.phone = res.data.data.username;

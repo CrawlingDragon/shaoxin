@@ -16,6 +16,9 @@ import { mapState } from "vuex";
 export default {
   name: "meHospital",
   components: { Header, RecommendHospital },
+  metaInfo: {
+    title: "我加入的医院",
+  },
   props: {},
   data() {
     return {
@@ -25,6 +28,9 @@ export default {
   },
   computed: {
     ...mapState(["uid"]),
+  },
+  created() {
+    this.$emit("footer", false);
   },
   watch: {},
   mounted() {

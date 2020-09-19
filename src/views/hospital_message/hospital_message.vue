@@ -1,18 +1,17 @@
 <template>
   <div class="message-container">
-    <Header v-if="mid == initMid" :indexHeader="false"></Header>
-    <HospitalHeader v-else indexHeader="indexHeader" navHeader="资讯"></HospitalHeader>
-    <ul class="message-ul">
+    <HospitalHeader indexHeader="indexHeader" navHeader="资讯"></HospitalHeader>
+    <ul class="message-ul" v-if="!noData">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <li v-for="item in list" :key="item.id" @click="goToMessageDetail(item.id,item.catid)">
           <MessageItem :list="item"></MessageItem>
         </li>
       </van-list>
     </ul>
+    <van-empty description="暂无资讯内容" v-if="noData" />
   </div>
 </template>
 <script>
-import Header from "@/components/header/header";
 import HospitalHeader from "@/components/hospital_header/hospital_header";
 import MessageItem from "@/components/message_item/message_item";
 import { mapState } from "vuex";
@@ -21,8 +20,8 @@ export default {
   metaInfo: {
     title: "资讯列表",
   },
-  name: "message",
-  components: { Header, MessageItem, HospitalHeader },
+  name: "hospitalMessage",
+  components: { MessageItem, HospitalHeader },
   props: {},
   data() {
     return {
@@ -30,13 +29,14 @@ export default {
       loading: false,
       finished: false,
       page: 0,
+      noData: false,
     };
   },
   computed: {
-    ...mapState(["mid", "initMid"]),
+    ...mapState(["mid"]),
   },
   created() {
-    this.$emit("footer", true);
+    this.$emit("footer", false);
   },
   watch: {},
   mounted() {},
@@ -47,14 +47,23 @@ export default {
     },
     getList() {
       this.page += 1;
+      this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/News/index", { mId: this.mid, page: this.page })
+        .fetchPost("Mobile/Mpublic/getNewslist", {
+          mId: this.mid,
+          page: this.page,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.loading = false;
             this.list = this.list.concat(res.data.data);
           } else if (res.data.code == 201) {
-            this.finished = true;
+            if (this.page == 1) {
+              this.noData = true;
+              this.finished = true;
+            } else {
+              this.finished = true;
+            }
           }
         });
     },
@@ -80,4 +89,6 @@ export default {
       border-bottom 1px solid #e5e5e5
       &:last-child
         border-bottom none
+.van-empty
+  background #ebebeb
 </style>

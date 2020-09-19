@@ -157,6 +157,7 @@ export default {
   position relative
   height 190px
   margin-bottom 10px
+  z-index 1
   .bg
     position absolute
     width 100%

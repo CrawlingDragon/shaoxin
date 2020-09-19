@@ -2,22 +2,12 @@
   <div class="search_hospital-container">
     <Header :indexHeader="false"></Header>
     <form action="/">
-      <van-search
-        v-model="value"
-        show-action
-        placeholder="请输入搜索关键词"
-        @search="onSearch"
-        @cancel="onCancel"
-      />
+      <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" />
     </form>
     <div class="hot">
       <div class="title">热搜词</div>
       <ul class="hot-ul">
-        <li
-          v-for="item in hot"
-          :key="item.title"
-          @click="goToHospital(item.mid)"
-        >
+        <li v-for="item in hot" :key="item.title" @click="goToHospital(item.mid)">
           {{ item.title }}
         </li>
       </ul>
@@ -25,11 +15,7 @@
     <div class="hot" v-if="hispital.length != 0">
       <div class="title">历史搜索</div>
       <ul class="history-ul">
-        <li
-          v-for="item in hispital"
-          :key="item.title"
-          @click="goToHospital(item.mid)"
-        >
+        <li v-for="item in hispital" :key="item.title" @click="goToHospital(item.mid)">
           {{ item.title }}
         </li>
       </ul>
@@ -38,11 +24,7 @@
     <div class="result-box">
       <div class="title">搜索结果</div>
       <ul>
-        <li
-          v-for="item in list"
-          :key="item.mid"
-          @click="goToHospital(item.mid)"
-        >
+        <li v-for="item in list" :key="item.mid" @click="goToHospital(item.mid)">
           <van-image class="img" :src="item.logo" fit="cover"></van-image>
           <div class="right">
             <div class="name">
@@ -53,11 +35,7 @@
         </li>
       </ul>
     </div>
-    <van-empty
-      image="error"
-      description="未搜索到符合条件的内容"
-      v-if="noData"
-    />
+    <van-empty image="error" description="未搜索到符合条件的内容" v-if="noData" />
   </div>
 </template>
 <script>
@@ -66,7 +44,7 @@ import { mapState, mapMutations } from "vuex";
 export default {
   name: "searchHospital",
   metaInfo: {
-    title: "搜索网诊"
+    title: "搜索网诊",
   },
   components: { Header },
   props: {},
@@ -77,11 +55,11 @@ export default {
       list: [],
       hispital: [],
       hot: [],
-      noData: false
+      noData: false,
     };
   },
   computed: {
-    ...mapState(["uid"])
+    ...mapState(["uid"]),
   },
   watch: {},
   mounted() {
@@ -94,15 +72,17 @@ export default {
     onSearch(val) {
       this.getSearchresult(val);
     },
-    onCancel() {},
+    onCancel() {
+      this.$router.push({ path: "/into_hospital" });
+    },
     getSearchresult(keyword) {
       this.noData = false;
       this.$axios
         .fetchPost("Mobile/Entrance/lists", {
           keyword: keyword,
-          location: this.location
+          location: this.location,
         })
-        .then(res => {
+        .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
             if (res.data.data.length == 0) {
@@ -114,14 +94,14 @@ export default {
     getHispital() {
       this.$axios
         .fetchPost("Mobile/Entrance/getHistory", { uId: this.uid })
-        .then(res => {
+        .then((res) => {
           if (res.data.code == 0) {
             this.hispital = res.data.data;
           }
         });
     },
     gerHot() {
-      this.$axios.fetchPost("Mobile/Entrance/getHotwords").then(res => {
+      this.$axios.fetchPost("Mobile/Entrance/getHotwords").then((res) => {
         if (res.data.code == 0) {
           this.hot = res.data.data;
         }
@@ -130,10 +110,10 @@ export default {
     goToHospital(mid) {
       this.setMid(mid);
       this.$router.push({
-        path: "/hospital"
+        path: "/hospital",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

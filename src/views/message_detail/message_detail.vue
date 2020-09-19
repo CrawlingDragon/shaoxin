@@ -21,6 +21,9 @@ export default {
     title: "资讯详情",
   },
   props: {},
+  created() {
+    this.$emit("footer", false);
+  },
   data() {
     return {
       id: this.$route.query.id,

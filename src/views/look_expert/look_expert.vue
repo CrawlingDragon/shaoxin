@@ -2,9 +2,11 @@
   <div class="look_expert-container">
     <Header :indexHeader="false"></Header>
     <ul class="expert-ul">
-      <li v-for="item in list" :key="item.id">
-        <RecommendExpert :list="item"></RecommendExpert>
-      </li>
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <li v-for="item in list" :key="item.id">
+          <RecommendExpert :list="item"></RecommendExpert>
+        </li>
+      </van-list>
     </ul>
   </div>
 </template>
@@ -25,6 +27,9 @@ export default {
   data() {
     return {
       list: [],
+      loading: false,
+      finished: false,
+      page: 0,
     };
   },
   created() {
@@ -34,18 +39,27 @@ export default {
     ...mapState(["mid"]),
   },
   watch: {},
-  mounted() {
-    this.getExpertList();
-  },
+  mounted() {},
   destroyed() {},
   methods: {
+    onLoad() {
+      this.getExpertList();
+    },
     getExpertList() {
       // 获取专家列表
+      this.page += 1;
       this.$axios
-        .fetchPost("/Mobile/User/expertList", { mId: this.mid })
+        .fetchPost("/Mobile/User/expertList", {
+          mId: this.mid,
+          pagesize: 8,
+          page: this.page,
+        })
         .then((res) => {
           if (res.data.code == 0) {
-            this.list = res.data.data;
+            this.loading = false;
+            this.list = this.list.concat(res.data.data);
+          } else if (res.data.code == 201) {
+            this.finished = true;
           }
         });
     },
@@ -58,12 +72,14 @@ export default {
     margin-top 10px
     background #fff
     padding-left 12px
-    column-count 2
-    column-gap 0
     padding-top 10px
     padding-bottom 10px
     li
+      width 50%
+      display inline-block
       padding-right 12px
-      break-inside avoid
       margin-bottom 10px
+      vertical-align top
+      .recommend_expert-container
+        min-height 185px
 </style>

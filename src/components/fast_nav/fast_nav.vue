@@ -40,7 +40,7 @@ import { mapState } from 'vuex';
       <div class="small-title">平台服务</div>
       <van-grid :column-num="4" :border="false">
         <van-grid-item>
-          <div class="p">农资商城</div>
+          <a href="http://sxmvip.114nz.com" class="p">农资商城</a>
         </van-grid-item>
         <van-grid-item @click="goToVideo">
           <div class="p">培训视频</div>
@@ -131,9 +131,7 @@ export default {
         .then(() => {
           // on confirm
           this.setUid("");
-          this.$router.push({
-            path: "/",
-          });
+          this.$router.push({ path: "/login" });
         })
         .catch(() => {
           // on cancel
@@ -157,11 +155,11 @@ export default {
       this.$router.push({ path: "/message" }).catch((err) => err);
     },
     goToBase() {
-      this.$router.push({ path: "/me_base" }).catch((err) => err);
+      this.$router.push({ path: "/good_base" }).catch((err) => err);
     },
     goToAnswer() {
       //  去首页的的网诊
-      // this.$router.push({ path: "/me_base" }).catch((err) => err);
+      this.$router.push({ path: "/index_online" }).catch((err) => err);
     },
     goToZuoXun() {
       //  去坐诊巡诊页面，和我的坐诊巡诊页面是一样

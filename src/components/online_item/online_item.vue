@@ -2,7 +2,7 @@
   <!-- 首页网珍 -->
   <div class="recommend_online-container">
     <div class="top" @click="goToDetail">
-      <van-image round class="avator" :src="list.icon"></van-image>
+      <van-image round class="avator" :src="list.avatar"></van-image>
       <div class="name">
         {{list.author}}
         <div class="time">{{list.addtime}} · {{list.area}}</div>

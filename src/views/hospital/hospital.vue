@@ -63,13 +63,15 @@ export default {
       wenList: [],
     };
   },
-  created() {},
+  created() {
+    this.$emit("footer", true);
+  },
   computed: {
     ...mapState(["uid", "mid"]),
   },
   watch: {
-    $route(newVal) {
-      this.getHospitalData(newVal.query.mid);
+    $route() {
+      this.getHospitalData(this.mid);
     },
   },
   mounted() {
@@ -104,7 +106,7 @@ export default {
     goToMmessage() {
       //  查看更多资讯
       this.$router.push({
-        path: "/message",
+        path: "/hospital_message",
         query: { mid: this.mid },
       });
     },

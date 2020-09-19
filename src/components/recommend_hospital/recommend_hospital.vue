@@ -8,7 +8,7 @@
     <div class="number">
       <div class="expert">专家 {{list.num_expert}}</div>
       <div class="line">|</div>
-      <div class="online" v-if="list.isstore == 1">处方 {{list.num_chufang}}</div>
+      <div class="online" v-if="list.isstore == 1 && list.num_chufang != 0">处方 {{list.num_chufang}}</div>
       <div class="online" v-else>网诊 {{list.num_wen}}</div>
     </div>
     <div class="icon" v-show="list.isstore == 1"></div>
@@ -53,7 +53,7 @@ export default {
   background #F5F5F5
   .image
     width 100%
-    height 135px
+    height 140px
     margin-bottom 5px
   .p1
     font-size 14px

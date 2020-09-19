@@ -41,7 +41,7 @@
       </ul>
     </div>
     <div class="look-bar" @click="lookMoreHospital">找医院 ></div>
-    <div class="vip-box">
+    <div class="vip-box" @click="goToVip">
       <img src="./49.png" alt="" />
     </div>
     <div class="online-box">
@@ -71,10 +71,10 @@ import RecommendHospital from "@/components/recommend_hospital/recommend_hospita
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
 import { ImagePreview } from "vant";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   metaInfo: {
-    title: "绍兴市为农服务平台"
+    title: "绍兴市为农服务平台",
   },
   name: "index",
   components: {
@@ -82,7 +82,7 @@ export default {
     RecommendHospital,
     OnlineItem,
     RecommendExpert,
-    [ImagePreview.Component.name]: ImagePreview.Component
+    [ImagePreview.Component.name]: ImagePreview.Component,
   },
   props: {},
   data() {
@@ -90,19 +90,21 @@ export default {
       swiperArr: [],
       hospitalArr: [],
       expertArr: [],
-      onlineArr: []
+      onlineArr: [],
     };
   },
   beforeRouteEnter(to, from, next) {
     // ...
-    next(vm => {
+    next((vm) => {
       vm.$emit("footer", true);
     });
   },
   created() {
     this.$emit("footer", true);
   },
-  computed: {},
+  computed: {
+    ...mapState(["initMid"]),
+  },
   watch: {},
   mounted() {
     this.getIndexData();
@@ -112,15 +114,17 @@ export default {
     ...mapMutations(["setMid"]),
     getIndexData() {
       // 获取首页数据
-      this.$axios.fetchPost("/Mobile/Index/index", { mId: 56915 }).then(res => {
-        if (res.data.code == 0) {
-          this.swiperArr = res.data.data.list_ad;
-          this.hospitalArr = res.data.data.list_mpublic;
-          this.expertArr = res.data.data.list_expert;
-          this.onlineArr = res.data.data.list_wen;
-          this.setMid("56915");
-        }
-      });
+      this.$axios
+        .fetchPost("/Mobile/Index/index", { mId: this.initMid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.swiperArr = res.data.data.list_ad;
+            this.hospitalArr = res.data.data.list_mpublic;
+            this.expertArr = res.data.data.list_expert;
+            this.onlineArr = res.data.data.list_wen;
+            this.setMid(this.initMid);
+          }
+        });
     },
     goToLive() {
       this.$router.push({ path: "/live", query: { from: "index" } });
@@ -130,34 +134,35 @@ export default {
       ImagePreview({
         images: item.arr,
         startPosition: item.index,
-        closeable: true
+        closeable: true,
       });
     },
     goToAnswer() {
       //  去首页的的网诊
-      this.$router.push({ path: "/index_online" }).catch(err => err);
+      this.$router.push({ path: "/index_online" }).catch((err) => err);
     },
     goToExpert() {
       // 找专家
-      this.$router
-        .push({ path: "/look_expert", query: { mid: "" } })
-        .catch(err => err);
+      this.$router.push({ path: "/look_expert" }).catch((err) => err);
     },
     goToBase() {
       // 找基地
-      this.$router.push({ path: "/whole_base_list" }).catch(err => err);
+      this.$router.push({ path: "/whole_base_list" }).catch((err) => err);
     },
     lookMoreHospital() {
       // 查找更多的医院
-      this.$router.push({ path: "/into_hospital" }).catch(err => err);
+      this.$router.push({ path: "/into_hospital" }).catch((err) => err);
     },
     goToOnline(val) {
       // 去首页的网诊
       if (val.isFixed) {
-        this.$router.push({ path: "/index_online" }).catch(err => err);
+        this.$router.push({ path: "/index_online" }).catch((err) => err);
       }
-    }
-  }
+    },
+    goToVip() {
+      this.$router.push({ path: "/vip" }).catch((err) => err);
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>
@@ -219,8 +224,7 @@ export default {
     .h-ul
       padding-top 10px
       padding-bottom 10px
-      // display flex
-      // flex-wrap wrap
+      height auto
       column-count 2
       column-gap 0
       margin-left 12px
@@ -228,7 +232,7 @@ export default {
       li
         break-inside avoid
         padding-right 12px
-        margin-bottom 10px
+        padding-bottom 10px
   .look-bar
     height 40px
     text-align center
@@ -267,13 +271,13 @@ export default {
           border none
     .e-ul
       padding-top 10px
-      display flex
-      flex-wrap wrap
+      column-gap 0
+      column-count 2
       margin-left 12px
       border-bottom 1px solid #e5e5e5
       padding-bottom 5px
       li
-        width 50%
+        break-inside avoid
         padding-right 12px
-        margin-bottom 10px
+        padding-bottom 10px
 </style>

@@ -7,10 +7,10 @@
         <div class="name">{{list.realname}}</div>
         <div class="title">{{list.groupname}}</div>
         <div class="address" v-if="list.company">{{list.company}}</div>
-        <div class="address" v-if="list.addtime">{{list.addtime}}</div>
+        <div class="address" v-if="list.addtime && routeName != 'index' && routeName != '/' ">{{list.addtime}}</div>
       </div>
     </div>
-    <div class="kind" v-if="list.skill != ''">
+    <div class="kind" v-if="list.skill != '' && list.skill != '暂未设置'">
       <div class="item" v-for="item in skillArr" :key="item">{{item}}</div>
     </div>
     <div class="join">
@@ -32,7 +32,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      routeName: "",
+    };
   },
   computed: {
     skillArr() {
@@ -45,7 +47,9 @@ export default {
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.routeName = this.$route.name;
+  },
   destroyed() {},
   methods: {
     goToExpert(id) {
@@ -84,12 +88,21 @@ export default {
         line-height 12px
         margin-bottom 5px
         color #999999
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
       .address
         font-size 12px
         line-height 12px
         margin-bottom 5px
         color #999999
         line-height 14px
+        overflow hidden
+        text-overflow ellipsis
+        word-wrap nowrap
+        display -webkit-box
+        -webkit-line-clamp 2
+        -webkit-box-orient vertical
   .kind
     font-size 0
     .item

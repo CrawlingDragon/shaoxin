@@ -17,9 +17,11 @@
     </div>
     <div class="online-box">
       <ul class="o-ul">
-        <li v-for="item in onlineArr" :key="item.id">
-          <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
-        </li>
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <li v-for="item in onlineArr" :key="item.id">
+            <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
+          </li>
+        </van-list>
       </ul>
     </div>
   </div>
@@ -44,10 +46,14 @@ export default {
   data() {
     return {
       addressFlag: false,
-      onlineArr: "",
+      onlineArr: [],
       fid: this.$route.query.fid,
       crop: this.$route.query.name || "作物",
       areaName: "全部",
+      page: 0,
+      loading: false,
+      finished: false,
+      area: "",
     };
   },
   computed: {
@@ -55,29 +61,57 @@ export default {
   },
   watch: {
     fid() {
-      console.log("1 :>> ", 1);
+      this.fid = this.$route.query.fid;
+      this.onlineArr = [];
+      this.page = 0;
+      this.getIndexData();
+      // console.log("1 :>> ", 1);
+    },
+    crop() {
+      this.crop = this.$route.query.name;
+      this.onlineArr = [];
+      this.page = 0;
+      this.getIndexData();
+    },
+    area() {
+      this.onlineArr = [];
+      this.page = 0;
+      this.getIndexData();
     },
   },
   created() {
     this.$emit("footer", true);
   },
   mounted() {
-    this.getIndexData(this.mid, this.fid);
+    // this.getIndexData(this.mid, this.fid);
   },
   destroyed() {},
   methods: {
-    getIndexData(mid = "", fid = "", area = "") {
+    onLoad() {
+      this.getIndexData();
+    },
+    getIndexData() {
       // 获取首页数据
+      this.page += 1;
       this.$axios
-        .fetchPost("/Mobile/Wen/index", { mId: mid, fId: fid, area: area })
+        .fetchPost("/Mobile/Wen/index", {
+          mId: this.mid,
+          fId: this.fid,
+          areaId: this.area,
+          page: this.page,
+        })
         .then((res) => {
           if (res.data.code == 0) {
-            this.onlineArr = res.data.data;
+            this.onlineArr = this.onlineArr.concat(res.data.data);
+            this.loading = false;
+          } else if (res.data.code == 201) {
+            this.finished = true;
           }
         });
     },
     chooseAddress(area, name) {
-      this.getIndexData(this.mid, this.fid, area);
+      this.area = area;
+      // this.getIndexData();
       this.areaName = name;
       this.addressFlag = false;
     },

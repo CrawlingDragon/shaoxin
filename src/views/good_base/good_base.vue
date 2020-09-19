@@ -42,7 +42,8 @@ export default {
   },
   watch: {},
   mounted() {
-    this.getBaseList(this.mid);
+    // this.getBaseList(this.mid);
+    this.getBaseList(61214);
   },
   destroyed() {},
   methods: {

@@ -1,3 +1,4 @@
+
 <template>
   <div class="foot-container">
     <van-tabbar v-model="myActive" route>
@@ -36,13 +37,14 @@
   </div>
 </template>
 <script>
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "foot",
   components: {},
   props: {},
   data() {
     return {
-      hospital: "/hospital",
+      hospital: "/into_hospital",
       indexRoute: "/",
       myActive: "",
       icon01: {
@@ -67,10 +69,24 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(["initMid"]),
+  },
   watch: {
     $route(newVal) {
-      switch (newVal.name) {
+      // console.log("newVal.name :>> ", newVal.name);
+      this.getRouterName(newVal.name);
+    },
+  },
+  mounted() {
+    let name = this.$route.name;
+    this.getRouterName(name);
+  },
+  destroyed() {},
+  methods: {
+    ...mapMutations(["setMid"]),
+    getRouterName(name) {
+      switch (name) {
         case "hospital":
           this.hospital = "/hospital";
           this.indexRoute = "/index";
@@ -81,61 +97,37 @@ export default {
           break;
         case "index":
           this.indexRoute = "/index";
-          this.hospital = "/hospital";
+          this.hospital = "/into_hospital";
           break;
         case "/":
           this.indexRoute = "/";
-          this.hospital = "/hospital";
+          this.hospital = "/into_hospital";
           break;
         case "indexOnline":
           this.indexRoute = "/index_online";
-          this.hospital = "/hospital";
+          this.hospital = "/into_hospital";
           break;
       }
     },
-  },
-  mounted() {},
-  destroyed() {},
-  methods: {
     goToIndex() {
       // 路由 首页
-      this.$router
-        .push({
-          path: "/index",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/index" }).catch((err) => err);
     },
     goToHospital() {
       // 路由 医院
-      this.$router
-        .push({
-          path: "/hospital",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/hospital" }).catch((err) => err);
     },
     goToAsk() {
       // 路由 提问
-      this.$router
-        .push({
-          path: "/ask",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/ask" }).catch((err) => err);
     },
     goToMessage() {
       // 路由 资讯
-      this.$router
-        .push({
-          path: "/message",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/message" }).catch((err) => err);
     },
     goToMe() {
       // 路由 我的
-      this.$router
-        .push({
-          path: "/me",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/me" }).catch((err) => err);
     },
   },
 };

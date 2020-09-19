@@ -24,7 +24,7 @@ const routes = [
       )
   },
   {
-    path: "/Login",
+    path: "/login",
     name: "Login",
     component: Login
   },
@@ -106,6 +106,14 @@ const routes = [
     component: () =>
       import(
         /*webpackChunkName:"hospital_online" */ "@/views/hospital_online/hospital_online"
+      )
+  },
+  {
+    path: "/hospital_message",
+    name: "hospitalMessage",
+    component: () =>
+      import(
+        /*webpackChunkName:"hospital_message" */ "@/views/hospital_message/hospital_message"
       )
   },
   {
@@ -378,14 +386,30 @@ const router = new VueRouter({
   }
 });
 
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject)
+    return originalPush.call(this, location, onResolve, onReject);
+  return originalPush.call(this, location).catch(err => err);
+};
 router.beforeEach((to, from, next) => {
   let uid = store.state.uid;
-  if (to.name == "Login" || to.name == "mLogin") {
-    if (uid) {
+  if (uid == "") {
+    //没登录的状态 不能去这些页面
+    if (
+      to.name == "ask" ||
+      to.name == "me" ||
+      to.name == "me_edit" ||
+      to.name == "me_edit" ||
+      to.name == "me_registration"
+    ) {
+      next("/login");
+    }
+  } else {
+    if (to.name == "Login" || to.name == "mLogin") {
       next("/");
     }
   }
-  // console.log("store :>> ", store.state.uid);
   next(true);
 });
 

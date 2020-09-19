@@ -44,28 +44,57 @@
           <div class="right">会员优先享受惠农贷款服务</div>
         </li>
       </ul>
-      <div class="btn">选择医院加入会员<div class="free">免费</div>
+      <div class="btn" v-if="user.importuser == 0" @click="goToApply">选择医院加入会员<div class="free">免费</div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapState } from "vuex";
+
 export default {
   name: "vip",
   components: { Header },
+  metaInfo: {
+    title: "会员权益",
+  },
   props: {},
   data() {
-    return {};
+    return {
+      user: "",
+    };
   },
   created() {
     this.$emit("footer", false);
   },
-  computed: {},
+  computed: {
+    ...mapState(["uid", "initMid,"]),
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getUserInfo();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getUserInfo() {
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.initMid,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.user = res.data.data;
+          }
+        });
+    },
+    goToApply() {
+      this.$router.push({
+        path: "/apply_vip",
+      });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

@@ -2,9 +2,9 @@
   <div class="sign-container">
     <Header :indexHeader="false"></Header>
     <div class="title">快速注册</div>
-    <van-form @submit="onSubmit" class="from">
-      <van-field v-model="username" name="手机号" placeholder="请输入手机号" :rules="[{validator: validatorPhone,message:'请输入正确的手机号码'},{ required: true, message: '请填写手机号' }]" />
-      <van-field v-model="sms" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true, message: '请输入验证码' }]">
+    <van-form @submit="onSubmit2" class="from">
+      <van-field v-model="username" name="phone" placeholder="请输入手机号" :rules="[{validator: validatorPhone,message:'请输入正确的手机号码'},{ required: true, message: '请填写手机号' }]" />
+      <van-field v-model="sms" center clearable name="code" placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true, message: '请输入验证码' }]">
         <template #button>
           <div class="btn" v-if="showBtn" @click="start">发送验证码</div>
           <div v-show="!showBtn">
@@ -13,7 +13,7 @@
 
         </template>
       </van-field>
-      <van-field v-model="password" type="password" name="密码" placeholder="请输入密码（6-20位）" minlength="6" maxlength="20" :rules="[{ required: true, message: '请填写密码' }]" />
+      <van-field v-model="password" type="password" name="pwd" placeholder="请输入密码（6-20位）" minlength="6" maxlength="20" :rules="[{ required: true, message: '请填写密码' }]" />
       <div style="margin: 16px;margin-top:45px">
         <van-button round block type="info" native-type="submit">
           注册
@@ -66,15 +66,16 @@ export default {
       this.showBtn = true;
       this.clickTrue = true;
     },
-    onSubmit(val) {
+    onSubmit2(val) {
       console.log("val :>> ", val);
+      this.signFn(this.username, this.password, this.sms);
     },
     signFn(username, password, code) {
       this.$axios
         .fetchPost("Mobile/Member/register", { username, password, code })
         .then((res) => {
           if (res.data.code == 0) {
-            this.$router.push({ path: "/" });
+            this.$router.push({ path: "/index" });
             this.setUid(res.data.data.uid);
           }
           this.$toast(res.data.message);

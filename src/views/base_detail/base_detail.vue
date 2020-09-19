@@ -6,7 +6,15 @@
       <div class="company">
         <van-image class="company-avator" round :src="base.logo"></van-image>
         <p class="name">{{base.name}}</p>
-        <div class="share"></div>
+        <div class="share" @click="shareShow = true"></div>
+        <van-overlay :show="shareShow" @click="shareShow = false" z-index="1111">
+          <div class="wrapper" @click.stop>
+            <van-image :src="base.logo" fit="cover" round class="logo-img"></van-image>
+            <div class="title">{{base.name}}</div>
+            <van-image :src="base.share_code" fit="cover" class="share-img" radius="5px"></van-image>
+            <p class="p1">长按扫码分享</p>
+          </div>
+        </van-overlay>
       </div>
       <div class="contant-context">
         <div class="item">
@@ -44,7 +52,7 @@
     <div class="swiper-box">
       <div class="title">基地图片</div>
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item v-for="item in base.pic" :key="item">
+        <van-swipe-item v-for="item in base.pic" :key="item.id">
           <van-image :src="item" class="img"></van-image>
         </van-swipe-item>
       </van-swipe>
@@ -64,10 +72,18 @@ export default {
     return {
       id: this.$route.query.id,
       base: "",
+      shareShow: false,
     };
   },
   computed: {},
-  watch: {},
+  created() {
+    this.$emit("footer", false);
+  },
+  watch: {
+    $route() {
+      this.$emit("footer", false);
+    },
+  },
   mounted() {
     this.getBaseData();
   },
@@ -143,6 +159,37 @@ export default {
         background url('./share.png') no-repeat
         background-size cover
         background-position center
+      .wrapper
+        width 330px
+        height 450px
+        position absolute
+        left 50%
+        top 50%
+        transform translate(-50%, -50%)
+        background url('./bj.png') no-repeat
+        background-size 100% 100%
+        padding 0 12px
+        .logo-img
+          width 45px
+          height 45px
+          margin 28px auto 19px
+          display block
+        & > .title
+          font-size 23px
+          font-weight bold
+          color #FFFFFF
+          margin-bottom 50px
+          text-align center
+        & > .share-img
+          width 125px
+          height 125px
+          margin 0 auto
+          display block
+        & > .p1
+          font-size 14px
+          color #fff
+          text-align center
+          margin-top 15px
     .contant-context
       background #fff
       margin 29px 27px 0

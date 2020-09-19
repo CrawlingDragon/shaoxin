@@ -17,6 +17,7 @@
       </div>
     </van-index-bar>
     <ul class="search_result-ul" v-show="searchResultShow">
+      <van-empty description="抱歉没有该作物,请选择其他" v-show="noResult" />
       <li v-for="item in searchResult" :key="item.fid" @click="choose(item)">
         {{item.name}}
       </li>
@@ -41,6 +42,7 @@ export default {
       cropName: this.$route.query.crop,
       searchResult: [],
       searchResultShow: false,
+      noResult: false,
     };
   },
   created() {
@@ -63,7 +65,15 @@ export default {
       return arr;
     },
   },
-  watch: {},
+  watch: {
+    searchResult(newVal) {
+      if (newVal.length == 0) {
+        this.noResult = true;
+      } else {
+        this.noResult = false;
+      }
+    },
+  },
   mounted() {
     this.getCropList();
   },
@@ -72,7 +82,7 @@ export default {
     onSearch(val) {
       this.searchResult = [];
       this.crops.forEach((el) => {
-        if (el.name.indexOf(val) > 0) {
+        if (el.name.indexOf(val) >= 0) {
           this.searchResult.push(el);
         }
       });
@@ -151,7 +161,7 @@ export default {
         text-align center
   .search_result-ul
     position absolute
-    top 62px
+    top 15px
     left 0
     right 0
     bottom 0

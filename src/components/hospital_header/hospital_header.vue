@@ -37,7 +37,7 @@
 import fastNav from "@/components/fast_nav/fast_nav";
 import hospitalFastNav from "@/components/hospital_fast_nav/hospital_fast_nav";
 import { mapState } from "vuex";
-import AMapLoader from "@amap/amap-jsapi-loader";
+
 export default {
   name: "hospitalHeaders",
   components: { fastNav, hospitalFastNav },
@@ -50,56 +50,33 @@ export default {
       type: String,
       default: "",
     },
+    address: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
       flag: false,
       flagHospital: false,
       user: {},
-      address: "",
     };
   },
   computed: {
-    ...mapState(["mid", "uid"]),
+    ...mapState(["mid", "uid", "initMid"]),
   },
   watch: {},
   mounted() {
     this.getUserInfo();
-    let that = this;
-    AMapLoader.load({
-      key: "23a2a13dc7fdd9a8af2ec7683b2f333e&AMap.CitySearch", // 申请好的Web端开发者Key，首次调用 load 时必填
-      version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: ["AMap.CitySearch"], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
-      Loca: {
-        // 是否加载 Loca， 缺省不加载
-        version: "1.3.2", // Loca 版本，缺省 1.3.2
-      },
-    })
-      .then((AMap) => {
-        var citysearch = new AMap.CitySearch();
-        //自动获取用户IP，返回当前城市
-        citysearch.getLocalCity(function (status, result) {
-          if (status === "complete" && result.info === "OK") {
-            if (result && result.city && result.bounds) {
-              var cityinfo = result.city;
-              // var citybounds = result.bounds;
-              that.address = cityinfo;
-              //地图显示当前城市
-            }
-          } else {
-            that.address = result.info;
-          }
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
   },
   destroyed() {},
   methods: {
     getUserInfo() {
       this.$axios
-        .fetchPost("Mobile/User/userCenter", { uId: this.uid })
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.initMid,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.user = res.data.data;
@@ -142,6 +119,11 @@ export default {
   line-height 40px
   display flex
   background #FFFFFF
+  position fixed
+  top 0
+  right 0
+  left 0
+  z-index 2
   .left-bar
     flex 1
     display flex

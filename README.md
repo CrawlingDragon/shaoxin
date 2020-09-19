@@ -2,9 +2,8 @@
 
 ## Project setup
 
-2 基地详情 分享 ，医院百度地址
-
-4 申请会员
+2 基地详情 分享 ，
+3whole_base_list
 
 ```
 npm install

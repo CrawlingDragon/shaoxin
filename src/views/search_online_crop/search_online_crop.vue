@@ -1,11 +1,13 @@
 <template>
   <div class="searchOnlineCrop-container">
     <Header :indexHeader="false"></Header>
-    <div class="title">共{{online.length}}次{{crop}}网诊记录</div>
+    <div class="title">共{{this.$route.query.time}}次{{crop}}网诊记录</div>
     <ul class="crop-ul">
-      <li v-for="item in online" :key="item.id">
-        <OnlineItem :list="item"></OnlineItem>
-      </li>
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <li v-for="item in online" :key="item.id">
+          <OnlineItem :list="item"></OnlineItem>
+        </li>
+      </van-list>
     </ul>
   </div>
 </template>
@@ -25,7 +27,11 @@ export default {
   data() {
     return {
       crop: this.$route.query.crop,
+      fid: this.$route.query.fid,
       online: [],
+      loading: false,
+      finished: false,
+      page: 0,
     };
   },
   created() {
@@ -33,17 +39,22 @@ export default {
   },
   computed: {},
   watch: {},
-  mounted() {
-    this.getSearchResult(this.crop);
-  },
+  mounted() {},
   destroyed() {},
   methods: {
-    getSearchResult(keyword) {
+    onLoad() {
+      this.getSearchResult();
+    },
+    getSearchResult() {
+      this.page += 1;
       this.$axios
-        .fetchPost("Mobile/Wen/index", { keyword, pagesize: 30 })
+        .fetchPost("Mobile/Wen/index", { fId: this.fid, page: this.page })
         .then((res) => {
           if (res.data.code == 0) {
-            this.online = res.data.data;
+            this.loading = false;
+            this.online = this.online.concat(res.data.data);
+          } else if (res.data.code == 201) {
+            this.finished = true;
           }
         });
     },

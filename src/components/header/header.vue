@@ -45,8 +45,15 @@ export default {
       user: {},
     };
   },
-  computed: { ...mapState(["uid"]) },
-  watch: {},
+  computed: { ...mapState(["uid", "initMid"]) },
+  watch: {
+    $route() {
+      this.fastNavShowFlag = false;
+    },
+    uid() {
+      this.getUserInfo();
+    },
+  },
   mounted() {
     this.getUserInfo();
   },
@@ -54,7 +61,10 @@ export default {
   methods: {
     getUserInfo() {
       this.$axios
-        .fetchPost("Mobile/User/userCenter", { uId: this.uid })
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.initMid,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.user = res.data.data;
@@ -72,21 +82,12 @@ export default {
     },
     goToOnline() {
       // 路由  网诊
-      this.$router
-        .push({
-          path: "/index_online",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "/index_online" }).catch((err) => err);
       this.fastNavShowFlag = false;
     },
     goToIndex() {
       // 路由 首页
-      this.$router
-        .push({
-          path: "/index",
-        })
-        .catch((err) => err);
-      this.fastNavShowFlag = false;
+      this.$router.push({ path: "/index" }).catch((err) => err);
     },
     openFastNav() {
       // 打开快速导航
@@ -105,6 +106,11 @@ export default {
   line-height 40px
   display flex
   background #FFFFFF
+  position fixed
+  top 0
+  right 0
+  left 0
+  z-index 2
   .search-icon
     margin-left 22px
     margin-right 20px

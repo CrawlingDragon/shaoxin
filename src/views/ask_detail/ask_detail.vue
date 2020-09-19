@@ -3,14 +3,14 @@
     <Header :indexHeader="false"></Header>
     <div class="online-box">
       <div class="top">
-        <van-image round class="avator" :src="detail.avatar"></van-image>
+        <van-image round class="avator" :src="detail.avatar" @click="goToExpert(detail.authorid)"></van-image>
         <div class="name">
           {{detail.author}}
           <div class="time">{{detail.addtime}} · {{detail.area}}</div>
         </div>
       </div>
       <div class="subsidy" v-if="detail.isbenefit == 1"></div>
-      <div class="text">{{detail.description}}</div>
+      <div class="text">{{detail.content}}</div>
       <div class="img-list">
         <div class="item" v-for="(item,index) in detail.urls_tiny" :key="item" @click="preview(detail.urls,index)">
           <van-image class="img" fit="cover" :src="item" lazy-load></van-image>
@@ -23,7 +23,7 @@
         </div>
         <div class="right" v-if="detail.ishaveexpert">
           <div class="content">咨询专家</div>
-          <van-image class="icon icon3" :src="detail.ishaveexpert.avatar" round></van-image>
+          <van-image class="icon icon3" :src="detail.ishaveexpert.avatar" round @click="goToExpert(detail.ishaveexpert.expertid)"></van-image>
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <ul class="answer-ul">
         <li v-for="item in detail.answers" :key="item.pid">
           <div class="top">
-            <van-image round fit="cover" :src="item.avatar" class="avator"></van-image>
+            <van-image round fit="cover" :src="item.avatar" class="avator" @click="goToExpert(item.authorid)"></van-image>
             <div class="name">{{item.author}}({{item.groupname}})</div>
             <div class="time">{{item.addtime}}</div>
           </div>
@@ -73,7 +73,7 @@
     </van-popup>
     <van-popup v-model="showRote" position="bottom" :style="{ height: '234px' }" class="rotes">
       <div class="sub" @click="subRemark">发表</div>
-      <div class="title">评价 常山胡柚专科医院的解答</div>
+      <div class="title">评价 {{author}}</div>
       <van-rate v-model="roteValue" color="#ff6600" size="27px" @change="onChangeRote" />
       <span v-if="roteValue == 1" class="rote-text">解答非常差</span>
       <span v-if="roteValue == 2" class="rote-text">解答差</span>
@@ -105,6 +105,7 @@ export default {
       messageRote: "",
       detail: "",
       pid: "",
+      author: "",
     };
   },
   computed: {
@@ -157,6 +158,7 @@ export default {
         });
     },
     showPopupRote(item) {
+      this.author = item.author;
       this.pid = item.pid;
       this.showRote = true;
     },
@@ -187,6 +189,13 @@ export default {
         images: item,
         startPosition: index,
         closeable: true,
+      });
+    },
+    goToExpert(id) {
+      // 路由 去个人中心主页
+      this.$router.push({
+        path: "/expert",
+        query: { id: id },
       });
     },
   },

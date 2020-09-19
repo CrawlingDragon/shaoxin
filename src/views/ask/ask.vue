@@ -29,7 +29,7 @@
           提交
         </van-button>
       </div>
-      <div id="container" style="width:100px;height:100px"></div>
+      <div id="container" style="width:100px;height:0"></div>
     </van-form>
     <router-view @getCrop="getCrop"></router-view>
   </div>
@@ -64,35 +64,7 @@ export default {
   created() {},
   watch: {},
   mounted() {
-    let that = this;
-    AMapLoader.load({
-      key: "23a2a13dc7fdd9a8af2ec7683b2f333e&AMap.CitySearch", // 申请好的Web端开发者Key，首次调用 load 时必填
-      version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: ["AMap.CitySearch"], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
-      Loca: {
-        // 是否加载 Loca， 缺省不加载
-        version: "1.3.2", // Loca 版本，缺省 1.3.2
-      },
-    })
-      .then((AMap) => {
-        var citysearch = new AMap.CitySearch();
-        //自动获取用户IP，返回当前城市
-        citysearch.getLocalCity(function (status, result) {
-          if (status === "complete" && result.info === "OK") {
-            if (result && result.city && result.bounds) {
-              var cityinfo = result.city;
-              // var citybounds = result.bounds;
-              that.address = cityinfo;
-              //地图显示当前城市
-            }
-          } else {
-            this.address = result.info;
-          }
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    this.getMyAddress();
   },
   destroyed() {},
   methods: {
@@ -104,11 +76,7 @@ export default {
         this.$toast("问题描述不能少余10个字");
         return;
       }
-      if (values.crop == "请选择") {
-        this.$toast("作物不能为空");
-        return;
-      }
-      this.subAsk(this.expertId, this.address);
+      this.subAsk();
     },
     goToChooseCrop() {
       //选择作物
@@ -141,25 +109,75 @@ export default {
       this.imgList = this.imgList.splice(0, index, 1);
       return true;
     },
-    subAsk(expertId = "", location = "") {
+    subAsk() {
       let obj = {
         mId: this.mid, //mId
         uId: this.uid, //用户ID
         content: this.message, //发布内容
         fId: this.fid, //作物ID
-        expertId: expertId,
+        expertId: this.expertId,
         picurl: this.imgList.join(","),
-        location: location,
+        location: this.address,
       };
       this.$axios.fetchPost("Mobile/Wen/addWenQuestion", obj).then((res) => {
         this.$toast(res.data.message);
         if (res.data.code == 0) {
           setTimeout(() => {
-            this.$router.push({ path: "/me_answer" });
+            this.$router.push({ path: "/index_online" });
           }, 1000);
         }
       });
     },
+    getMyAddress() {
+      // 获取我的地址，是否加入医院
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", { uId: this.uid, mId: this.mid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            let myAddress = res.data.data.ismember;
+            if (myAddress == 1) {
+              this.address = "浙江省,绍兴市";
+              // this.address = "绍兴市";
+            } else {
+              this.getLocation();
+            }
+          }
+        });
+    },
+  },
+  getLocation() {
+    let that = this;
+    AMapLoader.load({
+      key: "23a2a13dc7fdd9a8af2ec7683b2f333e", // 申请好的Web端开发者Key，首次调用 load 时必填
+      version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+      plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+      Loca: {
+        // 是否加载 Loca， 缺省不加载
+        version: "1.3.2", // Loca 版本，缺省 1.3.2
+      },
+    })
+      .then((AMap) => {
+        var map = new AMap.Map("container", {
+          resizeEnable: true, //是否监控地图容器尺寸变化
+          zoom: 11, //初始地图级别
+        });
+        map.getCity(function (info) {
+          // console.table("info :>> ", info);
+          if (info.city != "绍兴市") {
+            that.address = "浙江省,绍兴市";
+            // that.address = "绍兴市";
+          } else if (info.city == "绍兴市") {
+            that.address = "浙江省,绍兴市," + info.district;
+            // that.address = info.district;
+          }
+          setTimeout(() => {
+            that.getList();
+          }, 100);
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   },
 };
 </script>
@@ -168,6 +186,7 @@ export default {
   height 100%
   background #fff
   position relative
+  padding-bottom 0px
   .title
     background #fff
     color #333333

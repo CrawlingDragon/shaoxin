@@ -1,61 +1,114 @@
 <template>
   <div class="diseases-container">
     <Header header="x"></Header>
-    <div class="title" @click="showBox">蔬菜虫害
+    <div class="title" @click="showBox">{{initDis}}
       <van-icon name="arrow-down" class="down" />
     </div>
     <div class="my-container"></div>
     <van-popup v-model="show" :get-container="getContainer" class="pop" :overlay="false" closeable>
       <div class="list">
-        <div class="item">蔬菜虫害</div>
-        <div class="item">蔬菜病害</div>
-      </div>
-      <div class="list">
-        <div class="item">果树虫害</div>
-        <div class="item">果树病害</div>
-      </div>
-      <div class="list list2">
-        <div class="item">经济作物虫害</div>
-        <div class="item">经济作物病害</div>
-      </div>
-      <div class="list list2">
-        <div class="item">粮食作物虫害</div>
-        <div class="item">粮食作物病害</div>
-      </div>
-      <div class="list">
-        <div class="item">杂草识别</div>
+        <div class="item" v-for="item in kindList" :key="item.catid" @click="changeDis(item)">{{item.catname}}</div>
       </div>
     </van-popup>
     <ul class="diseases-ul">
-      <li v-for="item in 4" :key="item">
-        <div class="wrap">
-          <van-image class="img"></van-image>
-          <p class="p1">大地老虎</p>
-        </div>
-      </li>
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <li v-for="item in list" :key="item.id" @click="goToDetail(item)">
+          <div class="wrap">
+            <van-image class="img" :src="item.thumb" fit="cover"></van-image>
+            <p class="p1">{{item.title}}</p>
+          </div>
+        </li>
+      </van-list>
     </ul>
   </div>
 </template>
 <script>
 import Header from "@/components/hospital_header/hospital_header";
+import { mapState } from "vuex";
 export default {
   name: "diseases",
   components: { Header },
+  metaInfo: {
+    title: "病虫害库",
+  },
   props: {},
   data() {
-    return { show: false };
+    return {
+      show: false,
+      kindList: [],
+      list: [],
+      loading: false,
+      finished: false,
+      page: 0,
+      catId: "",
+      initDis: "病虫害库",
+    };
   },
-  computed: {},
-  watch: {},
-  mounted() {},
+  computed: {
+    ...mapState(["mid"]),
+  },
+  watch: {
+    $route() {
+      this.$emit("footer", false);
+    },
+  },
+  created() {
+    this.$emit("footer", false);
+  },
+  mounted() {
+    this.getKind();
+  },
   destroyed() {},
   methods: {
+    changeDis(item) {
+      //重新选择病虫害
+      this.catId = item.catid;
+      this.page = 0;
+      this.list = [];
+      this.show = false;
+      this.onLoad();
+      this.initDis = item.catname;
+    },
+    onLoad() {
+      this.page += 1;
+      this.$axios
+        .fetchPost("/Mobile/Picture/getList", {
+          catId: this.catId,
+          page: this.page,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.list = this.list.concat(res.data.data);
+            this.loading = false;
+          } else if (res.data.code == 201) {
+            this.finished = true;
+          }
+        });
+    },
+    getKind() {
+      this.$axios
+        .fetchPost("Mobile/Picture/getCategorys", { mId: this.mid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.kindList = res.data.data;
+          }
+        });
+    },
     // 返回一个特定的 DOM 节点，作为挂载的父节点
     getContainer() {
       return document.querySelector(".my-container");
     },
     showBox() {
       this.show = true;
+    },
+    goToDetail(item) {
+      this.$router.push({
+        path: "/diseases_detail",
+        query: {
+          catid: item.catid,
+          id: item.id,
+        },
+      });
     },
   },
 };
@@ -64,12 +117,12 @@ export default {
 .diseases-container
   position relative
   & > .title
-    position absolute
-    top 8px
+    position fixed
     left 12px
     color #155BBB
-    z-index 1
+    z-index 3
     width 200px
+    top 10px
   .pop
     width 100%
     height 200px
@@ -85,6 +138,7 @@ export default {
         background #F6F6F6
         border-radius 4px
         margin-right 15px
+        margin-bottom 10px
       &.list2
         & > .item
           padding 5px 15px

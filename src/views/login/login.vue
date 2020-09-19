@@ -65,7 +65,7 @@ export default {
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
             this.$router.push({
-              path: "/",
+              path: "/index",
             });
           }
         });

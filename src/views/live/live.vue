@@ -14,6 +14,7 @@
         <div class="status living" :class="{'living':item.status == '直播中','lived':item.status == '回放','before_live':item.status == '预告'}">{{item.status}}</div>
       </li>
     </ul>
+    <van-empty description="暂无直播" v-show="noData" />
   </div>
 </template>
 <script>
@@ -34,6 +35,7 @@ export default {
       list: [],
       menum: "",
       from: this.$route.query.from,
+      noData: false,
     };
   },
   computed: {
@@ -49,12 +51,15 @@ export default {
   destroyed() {},
   methods: {
     getList() {
+      this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Live/getLiveList", { mid: this.mid })
+        .fetchPost("Mobile/Live/getLiveList", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
             this.menum = res.data.hasmenu;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

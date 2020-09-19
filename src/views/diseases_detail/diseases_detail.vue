@@ -2,10 +2,10 @@
   <div class="diseases_detail-container">
     <Header :indexHeader="false"></Header>
     <div class="content">
-      <div class="title">沟金针虫</div>
-      <div class="text"></div>
+      <div class="title">{{detail.title}}</div>
+      <div class="text" v-html="detail.content"></div>
     </div>
-    <div class="next">下一篇: 葡萄大褐斑病 ></div>
+    <div class="next" @click="goTonext">下一篇: {{detail.next_page.title}} ></div>
   </div>
 </template>
 <script>
@@ -13,19 +13,57 @@ import Header from "@/components/header/header";
 export default {
   name: "diseasesDetail",
   components: { Header },
+  metaInfo: {
+    title: "病虫害详情",
+  },
   props: {},
   data() {
-    return {};
+    return {
+      catid: this.$route.query.catid,
+      id: this.$route.query.id,
+      detail: "",
+    };
   },
   computed: {},
-  watch: {},
-  mounted() {},
+  watch: {
+    $route() {
+      this.catid = this.$route.query.catid;
+      this.id = this.$route.query.id;
+      this.getDetail();
+    },
+  },
+  mounted() {
+    this.getDetail();
+  },
   destroyed() {},
-  methods: {},
+  methods: {
+    getDetail() {
+      this.$axios
+        .fetchPost("/Mobile/Picture/getDetail", {
+          catId: this.catid,
+          id: this.id,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.detail = res.data.data;
+          }
+        });
+    },
+    goTonext() {
+      this.$router.push({
+        path: "/diseases_detail",
+        query: {
+          catid: this.detail.next_page.catid,
+          id: this.detail.next_page.id,
+        },
+      });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>
 .diseases_detail-container
+  padding-bottom 50px
   .content
     margin-top 10px
     background #fff

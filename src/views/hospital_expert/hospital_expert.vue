@@ -24,6 +24,9 @@ export default {
       list: [],
     };
   },
+  created() {
+    this.$emit("footer", false);
+  },
   computed: {
     ...mapState(["mid"]),
   },
@@ -35,7 +38,7 @@ export default {
   methods: {
     getList() {
       this.$axios
-        .fetchPost("Mobile/User/expertList", { mid: this.mid })
+        .fetchPost("Mobile/User/expertList", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
@@ -51,12 +54,20 @@ export default {
     margin-top 10px
     background #fff
     padding-left 12px
-    column-count 2
-    column-gap 0
+    // column-count 2
+    // column-gap 0
     padding-top 10px
     padding-bottom 10px
     li
       padding-right 12px
-      break-inside avoid
+      // break-inside avoid
       margin-bottom 10px
+      width 50%
+      display inline-block
+      height 160px
+      vertical-align top
+      .recommend_expert-container
+        height 100%
+        .top
+          height 88px
 </style>
