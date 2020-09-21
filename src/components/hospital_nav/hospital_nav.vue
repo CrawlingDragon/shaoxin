@@ -31,8 +31,10 @@
         <p>优质基地</p>
       </li>
       <li>
-        <div class="icon icon07"></div>
-        <p>农资店铺</p>
+        <a href="http://sxmvip.114nz.com" target="_blank" style="display:block;color: #AED0FF;">
+          <div class="icon icon07"></div>
+          <p>农资店铺</p>
+        </a>
       </li>
       <li @click="goToRegistration" v-if="isistore == 0">
         <div class="icon icon04"></div>
@@ -42,11 +44,11 @@
         <div class="icon icon12"></div>
         <p>直播</p>
       </li>
-      <li v-if="isistore == 1 && vip == 1  ">
+      <li v-if="isistore == 1 && ismember == 1  ">
         <div class="icon icon08"></div>
         <p>已是会员</p>
       </li>
-      <li v-if="isistore == 1 && vip == 0" @click="goToApplyVip">
+      <li v-if="isistore == 1 && ismember == 0" @click="goToApplyVip">
         <div class="icon icon09"></div>
         <p class="p2">申请会员</p>
       </li>
@@ -54,20 +56,24 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+// import { mapState } from "vuex";
 export default {
   name: "hospitalNav",
   components: {},
-  props: {},
+  props: {
+    isistore: {
+      type: String,
+      default: "1",
+    },
+    ismember: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
-    return {
-      isistore: 1,
-      vip: 0,
-    };
+    return {};
   },
-  computed: {
-    ...mapState(["mid"]),
-  },
+  computed: {},
   watch: {},
   mounted() {},
   destroyed() {},

@@ -98,6 +98,7 @@ export default {
   data() {
     return {
       tid: this.$route.query.tid,
+      from: this.$route.query.from,
       show: false,
       showRote: false,
       message: "",
@@ -244,7 +245,7 @@ export default {
             font-size 12px
         .text
           color #666666
-          font-size 13px
+          font-size 14px
           line-height 20px
         .rote
           display flex
@@ -386,7 +387,7 @@ export default {
     background-position center center
   .text
     color #666666
-    font-size 13px
+    font-size 14px
     line-height 22px
     margin 10px 0
   .img-list

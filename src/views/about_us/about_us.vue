@@ -10,19 +10,20 @@
     </div>
     <div class="bottom">
       <div class="small-title">申请开通庄稼医院，系统性服务会员</div>
-      <div class="number">已开通<div class="num" v-for="item in 2" :key="item">5</div> 家医院</div>
+      <div class="number">已开通<div class="num" v-for="item in mpnum" :key="item">{{item}}</div> 家医院</div>
       <div class="btn" @click="call">申请开通庄稼医院</div>
     </div>
     <div class="tip">
-      <p class="p2">绍兴市已开通06家新型庄稼医院</p>
-      <p class="p2"> 收录200位专家</p>
-      <p class="p2"> 累积处方800次</p>
+      <p class="p2">绍兴市已开通{{us.mpnum}}家新型庄稼医院</p>
+      <p class="p2"> 收录{{us.enum}}位专家</p>
+      <p class="p2"> 累积处方{{us.rnum}}次</p>
     </div>
     <a href="tel:10571-87661693" ref="tel"></a>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
+import { mapState } from "vuex";
 export default {
   metaInfo: {
     title: "关于我们",
@@ -31,13 +32,34 @@ export default {
   components: { Header },
   props: {},
   data() {
-    return {};
+    return {
+      us: "",
+      mpnumData: 0,
+    };
   },
-  computed: {},
+  computed: {
+    ...mapState(["initMid"]),
+    mpnum() {
+      let x = this.mpnumData;
+      return x.toString().split("");
+    },
+  },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getAbout();
+  },
   destroyed() {},
   methods: {
+    getAbout() {
+      this.$axios
+        .fetchPost("Mobile/Mpublic/getAboutUs", { mId: this.initMid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.us = res.data.data;
+            this.mpnumData = res.data.data.mpnum;
+          }
+        });
+    },
     call() {
       var that = this;
       this.$dialog
@@ -62,6 +84,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .about-us
+  padding-bottom 40px
   .content
     margin-top 10px
     background #fff

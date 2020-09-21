@@ -3,7 +3,7 @@
     <Header></Header>
     <div class="swiper-box">
       <van-swipe :autoplay="3000" style="height: 130px;">
-        <van-swipe-item v-for="image in swiperArr" :key="image.id" fit="cover">
+        <van-swipe-item v-for="image in swiperArr" :key="image.id" fit="cover" @click="goToMessageDetail(image)">
           <van-image fit="cover" :src="image.thumb" lazy-load />
         </van-swipe-item>
       </van-swipe>
@@ -14,8 +14,10 @@
         <p>找答案</p>
       </div>
       <div class="item">
-        <div class="icon i2"></div>
-        <p>找农资</p>
+        <a href="http://sxmvip.114nz.com" target="_blank" style="display:block;color:#000;">
+          <div class="icon i2"></div>
+          <p>找农资</p>
+        </a>
       </div>
       <div class="item" @click="goToExpert">
         <div class="icon i3"></div>
@@ -127,6 +129,7 @@ export default {
         });
     },
     goToLive() {
+      this.setMid(this.initMid);
       this.$router.push({ path: "/live", query: { from: "index" } });
     },
     preverImg(item) {
@@ -161,6 +164,13 @@ export default {
     },
     goToVip() {
       this.$router.push({ path: "/vip" }).catch((err) => err);
+    },
+    goToMessageDetail(image) {
+      //轮播图去资讯详情页
+      this.$router.push({
+        path: "/message_detail",
+        query: { id: image.id, catid: image.catid },
+      });
     },
   },
 };

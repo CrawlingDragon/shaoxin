@@ -3,9 +3,14 @@
     <Header :indexHeader="false"></Header>
     <div class="content">
       <div class="title">{{detail.title}}</div>
+      <van-swipe class="my-swipe" :autoplay="4000" indicator-color="white">
+        <van-swipe-item v-for="item in swiperImg" :key="item">
+          <van-image fit="cover" :src="item.url"></van-image>
+        </van-swipe-item>
+      </van-swipe>
       <div class="text" v-html="detail.content"></div>
     </div>
-    <div class="next" @click="goTonext">下一篇: {{detail.next_page.title}} ></div>
+    <div class="next" @click="goTonext">下一篇: {{nextTitle}} ></div>
   </div>
 </template>
 <script>
@@ -22,6 +27,8 @@ export default {
       catid: this.$route.query.catid,
       id: this.$route.query.id,
       detail: "",
+      nextTitle: "",
+      swiperImg: [],
     };
   },
   computed: {},
@@ -31,6 +38,9 @@ export default {
       this.id = this.$route.query.id;
       this.getDetail();
     },
+  },
+  created() {
+    this.$emit("footer", false);
   },
   mounted() {
     this.getDetail();
@@ -46,6 +56,8 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.detail = res.data.data;
+            this.nextTitle = res.data.data.next_page.title;
+            this.swiperImg = res.data.data.pictureurls;
           }
         });
     },
@@ -77,4 +89,8 @@ export default {
     padding 20px 12px
     color #155BBB
     font-size 12px
+    line-height 1.2
+  .my-swipe
+    height 200px
+    margin-bottom 20px
 </style>

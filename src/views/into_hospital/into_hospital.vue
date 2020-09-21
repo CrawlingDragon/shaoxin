@@ -1,6 +1,7 @@
 <template>
   <div class="into_hospital-conatiner">
     <Header header="searchHeader" :address="address"></Header>
+
     <div class="box" v-if="list_joinin != ''">
       <div class="title">加入的医院</div>
       <ul>
@@ -25,19 +26,18 @@
         </li>
       </ul>
     </div>
+    <van-loading size="24px" vertical style="height:200px;padding-top:130px" v-if="loading">加载中...</van-loading>
     <div id="container" style="display:none"></div>
-    <Foot></Foot>
   </div>
 </template>
 <script>
 import Header from "@/components/hospital_header/hospital_header";
-import Foot from "@/components/foot/foot";
 import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
 import { mapState } from "vuex";
 import AMapLoader from "@amap/amap-jsapi-loader";
 export default {
   name: "intoHospital",
-  components: { Header, Foot, RecommendHospital },
+  components: { Header, RecommendHospital },
   props: {},
   metaInfo: {
     title: "进院",
@@ -50,6 +50,7 @@ export default {
       address: "", // 定位的地址
       // myAddress: "",
       location: "",
+      loading: true,
     };
   },
   computed: {
@@ -58,7 +59,11 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.getMyAddress();
+    if (this.uid == "") {
+      this.getaddress();
+    } else {
+      this.getMyAddress();
+    }
   },
   destroyed() {},
   methods: {
@@ -107,14 +112,23 @@ export default {
             this.list_joinin = res.data.data.list_joinin;
             this.list_fav = res.data.data.list_fav;
             this.list_area = res.data.data.list_area;
+            this.$nextTick(() => {
+              this.loading = false;
+            });
           }
         });
     },
     getMyAddress() {
       this.$axios
-        .fetchPost("Mobile/User/userCenter", { uId: this.uid, mId: this.mid })
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.mid,
+        })
         .then((res) => {
           if (res.data.code == 0) {
+            this.$nextTick(() => {
+              this.loading = false;
+            });
             let myAddress = res.data.data.ismember;
             if (myAddress == 1) {
               this.location = "浙江省,绍兴市";
@@ -147,13 +161,13 @@ export default {
       border-bottom 1px solid #e5e5e5
       padding-left 12px
     ul
-      column-count 2
-      column-gap 0
       margin-left 12px
       margin-top 10px
       padding-bottom 15px
       li
-        break-inside avoid
+        width 50%
+        display inline-block
         padding-right 12px
-        margin-bottom 12px
+        padding-bottom 12px
+        height 274px
 </style>

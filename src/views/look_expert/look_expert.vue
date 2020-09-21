@@ -74,6 +74,7 @@ export default {
     padding-left 12px
     padding-top 10px
     padding-bottom 10px
+    padding-bottom 60px
     li
       width 50%
       display inline-block

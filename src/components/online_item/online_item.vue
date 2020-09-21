@@ -1,7 +1,7 @@
 <template>
   <!-- 首页网珍 -->
   <div class="recommend_online-container">
-    <div class="top" @click="goToDetail">
+    <div class="top" @click="goToExpert(list.authorid)">
       <van-image round class="avator" :src="list.avatar"></van-image>
       <div class="name">
         {{list.author}}
@@ -63,6 +63,14 @@ export default {
         query: { tid: this.list.tid },
       });
     },
+    goToExpert(authorid) {
+      this.$router.push({
+        path: "/expert",
+        query: {
+          id: authorid,
+        },
+      });
+    },
   },
 };
 </script>
@@ -98,7 +106,7 @@ export default {
     background-position center center
   .text
     color #666666
-    font-size 13px
+    font-size 14px
     line-height 22px
     margin 10px 0
   .img-list

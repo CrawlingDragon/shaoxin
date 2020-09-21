@@ -1,6 +1,6 @@
 <template>
   <!-- 资讯相关item -->
-  <div class="Message_item-container">
+  <div class="Message_item-container" @click="goToMessageDetail(list)">
     <div class="t">{{list.title}}</div>
     <van-image class="img" :src="list.thumb" radius="8px" fit="cover" v-if="list.thumb != ''"></van-image>
     <div class="time">{{list.inputtime}}</div>
@@ -25,7 +25,15 @@ export default {
   watch: {},
   mounted() {},
   destroyed() {},
-  methods: {},
+  methods: {
+    goToMessageDetail(image) {
+      //轮播图去资讯详情页
+      this.$router.push({
+        path: "/message_detail",
+        query: { id: image.id, catid: image.catid },
+      });
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

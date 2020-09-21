@@ -31,28 +31,14 @@
         <van-icon name="arrow" class="arrow" />
       </li>
     </ul>
-    <van-dialog
-      v-model="nameShow"
-      title="修改名字"
-      show-cancel-button
-      @confirm="confirmName"
-    >
+    <van-dialog v-model="nameShow" title="修改名字" show-cancel-button @confirm="confirmName">
       <!-- 修改用户名 -->
       <van-field v-model="names" placeholder="请输入用户名" class="name" />
     </van-dialog>
     <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelect" />
     <!-- 选择性别 -->
-    <van-popup
-      v-model="areaShow"
-      close-icon-position="top-left"
-      position="bottom"
-    >
-      <van-area
-        title="选择所在地"
-        :area-list="areaList"
-        @confirm="confimArea"
-        @cancel="cancelArea"
-      />
+    <van-popup v-model="areaShow" close-icon-position="top-left" position="bottom">
+      <van-area title="选择所在地" :area-list="areaList" @confirm="confimArea" @cancel="cancelArea" />
     </van-popup>
   </div>
 </template>
@@ -63,7 +49,7 @@ import areaList from "@/common/js/area.js";
 export default {
   name: "meEdit",
   metaInfo: {
-    title: "编辑资料"
+    title: "编辑资料",
   },
   components: { Header },
   props: {},
@@ -82,20 +68,23 @@ export default {
       areaList: areaList,
       resideprovince: "",
       residecity: "",
-      residedist: ""
+      residedist: "",
     };
   },
-  computed: { ...mapState(["uid"]) },
+  computed: { ...mapState(["uid", "mid"]) },
   watch: {},
   mounted() {
     this.getInfo();
+  },
+  created() {
+    this.$emit("footer", false);
   },
   destroyed() {},
   methods: {
     getInfo() {
       this.$axios
-        .fetchPost("/Mobile/User/userCenter", { uId: this.uid })
-        .then(res => {
+        .fetchPost("/Mobile/User/userCenter", { uId: this.uid, mId: this.mid })
+        .then((res) => {
           if (res.data.code == 0) {
             let data = res.data.data;
             this.avatar = data.avatar;
@@ -117,9 +106,9 @@ export default {
           realname,
           resideprovince,
           residecity,
-          residedist
+          residedist,
         })
-        .then(res => {
+        .then((res) => {
           if (res.data.code == 0) {
             //
           }
@@ -145,8 +134,8 @@ export default {
     },
     cancelArea() {
       this.areaShow = false;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

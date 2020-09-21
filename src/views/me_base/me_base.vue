@@ -19,6 +19,7 @@
         </div>
       </li>
     </ul>
+    <van-empty description="暂无加入的基地" v-show="noData" />
   </div>
 </template>
 <script>
@@ -33,10 +34,13 @@ export default {
   components: { Header },
   props: {},
   data() {
-    return { list: [] };
+    return { list: [], noData: false };
   },
   computed: {
     ...mapState(["uid"]),
+  },
+  created() {
+    this.$emit("footer", false);
   },
   watch: {},
   mounted() {
@@ -45,11 +49,17 @@ export default {
   destroyed() {},
   methods: {
     getList() {
+      this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Mpublic/getFineBaseCom", { uId: this.uid })
+        .fetchPost("Mobile/Mpublic/getFineBaseCom", {
+          uId: this.uid,
+          page: 100,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

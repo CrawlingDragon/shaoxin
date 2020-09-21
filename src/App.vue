@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive exclude="Login,mLogin,findPassword,sign,live" include="index,into_hospital,searchOnline,hospital,search_hospital,apply_vip">
+    <keep-alive exclude="Login,mLogin,findPassword,sign,live,lookExpert" include="index,into_hospital,searchOnline,hospital,search_hospital,apply_vip">
       <router-view @footer="footer" />
     </keep-alive>
     <Foot v-if="footShow"></Foot>

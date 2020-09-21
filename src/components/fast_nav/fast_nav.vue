@@ -18,7 +18,7 @@ import { mapState } from 'vuex';
           <div class="p">找基地</div>
         </van-grid-item>
         <van-grid-item>
-          <div class="p">专享商城</div>
+          <a href="http://vip.114nz.com/Index/Index/index.html" class="p" target="_blank">专享商城</a>
         </van-grid-item>
       </van-grid>
       <van-grid :column-num="4" :border="false">
@@ -40,7 +40,7 @@ import { mapState } from 'vuex';
       <div class="small-title">平台服务</div>
       <van-grid :column-num="4" :border="false">
         <van-grid-item>
-          <a href="http://sxmvip.114nz.com" class="p">农资商城</a>
+          <a href="http://sxmvip.114nz.com" class="p" target="_blank">农资商城</a>
         </van-grid-item>
         <van-grid-item @click="goToVideo">
           <div class="p">培训视频</div>
@@ -100,16 +100,27 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      ai: "",
+    };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "initMid"]),
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.getAiId();
+  },
   destroyed() {},
   methods: {
-    ...mapMutations(["setUid"]),
+    ...mapMutations(["setUid", "setMid"]),
+    getAiId() {
+      this.$axios.fetchPost("Mobile/Sysconfig/getAiExpert").then((res) => {
+        if (res.data.code == 0) {
+          this.ai = res.data.data;
+        }
+      });
+    },
     closeBox() {
       this.$emit("changeFlag", false);
     },
@@ -146,10 +157,14 @@ export default {
       this.$router.push({ path: "/into_hospital" }).catch((err) => err);
     },
     goToExpert() {
+      this.setMid(this.initMid);
       this.$router.push({ path: "/look_expert" }).catch((err) => err);
     },
     goToLive() {
-      this.$router.push({ path: "/live" }).catch((err) => err);
+      this.setMid(this.initMid);
+      this.$router
+        .push({ path: "/live", query: { from: "index" } })
+        .catch((err) => err);
     },
     goToMessage() {
       this.$router.push({ path: "/message" }).catch((err) => err);
@@ -179,7 +194,9 @@ export default {
     },
     goToAi() {
       // 去ai页面
-      this.$router.push({ path: "/expert" }).catch((err) => err);
+      this.$router
+        .push({ path: "/expert", query: { id: this.ai } })
+        .catch((err) => err);
     },
     goToAboutUs() {
       this.$router.push({ path: "/about_us" }).catch((err) => err);

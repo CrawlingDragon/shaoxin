@@ -1,7 +1,7 @@
 <template>
   <div class="hospital-container">
     <HospitalHeader header='indexHeader' navHeader='医院主页' :mid="mid"></HospitalHeader>
-    <HospitalNav :mid="mid"></HospitalNav>
+    <HospitalNav :isistore="mpublic.isistore" :ismember="mpublic.ismember"></HospitalNav>
     <div class="info-list">
       <div class="title">资讯</div>
       <ul>
@@ -61,6 +61,7 @@ export default {
       messageList: [],
       expertList: [],
       wenList: [],
+      mpublic: "",
     };
   },
   created() {
@@ -72,6 +73,7 @@ export default {
   watch: {
     $route() {
       this.getHospitalData(this.mid);
+      this.$emit("footer", true);
     },
   },
   mounted() {
@@ -92,6 +94,7 @@ export default {
             this.expertList = data.list_expert;
             this.wenList = data.list_wen;
             this.title = data.mpublic.name;
+            this.mpublic = data.mpublic;
           }
         });
     },

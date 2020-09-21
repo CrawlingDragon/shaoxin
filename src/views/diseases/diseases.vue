@@ -1,7 +1,7 @@
 <template>
   <div class="diseases-container">
-    <Header header="x"></Header>
-    <div class="title" @click="showBox">{{initDis}}
+    <Header header="x" @clickFastRightIcon="clickHeader" @rightIcon="showHeader"></Header>
+    <div class="title" @click.stop="showBox" :class="{'lessIndex':titleZindex}">{{initDis}}
       <van-icon name="arrow-down" class="down" />
     </div>
     <div class="my-container"></div>
@@ -41,7 +41,8 @@ export default {
       finished: false,
       page: 0,
       catId: "",
-      initDis: "病虫害库",
+      titleZindex: false,
+      initDis: "蔬菜虫害",
     };
   },
   computed: {
@@ -60,6 +61,13 @@ export default {
   },
   destroyed() {},
   methods: {
+    clickHeader() {
+      this.titleZindex = false;
+    },
+    showHeader() {
+      this.titleZindex = true;
+      this.show = false;
+    },
     changeDis(item) {
       //重新选择病虫害
       this.catId = item.catid;
@@ -120,9 +128,11 @@ export default {
     position fixed
     left 12px
     color #155BBB
-    z-index 3
+    z-index 5
     width 200px
     top 10px
+    &.lessIndex
+      z-index 3
   .pop
     width 100%
     height 200px

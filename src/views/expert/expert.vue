@@ -7,7 +7,7 @@
         <div class="name">{{expertData.name}}<span>{{expertData.groupname}}</span></div>
         <div class="p1">{{expertData.company}}</div>
       </div>
-      <div class="btns">
+      <div class="btns" v-if="$route.query.from != 'my'">
         <div class="btn-look" v-if="expertData.id != uid" @click="attention">
           <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}
         </div>
@@ -35,10 +35,13 @@
         <template #title>
           解答 {{expertData.posts}}
         </template>
-        <ul class="answer-ul">
-          <li v-for="item in askedList" :key="item.id">
-            <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
-          </li>
+        <van-empty description="暂无解答内容" v-if="noData" />
+        <ul class="answer-ul" v-else>
+          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check="false">
+            <li v-for="item in askedList" :key="item.id">
+              <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
+            </li>
+          </van-list>
         </ul>
       </van-tab>
       <van-tab sticky>
@@ -46,9 +49,11 @@
           提问 {{expertData.threads}}
         </template>
         <ul class="answer-ul">
-          <li v-for="item in askMeList" :key="item.id">
-            <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
-          </li>
+          <van-list v-model="loading2" :finished="finished2" finished-text="没有更多了" @load="onLoad2" :immediate-check="false">
+            <li v-for="item in askMeList" :key="item.id">
+              <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>2
+            </li>
+          </van-list>
         </ul>
       </van-tab>
       <van-tab sticky>
@@ -56,9 +61,11 @@
           加入的医院 {{expertData.join}}
         </template>
         <ul class="hospital-ul">
-          <li v-for="item in hospitalList" :key="item.id">
-            <RecommendHospital :list="item"></RecommendHospital>
-          </li>
+          <van-list v-model="loading3" :finished="finished3" finished-text="没有更多了" @load="onLoad3" :immediate-check="false">
+            <li v-for="item in hospitalList" :key="item.id">
+              <RecommendHospital :list="item"></RecommendHospital>
+            </li>
+          </van-list>
         </ul>
       </van-tab>
     </van-tabs>
@@ -88,11 +95,23 @@ export default {
     return {
       active: 0,
       id: this.$route.query.id,
+      from: this.$route.query.from,
+      expertid: "",
       expertData: "",
       askedList: [], // 解答列表
       askMeList: [], // 提问立标
       hospitalList: [], // 计入的医院列表
       status: "",
+      loading: true,
+      finished: false,
+      page: 0,
+      noData: false,
+      loading2: false,
+      finished2: false,
+      page2: 0,
+      loading3: false,
+      finished3: false,
+      page3: 0,
     };
   },
   computed: {
@@ -108,61 +127,95 @@ export default {
   },
   mounted() {
     this.getExpertData(this.id);
+    // console.log("this.id,this.from :>> ", this.id, this.from);
   },
   destroyed() {},
   methods: {
+    onLoad() {
+      this.getIAsked();
+    },
+    onLoad2() {
+      this.getAskMe();
+    },
+    onLoad3() {
+      this.getHospitalList();
+    },
     getExpertData(id) {
       this.$axios
-        .fetchPost("Mobile/User/homepage", { id: id, uId: this.uid })
+        .fetchPost("Mobile/User/homepage", {
+          from: this.from,
+          id: id,
+          uId: this.uid,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.expertData = res.data.data;
             this.status = res.data.data.status;
+            this.expertid = res.data.data.uid;
             setTimeout(() => {
-              this.getIAsked(res.data.data.uid);
-              this.getAskMe(res.data.data.uid);
-              this.getHospitalList(res.data.data.uid);
+              this.getIAsked();
+              this.getAskMe();
+              this.getHospitalList();
             }, 100);
           }
         });
     },
-    getIAsked(uid) {
+    getIAsked() {
       // 解答，==> 就是我答的接口
+      this.page += 1;
+      this.noData = false;
       this.$axios
         .fetchPost("/Mobile/User/getWenList", {
-          uId: uid,
-          page: 1,
+          uId: this.expertid,
+          page: this.page,
           pagesize: 12,
           action: "answer",
         })
         .then((res) => {
           if (res.data.code == 0) {
-            this.askedList = res.data.data;
+            this.loading = false;
+            this.askedList = this.askedList.concat(res.data.data);
+          } else if (res.data.code == 201) {
+            if (this.page == 1) {
+              this.noData = true;
+            }
+            this.finished = true;
           }
         });
     },
-    getAskMe(uid) {
+    getAskMe() {
       //提问 ===> 就是我
+      this.page2 += 1;
       this.$axios
         .fetchPost("/Mobile/User/getWenList", {
-          uId: uid,
-          page: 1,
+          uId: this.expertid,
+          page: this.page2,
           pagesize: 12,
           action: "tome",
         })
         .then((res) => {
           if (res.data.code == 0) {
+            this.loading = false;
             this.askMeList = res.data.data;
+          } else if (res.data.code == 201) {
+            this.finished2 = true;
           }
         });
     },
-    getHospitalList(uid) {
+    getHospitalList() {
       // 我加入的 医院
+      this.page3 += 1;
       this.$axios
-        .fetchPost("/Mobile/User/myJoinHospital", { uId: uid })
+        .fetchPost("/Mobile/User/myJoinHospital", {
+          uId: this.expertid,
+          page: this.page3,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.hospitalList = res.data.data.list;
+            this.loading3 = false;
+          } else if (res.data.code == 201) {
+            this.finished3 = true;
           }
         });
     },

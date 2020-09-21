@@ -38,7 +38,12 @@ export default {
   created() {
     this.$emit("footer", false);
   },
-  watch: {},
+  watch: {
+    $route() {
+      // this.$emit("footer", false)
+      this.$emit("footer", false);
+    },
+  },
   mounted() {},
   destroyed() {},
   methods: {

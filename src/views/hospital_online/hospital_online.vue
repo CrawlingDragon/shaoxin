@@ -20,6 +20,9 @@ export default {
     OnlineItem,
     [ImagePreview.Component.name]: ImagePreview.Component,
   },
+  metaInfo: {
+    title: "线上网诊",
+  },
   props: {},
   data() {
     return {
@@ -29,8 +32,10 @@ export default {
   computed: {
     ...mapState(["mid"]),
   },
+
   watch: {},
   mounted() {
+    this.$emit("footer", false);
     this.getList();
   },
   destroyed() {},
@@ -46,7 +51,7 @@ export default {
     getList() {
       // 获取网诊列表
       this.$axios
-        .fetchPost("/Mobile/Wen/index", { mid: this.mid })
+        .fetchPost("/Mobile/Wen/index", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

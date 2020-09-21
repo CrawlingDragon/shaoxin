@@ -49,7 +49,7 @@
         </template>
       </van-cell>
     </div>
-    <van-cell title="个人主页" to="/expert" is-link style="margin-top:10px">
+    <van-cell title="个人主页" :to="{ path: '/expert', query: { from: 'my',id:uid }}" is-link style="margin-top:10px">
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon07"></div>

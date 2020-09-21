@@ -17,8 +17,7 @@
     <div class="left-bar" v-if="
         header != 'indexHeader' &&
           header != 'logoHeader' &&
-          header != 'searchHeader'
-      ">
+          header != 'searchHeader'">
       <slot></slot>
     </div>
     <div class="right-nav van-hairline--left">
@@ -26,7 +25,7 @@
         <van-icon name="wap-home-o" @click="goToIndex" />
       </div>
       <div class="fast-nav-icon">
-        <van-icon name="qr" @click="flag = true" />
+        <van-icon name="qr" @click="rightIcon" />
       </div>
     </div>
     <fastNav :showFlag="flag" @changeFlag="closeFast" :user="user"></fastNav>
@@ -83,7 +82,12 @@ export default {
           }
         });
     },
+    rightIcon() {
+      this.flag = true;
+      this.$emit("rightIcon");
+    },
     closeFast() {
+      this.$emit("clickFastRightIcon");
       // 主要二级快速导航关闭
       this.flag = false;
     },
@@ -123,7 +127,7 @@ export default {
   top 0
   right 0
   left 0
-  z-index 2
+  z-index 4
   .left-bar
     flex 1
     display flex
