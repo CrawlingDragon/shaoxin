@@ -1,12 +1,13 @@
 <template>
   <div class="me_hospital-container">
     <Header :indexHeader="false"></Header>
-    <ul class="me-ul">
+    <ul class="me-ul" v-show="!noData && initShow">
       <li v-for="item in list" :key="item.id">
         <RecommendHospital :list="item"></RecommendHospital>
       </li>
     </ul>
-    <div class="title">已加入{{total}}家医院</div>
+    <div class="title" v-show="!noData && initShow">已加入{{total}}家医院</div>
+    <van-empty description="您还没有加入过医院" v-if="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -24,6 +25,8 @@ export default {
     return {
       list: [],
       total: "",
+      noData: false,
+      initShow: false,
     };
   },
   computed: {
@@ -39,12 +42,16 @@ export default {
   destroyed() {},
   methods: {
     getList() {
+      this.noData = false;
       this.$axios
         .fetchPost("Mobile/user/myJoinHospital", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data.list;
             this.total = res.data.data.total;
+            this.initShow = true;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

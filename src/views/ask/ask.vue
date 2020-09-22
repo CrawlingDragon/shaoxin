@@ -19,7 +19,7 @@
         <div class="left">咨询专家</div>
         <div class="right">{{ expert }}</div>
       </div>
-      <div class="choose-crop" v-if="expert">
+      <div class="choose-crop" v-show="expert && ismember == 0">
         <div class="left">所在位置</div>
         <div class="right location">{{ address }}</div>
         <van-icon name="arrow" class="arrow" />
@@ -56,6 +56,7 @@ export default {
       fid: "",
       uploader: [],
       imgList: [],
+      ismember: 0,
     };
   },
   computed: {
@@ -135,6 +136,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             let myAddress = res.data.data.ismember;
+            this.ismember = res.data.data.ismember;
             if (myAddress == 1) {
               this.address = "浙江省,绍兴市";
               // this.address = "绍兴市";
@@ -144,40 +146,37 @@ export default {
           }
         });
     },
-  },
-  getLocation() {
-    let that = this;
-    AMapLoader.load({
-      key: "23a2a13dc7fdd9a8af2ec7683b2f333e", // 申请好的Web端开发者Key，首次调用 load 时必填
-      version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
-      Loca: {
-        // 是否加载 Loca， 缺省不加载
-        version: "1.3.2", // Loca 版本，缺省 1.3.2
-      },
-    })
-      .then((AMap) => {
-        var map = new AMap.Map("container", {
-          resizeEnable: true, //是否监控地图容器尺寸变化
-          zoom: 11, //初始地图级别
-        });
-        map.getCity(function (info) {
-          // console.table("info :>> ", info);
-          if (info.city != "绍兴市") {
-            that.address = "浙江省,绍兴市";
-            // that.address = "绍兴市";
-          } else if (info.city == "绍兴市") {
-            that.address = "浙江省,绍兴市," + info.district;
-            // that.address = info.district;
-          }
-          setTimeout(() => {
-            that.getList();
-          }, 100);
-        });
+    getLocation() {
+      let that = this;
+      AMapLoader.load({
+        key: "23a2a13dc7fdd9a8af2ec7683b2f333e", // 申请好的Web端开发者Key，首次调用 load 时必填
+        version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+        plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+        Loca: {
+          // 是否加载 Loca， 缺省不加载
+          version: "1.3.2", // Loca 版本，缺省 1.3.2
+        },
       })
-      .catch((e) => {
-        console.log(e);
-      });
+        .then((AMap) => {
+          var map = new AMap.Map("container", {
+            resizeEnable: true, //是否监控地图容器尺寸变化
+            zoom: 11, //初始地图级别
+          });
+          map.getCity(function (info) {
+            // console.table("info :>> ", info);
+            if (info.city != "绍兴市") {
+              that.address = "浙江省,绍兴市";
+              // that.address = "绍兴市";
+            } else if (info.city == "绍兴市") {
+              that.address = "浙江省,绍兴市," + info.district;
+              // that.address = info.district;
+            }
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   },
 };
 </script>

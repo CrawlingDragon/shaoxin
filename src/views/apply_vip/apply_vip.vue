@@ -82,6 +82,7 @@ export default {
     this.$emit("footer", false);
   },
   mounted() {
+    this.$emit("footer", false);
     this.getUserInfo();
   },
   destroyed() {},

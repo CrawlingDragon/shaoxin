@@ -170,4 +170,7 @@ export default {
         padding-right 12px
         padding-bottom 12px
         height 274px
+        vertical-align top
+        .recommend-hospital-wrap
+          height 100%
 </style>

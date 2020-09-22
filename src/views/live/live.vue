@@ -2,25 +2,26 @@
   <div class="live-container">
     <Header :indexHeader="false" v-if="from == 'index'"></Header>
     <HospitalHeader indexHeader="indexHeader" navHeader="直播" v-else></HospitalHeader>
-
     <div class="program" @click="goLive" v-if="menum == 1">直播节目单</div>
     <ul class="live-ul">
-      <li v-for="item in list" :key="item.id" @click="liveHref(item.linkurl)">
+      <li v-for="item in list" :key="item.id" @click.stop="liveHref(item.linkurl)">
         <van-image class="live-img" :src="item.thumb" fit="cover"></van-image>
         <div class="bottom">
           <div class="left">{{item.name}}</div>
           <div class="right">{{item.endtime}}</div>
         </div>
+        <div class="hospital" @click.stop="goToHospital(item.mid)" v-if="item.mname != ''">{{item.mname}}</div>
         <div class="status living" :class="{'living':item.status == '直播中','lived':item.status == '回放','before_live':item.status == '预告'}">{{item.status}}</div>
       </li>
     </ul>
-    <van-empty description="暂无直播" v-show="noData" />
+    <van-empty :description="from == 'index'?'暂无直播':'本院暂无直播'" v-show="noData" />
+    <div class="lookOther" @click="goToWholeLive" v-show="noData && from !='index'">查看其他直播</div>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
 import HospitalHeader from "@/components/hospital_header/hospital_header";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "live",
   components: { Header, HospitalHeader },
@@ -39,18 +40,21 @@ export default {
     };
   },
   computed: {
-    ...mapState(["mid"]),
+    ...mapState(["mid", "initMid"]),
   },
-  watch: {},
-  created() {
-    this.$emit("footer", false);
+  watch: {
+    $route() {
+      this.getList();
+      this.from = this.$route.query.from;
+    },
   },
+  created() {},
   mounted() {
-    this.$emit("footer", false);
     this.getList();
   },
   destroyed() {},
   methods: {
+    ...mapMutations(["setMid"]),
     getList() {
       this.noData = false;
       this.$axios
@@ -72,6 +76,21 @@ export default {
         path: "/live_list",
         query: {
           mid: this.mid,
+        },
+      });
+    },
+    goToHospital(mid) {
+      this.setMid(mid);
+      this.$router.push({
+        path: "/hospital",
+      });
+    },
+    goToWholeLive() {
+      this.setMid(this.initMid);
+      this.$router.push({
+        path: "/live",
+        query: {
+          from: "index",
         },
       });
     },
@@ -130,4 +149,13 @@ export default {
           background #999999
         &.before_live
           background #155BBB
+      .hospital
+        color #155BBB
+        text-align right
+        padding-bottom 5px
+  .lookOther
+    line-height 40px
+    font-size 18px
+    color #155BBB
+    text-align center
 </style>

@@ -57,7 +57,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["mid"]),
+    ...mapState(["mid", "uid"]),
   },
   watch: {
     fid() {
@@ -99,6 +99,7 @@ export default {
           fId: this.fid,
           areaId: this.area,
           page: this.page,
+          uId: this.uid,
         })
         .then((res) => {
           if (res.data.code == 0) {

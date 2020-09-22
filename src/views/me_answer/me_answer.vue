@@ -3,19 +3,23 @@
     <Header :indexHeader="false"></Header>
     <van-tabs v-model="active" sticky color="#155BBB" title-active-color="#155BBB" class="tabs">
       <van-tab title="我问的" class="tab">
+
         <div class="item" v-for="item in ask" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </div>
+        <van-empty description="暂无数据" v-if="noData1"></van-empty>
       </van-tab>
       <van-tab title="我答的" class="tab">
         <div class="item" v-for="item in answer" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </div>
+        <van-empty description="暂无数据" v-if="noData2"></van-empty>
       </van-tab>
-      <van-tab title="咨询我的" class="tab">
+      <van-tab title="咨询我的" class="tab" v-if="identity == 1">
         <div class="item" v-for="item in information" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </div>
+        <van-empty description="暂无数据" v-if="noData3"></van-empty>
       </van-tab>
     </van-tabs>
   </div>
@@ -38,16 +42,24 @@ export default {
       ask: [],
       answer: [],
       information: [],
+      identity: 0,
+      noData1: false,
+      noData2: false,
+      noData3: false,
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "mid"]),
   },
   watch: {},
+  created() {
+    this.$emit("footer", false);
+  },
   mounted() {
     this.myAsk();
     this.myAnswer();
     this.myInformation();
+    this.getUserInfo();
   },
   destroyed() {},
   methods: {
@@ -81,6 +93,19 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.information = res.data.data;
+          }
+        });
+    },
+    getUserInfo() {
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.initMid,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.user = res.data.data;
+            this.identity = res.data.data.this.identity;
           }
         });
     },

@@ -3,7 +3,7 @@
   <div class="Message_item-container" @click="goToMessageDetail(list)">
     <div class="t">{{list.title}}</div>
     <van-image class="img" :src="list.thumb" radius="8px" fit="cover" v-if="list.thumb != ''"></van-image>
-    <div class="time">{{list.inputtime}}</div>
+    <div class="time">{{list.inputtime}} <span v-show="index">{{list.mpublic_name}}</span></div>
   </div>
 </template>
 <script>
@@ -16,6 +16,10 @@ export default {
       default: function () {
         return {};
       },
+    },
+    index: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -58,4 +62,6 @@ export default {
     font-size 12px
     color #999999
     margin-top 8px
+    span
+      float right
 </style>

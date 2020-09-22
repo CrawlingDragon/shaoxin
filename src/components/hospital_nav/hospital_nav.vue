@@ -3,30 +3,30 @@
     <div class="bg"></div>
     <div class="titles">
       <div class="left-title">会员服务</div>
-      <div class="right-title"> {{isistore == 1 ?'专属会员服务，一站式解决作物问题':'网院'}}</div>
+      <div class="right-title"> {{hospitalIsStore == 1 ?'专属会员服务，一站式解决作物问题':'网院'}}</div>
     </div>
-    <ul class="nav-ul" :class="{'isstore':isistore == 0 }">
+    <ul class="nav-ul" :class="{'isstore':hospitalIsStore == 0 }">
       <li @click="goToOnline">
         <div class="icon icon01"></div>
         <p>线上网诊</p>
       </li>
-      <li @click="goToZuo" v-if="isistore == 1">
+      <li @click="goToZuo" v-if="hospitalIsStore == 1">
         <div class="icon icon02"></div>
         <p>坐诊巡诊</p>
       </li>
-      <li @click="goToCeTu" v-if="isistore == 1">
+      <li @click="goToCeTu" v-if="hospitalIsStore == 1">
         <div class="icon icon03"></div>
         <p>测土配方</p>
       </li>
-      <li @click="goToRegistration" v-if="isistore == 1">
+      <li @click="goToRegistration" v-if="hospitalIsStore == 1">
         <div class="icon icon04"></div>
         <p>专家挂号</p>
       </li>
-      <li @click="goToAsk" v-if="isistore == 1">
+      <li @click="goToAsk" v-if="hospitalIsStore == 1">
         <div class="icon icon05"></div>
         <p>提问</p>
       </li>
-      <li @click="goToGoodBase" v-if="isistore == 1">
+      <li @click="goToGoodBase" v-if="hospitalIsStore == 1">
         <div class="icon icon06"></div>
         <p>优质基地</p>
       </li>
@@ -36,19 +36,19 @@
           <p>农资店铺</p>
         </a>
       </li>
-      <li @click="goToRegistration" v-if="isistore == 0">
+      <li @click="goToRegistration" v-if="hospitalIsStore == 0">
         <div class="icon icon04"></div>
         <p>专家</p>
       </li>
-      <li @click="goToLive" v-if="isistore == 0">
+      <li @click="goToLive" v-if="hospitalIsStore == 0">
         <div class="icon icon12"></div>
         <p>直播</p>
       </li>
-      <li v-if="isistore == 1 && ismember == 1  ">
+      <li v-if="hospitalIsStore == 1 && ismember == 1  ">
         <div class="icon icon08"></div>
         <p>已是会员</p>
       </li>
-      <li v-if="isistore == 1 && ismember == 0" @click="goToApplyVip">
+      <li v-if="hospitalIsStore == 1 && ismember == 0" @click="goToApplyVip">
         <div class="icon icon09"></div>
         <p class="p2">申请会员</p>
       </li>
@@ -56,15 +56,11 @@
   </div>
 </template>
 <script>
-// import { mapState } from "vuex";
+import { mapState } from "vuex";
 export default {
   name: "hospitalNav",
   components: {},
   props: {
-    isistore: {
-      type: String,
-      default: "1",
-    },
     ismember: {
       type: Number,
       default: 0,
@@ -73,7 +69,9 @@ export default {
   data() {
     return {};
   },
-  computed: {},
+  computed: {
+    ...mapState(["hospitalIsStore"]),
+  },
   watch: {},
   mounted() {},
   destroyed() {},

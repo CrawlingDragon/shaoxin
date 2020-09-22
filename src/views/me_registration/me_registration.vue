@@ -5,6 +5,10 @@
       <li v-for="item in list" :key="item.id">
         <RegistrationItem :list="item"></RegistrationItem>
       </li>
+      <div class="noData" v-if="noData">
+        <div class="p1">暂无挂号记录</div>
+        <div class="p2">申请庄稼医院会员，挂号专家咨询</div>
+      </div>
     </ul>
   </div>
 </template>
@@ -23,6 +27,7 @@ export default {
   data() {
     return {
       list: [],
+      noData: false,
     };
   },
   created() {
@@ -38,11 +43,14 @@ export default {
   destroyed() {},
   methods: {
     getRegistration() {
+      this.noData = false;
       this.$axios
         .fetchPost("/Mobile/User/getSubscribe", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },
@@ -57,4 +65,15 @@ export default {
       background #fff
       overflow hidden
       padding 0 12px
+  .noData
+    height 200px
+    padding-top 150px
+    text-align center
+    .p1
+      color #333333
+      font-size 15px
+    .p2
+      font-size 12px
+      color #999
+      margin-top 10px
 </style>

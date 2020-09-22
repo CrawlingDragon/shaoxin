@@ -42,4 +42,6 @@ export default {
 .live_list-container
   .list-content
     background #fff
+  /deep/img
+    max-width 100%
 </style>

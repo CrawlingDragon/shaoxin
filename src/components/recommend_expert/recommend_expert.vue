@@ -14,8 +14,8 @@
       <div class="item" v-for="item in skillArr" :key="item">{{item}}</div>
     </div>
     <div class="join">
-      <div class="answer-number">{{list.cnt_answer}}次解答</div>
-      <div class="join-number" v-if="list.cnt_joinhospital">{{list.cnt_joinhospital}}家加入医院</div>
+      <div class="answer-number" v-show="list.cnt_answer != 0">{{list.cnt_answer}}次解答</div>
+      <div class="join-number" v-show="!isSelfExpert" :class="{'noBorder':(list.cnt_answer == 0 || list.cnt_joinhospital == 0)}">{{list.cnt_joinhospital}}家加入医院</div>
     </div>
   </div>
 </template>
@@ -29,6 +29,10 @@ export default {
       default: function () {
         return {};
       },
+    },
+    isSelfExpert: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -124,4 +128,6 @@ export default {
     .join-number
       border-left 1px solid #999999
       padding-left 10px
+      &.noBorder
+        border none
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="me-container">
     <Header :indexHeader="false"></Header>
-    <div class="user-box">
+    <div class="user-box" @click="goToExpert(info.uid)">
       <van-image class="avator" round fit="cover" :src="info.avatar"></van-image>
       <div class="mid">
         <p class="p1">
@@ -9,7 +9,7 @@
         </p>
         <p class="p2">用户名:{{ info.username }}</p>
       </div>
-      <div class="right" @click="goToEdit">编辑 ></div>
+      <div class="right" @click.stop="goToEdit">编辑 ></div>
     </div>
     <div class="my-ul">
       <van-cell title="加入的医院" to="/me_hospital" is-link>
@@ -30,7 +30,7 @@
           <div class="icon03"></div>
         </template>
       </van-cell>
-      <van-cell title="土壤检测" to="/cetu_list" is-link>
+      <van-cell title="土壤检测" :to="{path:'/cetu_list',query:{from:'me'}}" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon04"></div>
@@ -116,6 +116,12 @@ export default {
     },
     callPhone() {
       this.$refs.tel.click();
+    },
+    goToExpert(id) {
+      this.$router.push({
+        path: "/expert",
+        query: { id: id },
+      });
     },
   },
 };

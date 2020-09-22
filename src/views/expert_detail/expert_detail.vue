@@ -12,19 +12,19 @@
       </li>
       <li>
         <div class="left">所在地</div>
-        <div class="right">{{person.residecity}}</div>
+        <div class="right">{{person.residecity || '无'}}</div>
       </li>
       <li>
         <div class="left">单位</div>
-        <div class="right">{{person.company}}</div>
+        <div class="right">{{person.company || '无'}}</div>
       </li>
       <li>
         <div class="left">职称</div>
-        <div class="right">{{person.position}}</div>
+        <div class="right">{{person.position || '无'}}</div>
       </li>
       <li>
         <div class="left">简介</div>
-        <div class="right">{{person.introduce}} </div>
+        <div class="right">{{person.introduce || '无'}} </div>
       </li>
     </ul>
     <ul class="info-ul" v-if="person.identity !=  1">
@@ -38,9 +38,11 @@
 <script>
 import Header from "@/components/header/header";
 export default {
-  metaInfo: {},
   name: "expertDetail",
   components: { Header },
+  metaInfo: {
+    title: "个人简介",
+  },
   props: {},
   data() {
     return {
@@ -51,6 +53,9 @@ export default {
   },
   computed: {},
   watch: {},
+  created() {
+    this.$emit("footer", false);
+  },
   mounted() {
     this.getPersonDetail();
   },

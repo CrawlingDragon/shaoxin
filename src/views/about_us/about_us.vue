@@ -18,7 +18,7 @@
       <p class="p2"> 收录{{us.enum}}位专家</p>
       <p class="p2"> 累积处方{{us.rnum}}次</p>
     </div>
-    <a href="tel:10571-87661693" ref="tel"></a>
+    <a :href="'tel:'+tel" ref="tel"></a>
   </div>
 </template>
 <script>
@@ -35,6 +35,7 @@ export default {
     return {
       us: "",
       mpnumData: 0,
+      tel: "",
     };
   },
   computed: {
@@ -57,6 +58,7 @@ export default {
           if (res.data.code == 0) {
             this.us = res.data.data;
             this.mpnumData = res.data.data.mpnum;
+            this.tel = res.data.data.telephone;
           }
         });
     },

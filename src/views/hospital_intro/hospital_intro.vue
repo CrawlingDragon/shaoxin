@@ -5,7 +5,7 @@
       <div class="title">基本信息</div>
       <div class="item">
         <div class="left">医院名称：</div>
-        <div class="text">{{intro.name}}</div>
+        <div class="text">{{intro.name}} <span class="isstore" v-show="intro.isstore == 1">实体店</span></div>
       </div>
       <div class="item">
         <div class="left">医院属性：</div>
@@ -19,9 +19,9 @@
         <div class="left">医院地址：</div>
         <div class="text">{{intro.address}}</div>
       </div>
-      <div class="item"> 专家 {{intro.enum}} | 会员 {{intro.mnum}} | 处方 {{intro.rnum}}</div>
+      <div class="item"> <span class="number num1"> 专家 {{intro.enum}} </span><span v-if="intro.isstore == 1" class="number num2">会员 {{intro.mnum}}</span><span class="number num3"> 处方 {{intro.rnum}}</span></div>
       <div class="title2">直属下级医院</div>
-      <ul class="lower-level-ul">
+      <ul class="lower-level-ul" v-if="intro.mpublic.length != 0">
         <li v-for="item in intro.mpublic" :key="item.mid">{{item.name}}</li>
       </ul>
     </div>
@@ -108,10 +108,30 @@ export default {
       color #656565
       font-size 14px
       line-height 26px
+      .number
+        padding 0 10px
+        border-right 1px solid #999
+        line-height 18px
+        margin-top 5px
+        &.num1
+          padding-left 0
+        &.num3
+          border none
       .left
         width auto
       .text
         flex 1
+        .isstore
+          color #fff
+          background #ff6600
+          float right
+          margin-right 12px
+          width 52px
+          height 20px
+          text-align center
+          line-height 20px
+          border-radius 100px
+          font-size 12px
     .title2
       color #333333
       font-size 16px

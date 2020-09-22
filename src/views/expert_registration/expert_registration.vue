@@ -13,13 +13,13 @@
             {{item.week}} <br /> <span class="days">{{item.ymd}}</span>
           </div>
           <div class="mid">
-            <div class="p1" v-if="item.data.am.realname == '无号源'">无号源</div>
+            <div class="p1" v-if="item.data.am.realname == '无号源'" @click="clickNo">无号源</div>
             <div class="now" v-if="item.data.am.realname == '即将放号'" @click="rightNow">{{item.data.am.realname}}</div>
             <div class="number" v-if="item.data.am.realname != '无号源' && item.data.am.realname != '即将放号'" @click="registration(item.data.am,'上午')">总{{item.data.am.nums}} 剩{{item.data.am.surplus}}</div>
             <div class="expert" v-if="item.data.am.realname != '无号源'">{{item.data.am.realname}}专家</div>
           </div>
           <div class="right">
-            <div class="p1" v-if="item.data.pm.realname == '无号源'">无号源</div>
+            <div class="p1" v-if="item.data.pm.realname == '无号源'" @click="clickNo">无号源</div>
             <div class="now" v-if="item.data.pm.realname == '即将放号'" @click="rightNow">{{item.data.pm.realname}}</div>
             <div class="number" v-if="item.data.pm.realname != '无号源' && item.data.pm.realname != '即将放号'" @click="registration(item.data.pm,'下午')">总{{item.data.pm.nums}} 剩{{item.data.pm.surplus}}</div>
             <div class=" expert" v-if="item.data.pm.realname != '无号源'">{{item.data.pm.realname}}专家</div>
@@ -55,8 +55,12 @@ export default {
   mounted() {
     this.getList();
   },
+
   destroyed() {},
   methods: {
+    clickNo() {
+      this.$toast("抱歉,该时间段没有专家号");
+    },
     getList() {
       // 获取挂号-医院排版
       this.$axios
@@ -113,6 +117,8 @@ export default {
                   .catch(() => {
                     // on cancel
                   });
+              } else {
+                this.$toast(res.data.message);
               }
             });
         })

@@ -209,6 +209,14 @@ const routes = [
       )
   },
   {
+    path: "/base_location",
+    name: "baseLocation",
+    component: () =>
+      import(
+        /*webpackChunkName:"base_location" */ "@/views/base_location/base_location"
+      )
+  },
+  {
     path: "/message",
     name: "message",
     component: () =>
@@ -238,6 +246,13 @@ const routes = [
     name: "expert",
     component: () =>
       import(/*webpackChunkName:"expert" */ "@/views/expert/expert")
+  },
+  {
+    path: "/expert_crop",
+    component: () =>
+      import(
+        /*webpackChunkName:"expert_crop" */ "@/views/expert_crop/expert_crop"
+      )
   },
   {
     path: "/look_expert",
@@ -398,10 +413,11 @@ router.beforeEach((to, from, next) => {
     //没登录的状态 不能去这些页面
     if (
       to.name == "ask" ||
-      to.name == "me" ||
       to.name == "me_edit" ||
-      to.name == "me_edit" ||
-      to.name == "me_registration"
+      to.name == "me_registration" ||
+      to.name == "zuozhenList" ||
+      to.name == "cetuList" ||
+      to.name == "expertRegistration"
     ) {
       next("/login");
     }

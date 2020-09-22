@@ -1,8 +1,8 @@
 <template>
   <div class="hospital-container">
-    <HospitalHeader header='indexHeader' navHeader='医院主页' :mid="mid"></HospitalHeader>
+    <HospitalHeader header='indexHeader' navHeader='医院主页'></HospitalHeader>
     <HospitalNav :isistore="mpublic.isistore" :ismember="mpublic.ismember"></HospitalNav>
-    <div class="info-list">
+    <div class="info-list" v-show="messageList.length != 0">
       <div class="title">资讯</div>
       <ul>
         <li v-for="item in messageList" :key="item.id">
@@ -10,12 +10,12 @@
         </li>
       </ul>
     </div>
-    <div class="look-more" @click="goToMmessage">查看更多 ></div>
+    <div class="look-more" @click="goToMmessage" v-show="messageList.length != 0">查看更多 ></div>
     <div class="expert-list">
       <div class="title">本院专家</div>
       <ul class="expert-ul clearfix">
         <li v-for="item in expertList" :key="item.expertid">
-          <RecommendExpert :list="item"></RecommendExpert>
+          <RecommendExpert :list="item" :isSelfExpert="true"></RecommendExpert>
         </li>
       </ul>
     </div>
@@ -28,7 +28,7 @@
         </li>
       </ul>
     </div>
-    <!-- <div class="look-more">查看更多 ></div> -->
+    <div class="look-more" @click="lookMoreHospital">查看更多 ></div>
   </div>
 </template>
 <script>
@@ -37,7 +37,7 @@ import HospitalNav from "@/components/hospital_nav/hospital_nav";
 import MessageItem from "@/components/message_item/message_item";
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { ImagePreview } from "vant";
 export default {
   name: "hospital",
@@ -81,6 +81,7 @@ export default {
   },
   destroyed() {},
   methods: {
+    ...mapMutations(["setJoinTime"]),
     getHospitalData(mid) {
       this.$axios
         .fetchPost("Mobile/Mpublic/MpublicPage", {
@@ -95,6 +96,7 @@ export default {
             this.wenList = data.list_wen;
             this.title = data.mpublic.name;
             this.mpublic = data.mpublic;
+            this.setJoinTime(data.mpublic.addtime);
           }
         });
     },
@@ -119,11 +121,18 @@ export default {
         path: "/hospital_expert",
       });
     },
+    lookMoreHospital() {
+      //  查看更多医院网诊
+      this.$router.push({
+        path: "/hospital_online",
+      });
+    },
   },
 };
 </script>
 <style lang="stylus" scoped>
 .hospital-container
+  padding-bottom 50px
   .info-list
     background #fff
     .title
@@ -181,9 +190,7 @@ export default {
       margin-left 12px
       display flex
       flex-wrap wrap
-      // border-bottom 1px solid #e5e5e5
-      padding-bottom 15px
-      padding-bottom 50px
+      border-bottom 1px solid #e5e5e5
       li
         border-bottom 1px solid #e5e5e5
         width 100%

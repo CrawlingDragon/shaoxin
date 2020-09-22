@@ -35,10 +35,12 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    ...mapMutations(["setMid"]),
+    ...mapMutations(["setMid", "setHospitalName", "setHospitalIsStore"]),
     goToIndexHospital() {
       // 去医院首页
       this.setMid(this.list.mid);
+      this.setHospitalName(this.list.title);
+      this.setHospitalIsStore(this.list.isstore);
       this.$router.push({
         path: "/hospital",
       });

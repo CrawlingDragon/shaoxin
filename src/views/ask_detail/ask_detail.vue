@@ -1,5 +1,5 @@
 <template>
-  <div class="ask_detail-container">
+  <div class="ask_detail-container" :class="{'jiashicang':from == 'jiashicang'}">
     <Header :indexHeader="false"></Header>
     <div class="online-box">
       <div class="top">
@@ -205,6 +205,14 @@ export default {
 <style lang="stylus" scoped>
 .ask_detail-container
   padding-bottom 50px
+  height 100%
+  position absolute
+  top 40px
+  bottom 0
+  right 0
+  left 0
+  &.jiashicang
+    background #080f3e
   .online-box
     margin-top 10px
     background #fff

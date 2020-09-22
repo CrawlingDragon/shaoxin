@@ -5,7 +5,7 @@
     <ul class="message-ul">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <li v-for="item in list" :key="item.id" @click="goToMessageDetail(item.id,item.catid)">
-          <MessageItem :list="item"></MessageItem>
+          <MessageItem :list="item" :index="true"></MessageItem>
         </li>
       </van-list>
     </ul>
@@ -53,6 +53,9 @@ export default {
           if (res.data.code == 0) {
             this.loading = false;
             this.list = this.list.concat(res.data.data);
+            if (res.data.data.length == 0) {
+              this.finished = true;
+            }
           } else if (res.data.code == 201) {
             this.finished = true;
           }
@@ -73,6 +76,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .message-container
+  padding-bottom 55px
   background #fff
   .message-ul
     margin-left 12px

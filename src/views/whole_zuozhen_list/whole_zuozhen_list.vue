@@ -3,8 +3,8 @@
     <Header :indexHeader="false"></Header>
     <ul>
       <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
-        <p class="p1">{{item.title}}白菜出现这种情况什么病？怎么用药</p>
-        <p class="p2">{{item.showtime}}白菜·坐诊·2018-10-20<span class="hospital">黄泽黄桃专科医院</span></p>
+        <p class="p1">{{item.title}}</p>
+        <p class="p2">{{item.showtime}}<span class="hospital">{{item.mpublic}}</span></p>
       </li>
     </ul>
   </div>
@@ -28,6 +28,9 @@ export default {
     ...mapState(["uid"]),
   },
   watch: {},
+  created() {
+    this.$emit("footer", false);
+  },
   mounted() {
     this.getOnlineList();
   },

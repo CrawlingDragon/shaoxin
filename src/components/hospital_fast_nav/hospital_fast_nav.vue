@@ -10,27 +10,27 @@
         <div class="title">会员服务<span>专属会员服务，一站式解决作物问题</span></div>
         <van-grid class="nav-ul" :border="false" :gutter="15">
           <van-grid-item text="线上网诊" @click="goToOnline" />
-          <van-grid-item text="坐诊巡诊" @click="goToZuo" v-if="isstore == 1" />
-          <van-grid-item text="测土配方" @click="goToCeTu" v-if="isstore == 1" />
-          <van-grid-item :text="isstore == 1?'专家挂号':'专家'" @click="goToRegistration" />
+          <van-grid-item text="坐诊巡诊" @click="goToZuo" v-if="hospitalIsStore == 1" />
+          <van-grid-item text="测土配方" @click="goToCeTu" v-if="hospitalIsStore == 1" />
+          <van-grid-item :text="hospitalIsStore == 1?'专家挂号':'专家'" @click="goToRegistration" />
           <van-grid-item text="资讯" @click="goToMessage" />
           <van-grid-item text="专家" @click="goToExpert" />
-          <van-grid-item text="优质基地" @click="goToGoodBase" v-if="isstore == 1" />
-          <van-grid-item text="会员提问" @click="goToAsk" v-if="isstore == 1" />
-          <van-grid-item text="店铺" />
+          <van-grid-item text="优质基地" @click="goToGoodBase" v-if="hospitalIsStore == 1" />
+          <van-grid-item text="会员提问" @click="goToAsk" v-if="hospitalIsStore == 1" />
+          <van-grid-item text="店铺" @click="goToShop" />
           <van-grid-item text="直播" @click="goToLive" />
           <van-grid-item text="简介" @click="goToIntro" />
         </van-grid>
       </div>
-      <div class="join-btn" v-if="importuser == 0" @click="goToApply">
+      <div class="join-btn" v-if="ismember == 0" @click="goToApply">
         申请加入医院
         <span class="free">免费</span>
       </div>
-      <div class="joined" v-else>2017-10-29 加入医院成为会员</div>
+      <div class="joined" v-else>{{joinTime}} 加入医院成为会员</div>
       <div class="know-vip" @click="goToVip">了解更多会员权益 ></div>
-      <div class="go-index" @click="gotoIndex">
+      <div class="go-index" @click="gotoHospitalIndex">
         <van-image class="logo" :src="require('./1.png')"></van-image>
-        柯桥新型庄稼医院首页
+        {{hospitalName}}
       </div>
     </div>
   </div>
@@ -45,11 +45,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    isstore: {
-      type: Number,
-      default: 1,
-    },
     importuser: {
+      type: Number,
+      default: 0,
+    },
+    ismember: {
       type: Number,
       default: 0,
     },
@@ -58,10 +58,12 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["mid", "uid"]),
+    ...mapState(["mid", "uid", "joinTime", "hospitalName", "hospitalIsStore"]),
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    console.log("this. :>> ", this.hospitalIsStore);
+  },
   destroyed() {},
   methods: {
     closeNav() {
@@ -78,38 +80,112 @@ export default {
     },
     goToZuo() {
       // 路由 坐诊巡诊
-      this.$router
-        .push({
-          path: "zuozhen_list",
-        })
-        .catch((err) => err);
+      if (this.ismember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉坐诊巡诊是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {})
+          .catch(() => {
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router
+          .push({
+            path: "zuozhen_list",
+          })
+          .catch((err) => err);
+      }
       this.$emit("changeFlag", false);
     },
     goToCeTu() {
       // 路由 测土配方
-      this.$router
-        .push({
-          path: "cetu_list",
-        })
-        .catch((err) => err);
+      if (this.ismember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉测土配方是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {
+            // on confirm
+          })
+          .catch(() => {
+            // on cancel
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router
+          .push({
+            path: "cetu_list",
+          })
+          .catch((err) => err);
+      }
+
       this.$emit("changeFlag", false);
     },
     goToRegistration() {
-      // 路由 测土配方
-      this.$router
-        .push({
-          path: "/expert_registration",
-        })
-        .catch((err) => err);
+      // 路由 专家挂号
+      if (this.ismember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉专家挂号是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {
+            // on confirm
+          })
+          .catch(() => {
+            // on cancel
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router
+          .push({
+            path: "/expert_registration",
+          })
+          .catch((err) => err);
+      }
       this.$emit("changeFlag", false);
     },
     goToMessage() {
-      // 路由 提问
-      this.$router
-        .push({
-          path: "/message",
-        })
-        .catch((err) => err);
+      // 路由 会员提问
+      if (this.ismember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉会员提问是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {
+            // on confirm
+          })
+          .catch(() => {
+            // on cancel
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router
+          .push({
+            path: "/hospital_message",
+          })
+          .catch((err) => err);
+      }
       this.$emit("changeFlag", false);
     },
     goToAsk() {
@@ -157,7 +233,7 @@ export default {
         .catch((err) => err);
       this.$emit("changeFlag", false);
     },
-    gotoIndex() {
+    gotoHospitalIndex() {
       // 路由 去医院首页
       this.$router
         .push({
@@ -181,6 +257,9 @@ export default {
         })
         .catch((err) => err);
       this.$emit("changeFlag", false);
+    },
+    goToShop() {
+      window.open("http://sxmvip.114nz.com", "_blank");
     },
   },
 };

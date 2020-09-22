@@ -1,6 +1,7 @@
 <template>
   <div class="cetu_list-container">
-    <Header :header="headerKind" navHeader="测土配方"></Header>
+    <Header :indexHeader="false" v-if="from == 'me'"></Header>
+    <HeaderHospital :header="headerKind" navHeader="测土配方" v-else></HeaderHospital>
     <ul class="cetu_ul">
       <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
         <div class="top">
@@ -9,46 +10,34 @@
           </div>
           <div class="time">{{item.showtime}}</div>
         </div>
-        <div class="hospital" v-if="headerKind == 'logoHeader'">{{item.mpublic}}</div>
+        <div class="hospital" v-if="from == 'me'">{{item.mpublic}}</div>
       </li>
     </ul>
+    <van-empty description="暂无土壤检测报告" v-show="noData"></van-empty>
   </div>
 </template>
 <script>
-import Header from "@/components/hospital_header/hospital_header";
+import Header from "@/components/header/header";
+import HeaderHospital from "@/components/hospital_header/hospital_header";
 import { mapState } from "vuex";
 
 export default {
   name: "cetuList",
-  components: { Header },
+  components: { Header, HeaderHospital },
   props: {},
-  beforeRouteEnter(to, from, next) {
-    console.log("from.name :>> ", from.name);
-    if (from.name == null) {
-      next();
-      return;
-    }
-    if (from.name == "me") {
-      next((vm) => {
-        vm.headerKind = "logoHeader";
-        window.localStorage.setItem("headerKind", "logoHeader");
-      });
-    } else {
-      next((vm) => {
-        vm.headerKind = "indexHeader";
-        window.localStorage.setItem("headerKind", "indexHeader");
-      });
-    }
-  },
   metaInfo() {
     return {
       title: "土壤检测",
     };
   },
+  created() {
+    this.$emit("footer", false);
+  },
   data() {
     return {
-      headerKind: window.localStorage.getItem("headerKind"),
       list: [],
+      noData: false,
+      from: this.$route.query.from,
     };
   },
   computed: {
@@ -56,7 +45,7 @@ export default {
   },
   watch: {
     $route() {
-      if (this.headerKind == "indexHeader") {
+      if (this.from != "me") {
         this.getList(this.mid);
       } else {
         this.getMeList(this.uid);
@@ -64,7 +53,7 @@ export default {
     },
   },
   mounted() {
-    if (this.headerKind == "indexHeader") {
+    if (this.from != "me") {
       this.getList(this.mid);
     } else {
       this.getMeList(this.uid);
@@ -74,11 +63,14 @@ export default {
   methods: {
     getList(mid) {
       // 获取测土配方列表 医院
+      this.noData = false;
       this.$axios
         .fetchPost("/Mobile/Treatment/getTestingsoil", { mId: mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

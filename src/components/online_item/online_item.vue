@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="subsidy" v-if="list.isbenefit == 1"></div>
-    <div class=" text" @click="goToDetail">{{list.description}}</div>
+    <div class=" text" @click="goToDetail">{{list.title}}</div>
     <div class="img-list">
       <div class="item" v-for="(item,index) in list.pic_urls_tiny" :key="item" @click="preview(list.pic_urls,index)">
         <van-image class="img" fit="cover" :src="item" lazy-load></van-image>

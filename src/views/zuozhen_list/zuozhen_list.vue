@@ -7,6 +7,7 @@
         <p class="p2">{{item.showtime}}</p>
       </li>
     </ul>
+    <van-empty description="暂无医院就诊记录" v-if="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -23,10 +24,14 @@ export default {
   data() {
     return {
       list: [],
+      noData: false,
     };
   },
   computed: {
     ...mapState(["mid"]),
+  },
+  created() {
+    this.$emit("footer", false);
   },
   watch: {},
   mounted() {
@@ -35,11 +40,14 @@ export default {
   destroyed() {},
   methods: {
     getOnlineList() {
+      this.noData = false;
       this.$axios
         .fetchPost("/Mobile/Treatment/getWenzhen", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

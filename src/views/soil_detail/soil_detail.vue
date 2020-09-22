@@ -34,17 +34,17 @@
         <div class="item item03">{{it.standard}}</div>
         <div class="item item04">{{it.unit}}</div>
       </li>
-      <li class="description">结果描述：{{soil.hl_result}} </li>
+      <li class="description">结果描述：{{soil.hl_result || '无'}} </li>
     </ul>
     <ul class="bottom">
       <li class="title">处方信息</li>
       <li>
         <div class="left">处方专家</div>
-        <div class="right">{{soil.chufang_expert}}</div>
+        <div class="right">{{soil.chufang_expert || '无'}}</div>
       </li>
       <li>
         <div class="left">看诊结果</div>
-        <div class="right">{{soil.chufang_result}}</div>
+        <div class="right">{{soil.chufang_result || '无'}}</div>
       </li>
     </ul>
   </div>

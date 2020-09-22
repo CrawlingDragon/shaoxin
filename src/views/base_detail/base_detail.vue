@@ -31,7 +31,7 @@
         <div class="item">
           <div class="icon icon03"></div>
           <div class="text1">{{base.address}}</div>
-          <div class="do">查看</div>
+          <div class="do" @click="goToLocation(base.address)">查看</div>
         </div>
       </div>
     </div>
@@ -108,6 +108,14 @@ export default {
       this.$router.push({
         path: "/expert",
         query: { id: this.base.uid },
+      });
+    },
+    goToLocation(location) {
+      this.$router.push({
+        path: "/base_location",
+        query: {
+          location: location,
+        },
       });
     },
   },

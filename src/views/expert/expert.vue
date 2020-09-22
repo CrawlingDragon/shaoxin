@@ -4,17 +4,17 @@
     <div class="person-box">
       <div class="name-bar">
         <van-image class="avator" :src="expertData.avatar"></van-image>
-        <div class="name">{{expertData.name}}<span>{{expertData.groupname}}</span></div>
+        <div class="name">{{expertData.name}}<span v-if="identity == 1">{{expertData.groupname}}</span><span v-if="identity == 0" @click="goToCrop">{{expertData.forum}}</span></div>
         <div class="p1">{{expertData.company}}</div>
       </div>
-      <div class="btns" v-if="$route.query.from != 'my'">
-        <div class="btn-look" v-if="expertData.id != uid" @click="attention">
+      <div class="btns">
+        <div class="btn-look" v-if="$route.query.from != 'my'" @click="attention">
           <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}
         </div>
-        <div class="btn-ask" v-if="expertData.identity == 1 && expertData.id != uid" @click="goToAsk">
+        <div class="btn-ask" v-if="expertData.identity == 1 && $route.query.from != 'my'" @click="goToAsk">
           <van-icon name="records" class="records" />提问
         </div>
-        <div class="edit" v-if="expertData.id == uid" @click="goToMeEdit">编辑资料</div>
+        <div class="edit" v-if="$route.query.from == 'my'" @click="goToMeEdit">编辑资料</div>
       </div>
       <div class="fans">
         <div class="item">关注 {{expertData.tofollower}}</div>
@@ -26,8 +26,20 @@
         个人简介
         <div class="look-more">详细资料 ></div>
       </div>
-      <p class="goodat">擅长：{{expertData.skill}}</p>
-      <p class="explan">
+      <p class="goodat" v-if="expertData.skill" @click="goToCrop">擅长：{{expertData.skill}}</p>
+      <van-overlay :show="skillShow" @click="skillShow = false">
+        <div class="wrapper" @click.stop @click="skillShow = false">
+          <div class="avatar-box">
+            <van-image :src="expertData.avatar" fit="cover" radius="5px"></van-image>
+            <p class="avatar-p1">{{expertData.name}}</p>
+          </div>
+          <div class="crop-lis">
+            <div class="left">种植作物</div>
+            <div class="crop">{{identity == 1 ? expertData.skill : expertData.forum}}</div>
+          </div>
+        </div>
+      </van-overlay>
+      <p class="explan" v-if="expertData.introduce">
         {{expertData.introduce}}</p>
     </div>
     <van-tabs v-model="active" sticky class="tabs" color="#155BBB">
@@ -35,7 +47,7 @@
         <template #title>
           解答 {{expertData.posts}}
         </template>
-        <van-empty description="暂无解答内容" v-if="noData" />
+        <van-empty description="暂无解答" v-if="noData" />
         <ul class="answer-ul" v-else>
           <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check="false">
             <li v-for="item in askedList" :key="item.id">
@@ -96,6 +108,7 @@ export default {
       active: 0,
       id: this.$route.query.id,
       from: this.$route.query.from,
+      identity: 0, //是否是专家
       expertid: "",
       expertData: "",
       askedList: [], // 解答列表
@@ -112,6 +125,7 @@ export default {
       loading3: false,
       finished3: false,
       page3: 0,
+      skillShow: false,
     };
   },
   computed: {
@@ -149,6 +163,7 @@ export default {
         })
         .then((res) => {
           if (res.data.code == 0) {
+            this.identity = res.data.data.identity;
             this.expertData = res.data.data;
             this.status = res.data.data.status;
             this.expertid = res.data.data.uid;
@@ -191,7 +206,7 @@ export default {
           uId: this.expertid,
           page: this.page2,
           pagesize: 12,
-          action: "tome",
+          action: "ask",
         })
         .then((res) => {
           if (res.data.code == 0) {
@@ -281,6 +296,9 @@ export default {
           });
       }
     },
+    goToCrop() {
+      this.skillShow = true;
+    },
   },
 };
 </script>
@@ -367,7 +385,6 @@ export default {
   .person-info
     margin-top 10px
     background #fff
-    padding-bottom 12px
     .title-bar
       height 40px
       line-height 40px
@@ -382,7 +399,7 @@ export default {
         right 15px
         top 0
     .goodat
-      padding 15px 50px 14px 12px
+      padding 15px 50px 5px 12px
       color #343434
       font-size 15px
       line-height 15px
@@ -390,7 +407,7 @@ export default {
       text-overflow ellipsis
       white-space nowrap
     .explan
-      padding 0 12px
+      padding 5px 12px 12px
       color #9A9A9A
       font-size 12px
       display -webkit-box
@@ -419,4 +436,37 @@ export default {
         break-inside avoid
         padding-right 12px
         margin-bottom 10px
+.van-overlay
+  z-index 2
+  top 40px
+.wrapper
+  background #EBEBEB
+  position fixed
+  left 0
+  top 40px
+  bottom 0
+  right 0
+  z-index 999
+  .avatar-box
+    width 100%
+    height 150px
+    background #fff
+    text-align center
+    .van-image
+      margin 25px auto 10px
+      width 65px
+      height 65px
+    .avatar-p1
+      color #333
+      font-size 20px
+  .crop-lis
+    margin-top 10px
+    min-height 50px
+    padding 18px 15px 15px
+    background #fff
+    display flex
+    .left
+      width 103px
+      color #999999
+      margin-right 15px
 </style>

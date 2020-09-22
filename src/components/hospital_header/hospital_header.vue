@@ -29,7 +29,7 @@
       </div>
     </div>
     <fastNav :showFlag="flag" @changeFlag="closeFast" :user="user"></fastNav>
-    <hospitalFastNav :showFlag="flagHospital" @changeFlag="close" :importuser="user.importuser"></hospitalFastNav>
+    <hospitalFastNav :showFlag="flagHospital" @changeFlag="close" :importuser="user.importuser" :ismember="user.ismember"></hospitalFastNav>
   </div>
 </template>
 <script>

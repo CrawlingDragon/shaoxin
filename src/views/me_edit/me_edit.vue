@@ -2,13 +2,15 @@
   <div class="me_edit-container">
     <Header :indexHeader="false"></Header>
     <ul>
-      <li>
-        <div class="left">头像</div>
-        <div class="mid">
-          <van-image class="avator" fit="cover" round :src="avatar"></van-image>
-        </div>
-        <van-icon name="arrow" class="arrow" />
-      </li>
+      <van-uploader class="upload" accept="image/*" :after-read="afterRead">
+        <li>
+          <div class="left">头像</div>
+          <div class="mid">
+            <van-image class="avator" fit="cover" round :src="avatar"></van-image>
+          </div>
+          <van-icon name="arrow" class="arrow" />
+        </li>
+      </van-uploader>
       <li>
         <div class="left">用户名</div>
         <div class="mid">{{ userName }}</div>
@@ -16,11 +18,11 @@
       <li @click="clickName">
         <div class="left">名字</div>
         <div class="mid">{{ name }}</div>
-        <van-icon name="arrow" class="arrow" />
+        <van-icon name="arrow" class="arrow" v-if="identity != 1 || ismember != 1" />
       </li>
       <li @click="sexShow = true">
         <div class="left">性别</div>
-        <div class="mid">{{ sex }}</div>
+        <div class="mid">{{ sex == '1'?'男':'女' }}</div>
         <van-icon name="arrow" class="arrow" />
       </li>
       <li @click="areaShow = true">
@@ -58,22 +60,38 @@ export default {
       info: "",
       avatar: "",
       userName: "",
-      name: "",
-      sex: "请选择",
+      name: "", //名字
+      sex: "请选择", //性别
       nameShow: false,
       sexShow: false,
       areaShow: false,
       names: "",
-      actions: [{ name: "男" }, { name: "女" }],
+      actions: [
+        { name: "男", id: 1 },
+        { name: "女", id: 0 },
+      ],
       areaList: areaList,
-      resideprovince: "",
-      residecity: "",
-      residedist: "",
+      resideprovince: "", //省
+      residecity: "", //市
+      residedist: "", //区
+      identity: 0, //1是专家，不允许改名字，0是普通人
+      ismember: 0, //1是会员，不允许改名字，0可以修改
     };
   },
   computed: { ...mapState(["uid", "mid"]) },
-  watch: {},
+  watch: {
+    name() {
+      this.upDate();
+    },
+    sex() {
+      this.upDate();
+    },
+    residedist() {
+      this.upDate();
+    },
+  },
   mounted() {
+    this.$emit("footer", false);
     this.getInfo();
   },
   created() {
@@ -81,6 +99,21 @@ export default {
   },
   destroyed() {},
   methods: {
+    afterRead(file) {
+      let formData = new FormData();
+      formData.append("urls[]", file.file);
+      formData.append("uId", this.uid);
+      this.$axios
+        .fetchPost("/Mobile/Wen/OssUploadFile", formData)
+        .then((res) => {
+          // console.log("res :>> ", res);
+          if (res.data.code == 0) {
+            this.avatar = res.data.data;
+          } else {
+            this.$toast(res.data.message);
+          }
+        });
+    },
     getInfo() {
       this.$axios
         .fetchPost("/Mobile/User/userCenter", { uId: this.uid, mId: this.mid })
@@ -90,23 +123,25 @@ export default {
             this.avatar = data.avatar;
             this.userName = data.username;
             this.name = data.realname;
-            this.sex = data.sex || "请选择";
+            this.sex = data.gender;
             this.resideprovince = data.resideprovince || "请选择";
             this.residecity = data.residecity;
             this.residedist = data.residedist;
+            this.identity = data.identity;
+            this.ismember = data.ismember;
           }
         });
     },
-    upDate({ gender, realname, resideprovince, residecity, residedist }) {
+    upDate() {
       //分开上传
       this.$axios
         .fetchPost("Mobile/User/updateInfo", {
           uId: this.uid,
-          gender,
-          realname,
-          resideprovince,
-          residecity,
-          residedist,
+          gender: this.sex,
+          realname: this.name,
+          resideprovince: this.resideprovince,
+          residecity: this.residecity,
+          residedist: this.residedist,
         })
         .then((res) => {
           if (res.data.code == 0) {
@@ -116,6 +151,9 @@ export default {
         });
     },
     clickName() {
+      if (this.identity == 1 || this.ismember == 1) {
+        return;
+      }
       this.nameShow = true;
       this.names = this.name;
     },
@@ -123,7 +161,7 @@ export default {
       this.name = this.names;
     },
     onSelect(item) {
-      this.sex = item.name;
+      this.sex = item.id;
       this.sexShow = false;
     },
     confimArea(item) {
@@ -144,6 +182,10 @@ export default {
     margin-top 10px
     padding-left 12px
     background #fff
+    .upload
+      width 100%
+      /deep/.van-uploader__input-wrapper
+        width 100%
     li
       display flex
       align-items center

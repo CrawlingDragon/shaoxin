@@ -2,10 +2,13 @@
   <div class="hospital_online-container">
     <Header header="indexHeader" navHeader="线上网诊" :mid="mid"></Header>
     <ul>
-      <li v-for="item in list" :key="item.id">
-        <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
-      </li>
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <li v-for="item in list" :key="item.id">
+          <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
+        </li>
+      </van-list>
     </ul>
+    <van-empty description="暂无网诊" v-show="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -27,19 +30,24 @@ export default {
   data() {
     return {
       list: [],
+      loading: false,
+      finished: false,
+      page: 0,
+      noData: false,
     };
   },
+  created() {},
   computed: {
     ...mapState(["mid"]),
   },
 
   watch: {},
-  mounted() {
-    this.$emit("footer", false);
-    this.getList();
-  },
+  mounted() {},
   destroyed() {},
   methods: {
+    onLoad() {
+      this.getList();
+    },
     preverImg(item) {
       //网诊的图片预览
       ImagePreview({
@@ -50,11 +58,19 @@ export default {
     },
     getList() {
       // 获取网诊列表
+      this.page += 1;
+      this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/Wen/index", { mId: this.mid })
+        .fetchPost("/Mobile/Wen/index", { mId: this.mid, page: this.page })
         .then((res) => {
           if (res.data.code == 0) {
-            this.list = res.data.data;
+            this.list = this.list.concat(res.data.data);
+            this.loading = false;
+          } else if (res.data.code == 201) {
+            if (this.page == 1) {
+              this.noData = true;
+            }
+            this.finished = true;
           }
         });
     },
