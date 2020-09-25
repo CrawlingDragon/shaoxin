@@ -9,6 +9,7 @@
         </li>
       </van-list>
     </ul>
+    <Foot></Foot>
   </div>
 </template>
 <script>
@@ -16,13 +17,13 @@ import Header from "@/components/header/header";
 import HospitalHeader from "@/components/hospital_header/hospital_header";
 import MessageItem from "@/components/message_item/message_item";
 import { mapState } from "vuex";
-
+import Foot from "@/components/foot/foot";
 export default {
   metaInfo: {
     title: "资讯列表",
   },
   name: "message",
-  components: { Header, MessageItem, HospitalHeader },
+  components: { Header, MessageItem, HospitalHeader, Foot },
   props: {},
   data() {
     return {
@@ -35,9 +36,7 @@ export default {
   computed: {
     ...mapState(["mid", "initMid"]),
   },
-  created() {
-    this.$emit("footer", true);
-  },
+  created() {},
   watch: {},
   mounted() {},
   destroyed() {},

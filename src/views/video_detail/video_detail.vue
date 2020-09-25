@@ -25,7 +25,6 @@ export default {
   computed: {},
   watch: {},
   mounted() {
-    this.$emit("footer", false);
     this.getDetail();
   },
   destroyed() {},

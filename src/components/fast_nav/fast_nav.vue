@@ -1,4 +1,4 @@
-import { mapState } from 'vuex';
+
 <template>
   <div class="fast_nav-conatiner" v-show="showFlag">
     <div class="title van-hairline--top van-hairline--bottom">
@@ -71,8 +71,8 @@ import { mapState } from 'vuex';
       <div class="btn2" @click="goToSign">注册</div>
     </div>
     <div class="logined" v-else>
-      <van-image width="35" height="35" round :src="user.avatar" class="avator" fit="cover" />
-      <p class="name">{{user.username}}</p>
+      <van-image width="35" height="35" round :src="userAvatar" class="avator" fit="cover" />
+      <p class="name">{{userName}}</p>
       <div class="login-out" @click="loginOut">退出登录</div>
     </div>
     <div class="index-btn" @click="goToIndex">
@@ -92,35 +92,18 @@ export default {
       type: Boolean,
       default: false,
     },
-    user: {
-      type: Object,
-      default: function () {
-        return {};
-      },
-    },
   },
   data() {
-    return {
-      ai: "",
-    };
+    return {};
   },
   computed: {
-    ...mapState(["uid", "initMid"]),
+    ...mapState(["uid", "initMid", "userAvatar", "userName", "aiExpertId"]),
   },
   watch: {},
-  mounted() {
-    this.getAiId();
-  },
+  mounted() {},
   destroyed() {},
   methods: {
     ...mapMutations(["setUid", "setMid"]),
-    getAiId() {
-      this.$axios.fetchPost("Mobile/Sysconfig/getAiExpert").then((res) => {
-        if (res.data.code == 0) {
-          this.ai = res.data.data;
-        }
-      });
-    },
     closeBox() {
       this.$emit("changeFlag", false);
     },
@@ -170,7 +153,8 @@ export default {
       this.$router.push({ path: "/message" }).catch((err) => err);
     },
     goToBase() {
-      this.$router.push({ path: "/good_base" }).catch((err) => err);
+      this.setMid(this.initMid);
+      this.$router.push({ path: "/whole_base_list" }).catch((err) => err);
     },
     goToAnswer() {
       //  去首页的的网诊
@@ -195,7 +179,7 @@ export default {
     goToAi() {
       // 去ai页面
       this.$router
-        .push({ path: "/expert", query: { id: this.ai } })
+        .push({ path: "/expert", query: { id: this.aiExpertId } })
         .catch((err) => err);
     },
     goToAboutUs() {

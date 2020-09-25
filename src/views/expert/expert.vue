@@ -8,13 +8,13 @@
         <div class="p1">{{expertData.company}}</div>
       </div>
       <div class="btns">
-        <div class="btn-look" v-if="$route.query.from != 'my'" @click="attention">
+        <div class="btn-look" v-if="$route.query.from != 'my' && expertData.isme == 0" @click="attention">
           <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}
         </div>
-        <div class="btn-ask" v-if="expertData.identity == 1 && $route.query.from != 'my'" @click="goToAsk">
+        <div class="btn-ask" v-if="expertData.identity == 1 && $route.query.from != 'my' && id != aiExpertId" @click="goToAsk">
           <van-icon name="records" class="records" />提问
         </div>
-        <div class="edit" v-if="$route.query.from == 'my'" @click="goToMeEdit">编辑资料</div>
+        <div class="edit" v-if="$route.query.from == 'my' || expertData.isme == 1" @click="goToMeEdit">编辑资料</div>
       </div>
       <div class="fans">
         <div class="item">关注 {{expertData.tofollower}}</div>
@@ -56,11 +56,11 @@
           </van-list>
         </ul>
       </van-tab>
-      <van-tab sticky>
+      <van-tab sticky v-if="id != aiExpertId">
         <template #title>
           提问 {{expertData.threads}}
         </template>
-        <ul class="answer-ul">
+        <ul class="answer-ul" v-show="id != aiExpertId">
           <van-list v-model="loading2" :finished="finished2" finished-text="没有更多了" @load="onLoad2" :immediate-check="false">
             <li v-for="item in askMeList" :key="item.id">
               <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>2
@@ -68,11 +68,11 @@
           </van-list>
         </ul>
       </van-tab>
-      <van-tab sticky>
+      <van-tab sticky v-if="id != aiExpertId">
         <template #title>
           加入的医院 {{expertData.join}}
         </template>
-        <ul class="hospital-ul">
+        <ul class="hospital-ul" v-show="id != aiExpertId">
           <van-list v-model="loading3" :finished="finished3" finished-text="没有更多了" @load="onLoad3" :immediate-check="false">
             <li v-for="item in hospitalList" :key="item.id">
               <RecommendHospital :list="item"></RecommendHospital>
@@ -129,17 +129,16 @@ export default {
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "aiExpertId"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {
     id(newVal) {
       this.getExpertData(newVal);
     },
   },
   mounted() {
+    // console.log("this.aiExpeartId :>> ", this.aiExpertId);
     this.getExpertData(this.id);
     // console.log("this.id,this.from :>> ", this.id, this.from);
   },

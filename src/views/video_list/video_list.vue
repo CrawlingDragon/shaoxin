@@ -30,9 +30,7 @@ export default {
   },
   computed: {},
   watch: {},
-  mounted() {
-    this.$emit("footer", false);
-  },
+  mounted() {},
   destroyed() {},
   methods: {
     onLoad() {

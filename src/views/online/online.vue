@@ -13,9 +13,7 @@ export default {
   data() {
     return {};
   },
-  created() {
-    this.$emit("footer", true);
-  },
+  created() {},
   computed: {},
   watch: {},
   mounted() {},

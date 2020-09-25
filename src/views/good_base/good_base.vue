@@ -10,7 +10,7 @@
           <div class="p2">{{item.zwtype}} {{item.guimo}}亩</div>
           <div class="join-time">
             <van-image class="avator" round :src="item.avatar"></van-image>
-            <div class="time">{{item.addtime}} 加入医院</div>
+            <div class="time">{{item.regtime}} 加入医院</div>
           </div>
         </div>
       </li>
@@ -37,13 +37,11 @@ export default {
   computed: {
     ...mapState(["uid", "mid"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {},
   mounted() {
-    // this.getBaseList(this.mid);
-    this.getBaseList(61214);
+    this.getBaseList(this.mid);
+    // this.getBaseList(61214);
   },
   destroyed() {},
   methods: {

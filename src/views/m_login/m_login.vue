@@ -40,9 +40,7 @@ export default {
       mCode: "",
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {},
   watch: {},
   mounted() {},
@@ -97,6 +95,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
+            this.setIsMember(res.data.data.ismember);
             this.$router.push({
               path: "/",
             });

@@ -24,6 +24,7 @@
         </van-list>
       </ul>
     </div>
+    <Foot></Foot>
   </div>
 </template>
 <script>
@@ -31,7 +32,7 @@ import Header from "@/components/header/header.vue";
 import OnlineItem from "@/components/online_item/online_item";
 import { ImagePreview } from "vant";
 import { mapState } from "vuex";
-
+import Foot from "@/components/foot/foot";
 export default {
   name: "indexOnline",
   metaInfo: {
@@ -41,6 +42,7 @@ export default {
     Header,
     OnlineItem,
     [ImagePreview.Component.name]: ImagePreview.Component,
+    Foot,
   },
   props: {},
   data() {
@@ -79,9 +81,7 @@ export default {
       this.getIndexData();
     },
   },
-  created() {
-    this.$emit("footer", true);
-  },
+  created() {},
   mounted() {
     // this.getIndexData(this.mid, this.fid);
   },

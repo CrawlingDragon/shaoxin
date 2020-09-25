@@ -100,13 +100,16 @@ export default {
           this.hospital = "/into_hospital";
           break;
         case "/":
-          this.indexRoute = "/";
+          this.indexRoute = "/index";
           this.hospital = "/into_hospital";
           break;
         case "indexOnline":
           this.indexRoute = "/index_online";
           this.hospital = "/into_hospital";
           break;
+        case "me":
+          this.indexRoute = "/";
+          this.hospital = "/into_hospital";
       }
     },
     goToIndex() {

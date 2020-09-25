@@ -28,9 +28,7 @@ export default {
     ...mapState(["uid"]),
   },
   watch: {},
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   mounted() {
     this.getOnlineList();
   },

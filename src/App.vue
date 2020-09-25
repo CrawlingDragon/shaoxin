@@ -1,23 +1,56 @@
+
 <template>
   <div id="app">
-    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert" include="index,intoHospital,searchOnline,hospital,searchHospital,applyVip,live">
-      <router-view @footer="footer" />
+    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert" include="index,searchOnline,hospital,searchHospital,applyVip,live">
+      <router-view />
     </keep-alive>
-    <Foot v-if="footShow"></Foot>
   </div>
 </template>
 <script>
-import Foot from "@/components/foot/foot";
+import { mapState, mapMutations } from "vuex";
 export default {
   data() {
-    return {
-      footShow: true,
-    };
+    return {};
   },
-  components: { Foot },
+  computed: {
+    ...mapState(["uid", "initMid"]),
+  },
+  watch: {
+    uid() {
+      this.getUserInfo();
+    },
+  },
+  mounted() {
+    this.getUserInfo();
+    this.getAiId();
+  },
   methods: {
-    footer(bool) {
-      this.footShow = bool;
+    ...mapMutations([
+      "setIsMember",
+      "setUserName",
+      "setUserAvatar",
+      "setAiExpertId",
+    ]),
+    getUserInfo() {
+      this.$axios
+        .fetchPost("Mobile/User/userCenter", {
+          uId: this.uid,
+          mId: this.initMid,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.setIsMember(res.data.data.ismember);
+            this.setUserName(res.data.data.username);
+            this.setUserAvatar(res.data.data.avatar);
+          }
+        });
+    },
+    getAiId() {
+      this.$axios.fetchPost("Mobile/Sysconfig/getAiExpert").then((res) => {
+        if (res.data.code == 0) {
+          this.setAiExpertId(res.data.data);
+        }
+      });
     },
   },
 };

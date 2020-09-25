@@ -52,9 +52,7 @@ export default {
     ...mapState(["uid", "mid"]),
   },
   watch: {},
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   mounted() {
     this.myAsk();
     this.myAnswer();

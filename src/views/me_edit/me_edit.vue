@@ -91,12 +91,9 @@ export default {
     },
   },
   mounted() {
-    this.$emit("footer", false);
     this.getInfo();
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   destroyed() {},
   methods: {
     afterRead(file) {

@@ -44,11 +44,11 @@
         <div class="icon icon12"></div>
         <p>直播</p>
       </li>
-      <li v-if="hospitalIsStore == 1 && ismember == 1  ">
+      <li v-if="hospitalIsStore == 1 && hospitalIsMember == 1" @click="isVip">
         <div class="icon icon08"></div>
         <p>已是会员</p>
       </li>
-      <li v-if="hospitalIsStore == 1 && ismember == 0" @click="goToApplyVip">
+      <li v-if="hospitalIsStore == 1 && hospitalIsMember == 0" @click="goToApplyVip">
         <div class="icon icon09"></div>
         <p class="p2">申请会员</p>
       </li>
@@ -70,7 +70,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["hospitalIsStore"]),
+    ...mapState(["hospitalIsStore", "hospitalIsMember"]),
   },
   watch: {},
   mounted() {},
@@ -78,43 +78,94 @@ export default {
   methods: {
     goToOnline() {
       // 路由 去线上网诊
-      this.$router
-        .push({
-          path: "hospital_online",
-        })
-        .catch((err) => err);
+      this.$router.push({ path: "hospital_online" }).catch((err) => err);
     },
     goToZuo() {
       // 路由 坐诊巡诊
-      this.$router
-        .push({
-          path: "zuozhen_list",
-        })
-        .catch((err) => err);
+      if (this.hospitalIsMember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉坐诊巡诊是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {})
+          .catch(() => {
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router.push({ path: "zuozhen_list" }).catch((err) => err);
+      }
     },
     goToCeTu() {
       // 路由 测土配方
-      this.$router
-        .push({
-          path: "cetu_list",
-        })
-        .catch((err) => err);
+      if (this.hospitalIsMember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉测土配方是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {
+            // on confirm
+          })
+          .catch(() => {
+            // on cancel
+            this.$router.push({ path: "/apply_vip" });
+          });
+      } else {
+        this.$router.push({ path: "cetu_list" }).catch((err) => err);
+      }
     },
     goToRegistration() {
       // 路由 专家挂号
-      this.$router
-        .push({
-          path: "/expert_registration",
-        })
-        .catch((err) => err);
+      if (this.hospitalIsMember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉专家挂号是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {
+            // on confirm
+          })
+          .catch(() => {
+            // on cancel
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router.push({ path: "/expert_registration" }).catch((err) => err);
+      }
     },
     goToAsk() {
       // 路由 提问
-      this.$router
-        .push({
-          path: "/ask",
-        })
-        .catch((err) => err);
+      if (this.hospitalIsMember == 0) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "抱歉会员提问是会员服务，请先申请加入医院在访问",
+            cancelButtonText: "申请加入会员",
+            confirmButtonText: "好的",
+          })
+          .then(() => {
+            // on confirm
+          })
+          .catch(() => {
+            // on cancel
+            this.$router.push({
+              path: "/apply_vip",
+            });
+          });
+      } else {
+        this.$router.push({ path: "/ask" }).catch((err) => err);
+      }
     },
     goToExpert() {
       // 路由 医院专家
@@ -142,11 +193,24 @@ export default {
     },
     goToLive() {
       // 路由 直播
-      this.$router
-        .push({
-          path: "/live",
+      this.$router.push({ path: "/live" }).catch((err) => err);
+    },
+    isVip() {
+      this.$dialog
+        .confirm({
+          message: "您已是新型庄稼医院会员",
+          cancelButtonText: "查看会员权益",
+          confirmButtonText: "好的",
         })
-        .catch((err) => err);
+        .then(() => {
+          // on confirm
+        })
+        .catch(() => {
+          // on cancel
+          this.$router.push({
+            path: "/vip",
+          });
+        });
     },
   },
 };

@@ -34,9 +34,7 @@ export default {
       page: 0,
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {},
   watch: {},
   mounted() {},

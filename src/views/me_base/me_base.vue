@@ -39,9 +39,7 @@ export default {
   computed: {
     ...mapState(["uid"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {},
   mounted() {
     this.getList();

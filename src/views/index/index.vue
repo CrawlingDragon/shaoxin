@@ -65,6 +65,7 @@
         </li>
       </ul>
     </div>
+    <Foot></Foot>
   </div>
 </template>
 <script>
@@ -74,6 +75,7 @@ import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
 import { ImagePreview } from "vant";
 import { mapMutations, mapState } from "vuex";
+import Foot from "@/components/foot/foot";
 export default {
   metaInfo: {
     title: "绍兴市为农服务平台",
@@ -84,6 +86,7 @@ export default {
     RecommendHospital,
     OnlineItem,
     RecommendExpert,
+    Foot,
     [ImagePreview.Component.name]: ImagePreview.Component,
   },
   props: {},
@@ -101,15 +104,14 @@ export default {
       vm.$emit("footer", true);
     });
   },
-  created() {
-    this.$emit("footer", true);
-  },
+  created() {},
   computed: {
     ...mapState(["initMid"]),
   },
   watch: {},
   mounted() {
     this.getIndexData();
+    this.setMid(this.initMid);
   },
   destroyed() {},
   methods: {

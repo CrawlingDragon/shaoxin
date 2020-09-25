@@ -30,9 +30,7 @@ export default {
       title: "土壤检测",
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   data() {
     return {
       list: [],

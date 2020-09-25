@@ -182,6 +182,14 @@ const routes = [
     ]
   },
   {
+    path: "/apply_vip_succeed",
+    name: "applyVipSucceed",
+    component: () =>
+      import(
+        /*webpackChunkName:"apply_vip_succeed" */ "@/views/apply_vip_succeed/apply_vip_succeed"
+      )
+  },
+  {
     path: "/vip",
     name: "vip",
     component: () => import(/*webpackChunkName:"vip" */ "@/views/vip/vip")
@@ -413,8 +421,7 @@ router.beforeEach((to, from, next) => {
     //没登录的状态 不能去这些页面
     if (
       to.name == "ask" ||
-      to.name == "me_edit" ||
-      to.name == "me_registration" ||
+      to.name == "me" ||
       to.name == "zuozhenList" ||
       to.name == "cetuList" ||
       to.name == "expertRegistration"

@@ -20,7 +20,7 @@
         <van-icon name="qr" />
       </div>
     </div>
-    <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav" :user="user"></fastNav>
+    <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav"></fastNav>
   </div>
 </template>
 <script>
@@ -50,27 +50,10 @@ export default {
     $route() {
       this.fastNavShowFlag = false;
     },
-    uid() {
-      this.getUserInfo();
-    },
   },
-  mounted() {
-    this.getUserInfo();
-  },
+  mounted() {},
   destroyed() {},
   methods: {
-    getUserInfo() {
-      this.$axios
-        .fetchPost("Mobile/User/userCenter", {
-          uId: this.uid,
-          mId: this.initMid,
-        })
-        .then((res) => {
-          if (res.data.code == 0) {
-            this.user = res.data.data;
-          }
-        });
-    },
     goToSearch() {
       // 路由  搜索网诊
       this.$router

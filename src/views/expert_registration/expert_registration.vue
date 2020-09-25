@@ -16,13 +16,13 @@
             <div class="p1" v-if="item.data.am.realname == '无号源'" @click="clickNo">无号源</div>
             <div class="now" v-if="item.data.am.realname == '即将放号'" @click="rightNow">{{item.data.am.realname}}</div>
             <div class="number" v-if="item.data.am.realname != '无号源' && item.data.am.realname != '即将放号'" @click="registration(item.data.am,'上午')">总{{item.data.am.nums}} 剩{{item.data.am.surplus}}</div>
-            <div class="expert" v-if="item.data.am.realname != '无号源'">{{item.data.am.realname}}专家</div>
+            <div class="expert" v-if="item.data.am.realname != '无号源'">{{item.data.am.realname}}</div>
           </div>
           <div class="right">
             <div class="p1" v-if="item.data.pm.realname == '无号源'" @click="clickNo">无号源</div>
             <div class="now" v-if="item.data.pm.realname == '即将放号'" @click="rightNow">{{item.data.pm.realname}}</div>
             <div class="number" v-if="item.data.pm.realname != '无号源' && item.data.pm.realname != '即将放号'" @click="registration(item.data.pm,'下午')">总{{item.data.pm.nums}} 剩{{item.data.pm.surplus}}</div>
-            <div class=" expert" v-if="item.data.pm.realname != '无号源'">{{item.data.pm.realname}}专家</div>
+            <div class=" expert" v-if="item.data.pm.realname != '无号源'">{{item.data.pm.realname}}</div>
           </div>
         </div>
       </div>
@@ -45,9 +45,7 @@ export default {
       list: [],
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {
     ...mapState(["mid", "uid"]),
   },
@@ -78,7 +76,7 @@ export default {
       }
       let title = `${this.timeFormat(parseInt(item.ymd) * 1000)}${halfDay}${
         item.realname
-      }专家的号吗?`;
+      }的号吗?`;
 
       let obj = {
         mId: this.mid,

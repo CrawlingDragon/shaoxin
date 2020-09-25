@@ -37,6 +37,11 @@
             <div class="time">{{item.addtime}}</div>
           </div>
           <div class="text">{{item.content}}</div>
+          <div class="image-ul">
+            <div class="item" v-for="(it,index) in item.pic_urls_tiny" :key="it.id" @click="preview(item.urls,index)">
+              <van-image :src="it" fit="cover" class="answer-img"></van-image>
+            </div>
+          </div>
           <div class="rote" @click="showPopupRote(item)" v-if="item.isself == 1">
             <div class="icon"></div>
             评分
@@ -112,9 +117,7 @@ export default {
   computed: {
     ...mapState(["uid", "uid"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {
     $route() {
       this.tid = this.$route.query.tid;
@@ -229,6 +232,7 @@ export default {
       border-bottom 1px solid #e5e5e5
     .answer-ul
       padding-left 12px
+      padding-bottom 50px
       li
         border-bottom 1px solid #e5e5e5
         padding-right 12px
@@ -255,6 +259,18 @@ export default {
           color #666666
           font-size 14px
           line-height 20px
+        .image-ul
+          font-size 0
+          padding 5px 0 0
+          .item
+            width 33.33%
+            display inline-block
+            padding-right 5px
+            height auto
+            margin-bottom 5px
+            height 105px
+            .answer-img
+              height 100%
         .rote
           display flex
           align-items center

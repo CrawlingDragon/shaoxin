@@ -11,7 +11,7 @@
       </div>
     </van-index-bar>
     <ul class="search_result-ul" v-show="searchResultShow">
-      <van-empty description="抱歉没有该作物,请选择其他" v-show="noResult" />
+      <div class="noData" v-show="noResult">抱歉没有该作物,可选择<span class="other" @click="choose({name:'其他',fid:195})">其他</span> </div>
       <li v-for="item in searchResult" :key="item.fid" @click="choose(item)">
         {{item.name}}
       </li>
@@ -39,9 +39,7 @@ export default {
       noResult: false,
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {
     ...mapState(["uid"]),
     letterList() {
@@ -175,4 +173,10 @@ export default {
       color #333333
       font-size 12px
       padding 0 12px
+    .noData
+      height 300px
+      padding-top 200px
+      text-align center
+      .other
+        color #155BBB
 </style>

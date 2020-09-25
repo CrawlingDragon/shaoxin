@@ -1,20 +1,23 @@
 <template>
   <div class="good_base-container">
     <Header :indexHeader="false"></Header>
-    <ul class="base-ul">
-      <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
-        <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
-        <van-image class="img" :src="item.logo"></van-image>
-        <div class="text">
-          <div class="h2">{{item.name}}</div>
-          <div class="p2">{{item.zwtype}} {{item.guimo}}亩</div>
-          <div class="join-time">
-            <van-image class="avator" round :src="item.avatar"></van-image>
-            <div class="time">{{item.addtime}} 加入医院</div>
+    <ul class="base-ul" v-show="!noData">
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
+          <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
+          <van-image class="img" :src="item.logo"></van-image>
+          <div class="text">
+            <div class="h2">{{item.name}}</div>
+            <div class="p2">{{item.zwtype}} {{item.guimo}}亩</div>
+            <div class="join-time">
+              <van-image class="avator" round :src="item.avatar"></van-image>
+              <div class="time">{{item.regtime}} 加入医院</div>
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
+      </van-list>
     </ul>
+    <van-empty description="暂无优质基地" v-show="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -31,30 +34,43 @@ export default {
   data() {
     return {
       list: [],
+      loading: false,
+      finished: false,
+      page: 0,
+      noData: false,
     };
   },
   computed: {
     ...mapState(["uid", "mid"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {},
   mounted() {
     // this.getBaseList(this.mid);
-    this.getBaseList(63580);
+    // this.getBaseList(63580);
   },
   destroyed() {},
   methods: {
-    getBaseList(mid) {
+    onLoad() {
+      this.getBaseList();
+    },
+    getBaseList() {
       // 或者基地列表
+      this.page += 1;
       this.$axios
         .fetchPost("/Mobile/Mpublic/getFineBaseCom", {
-          mId: mid,
+          mId: this.mid,
+          page: this.page,
         })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+            this.loading = false;
+          } else if (res.data.code == 201) {
+            if (this.page == 1) {
+              this.noData = true;
+            }
+            this.finished = true;
           }
         });
     },

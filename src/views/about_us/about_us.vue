@@ -10,7 +10,7 @@
     </div>
     <div class="bottom">
       <div class="small-title">申请开通庄稼医院，系统性服务会员</div>
-      <div class="number">已开通<div class="num" v-for="item in mpnum" :key="item">{{item}}</div> 家医院</div>
+      <div class="number">已开通<div class="num" v-for="item in mpnum" :key="item.id">{{item}}</div> 家医院</div>
       <div class="btn" @click="call">申请开通庄稼医院</div>
     </div>
     <div class="tip">
@@ -42,6 +42,9 @@ export default {
     ...mapState(["initMid"]),
     mpnum() {
       let x = this.mpnumData;
+      if (x < 10) {
+        x = "0" + x;
+      }
       return x.toString().split("");
     },
   },

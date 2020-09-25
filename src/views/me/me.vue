@@ -68,16 +68,17 @@
         <a href="tel:4008596318" ref="tel"></a>
       </template>
     </van-cell>
+    <Foot></Foot>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
 import { mapState } from "vuex";
-
+import Foot from "@/components/foot/foot";
 export default {
   name: "me",
   metaInfo: { title: "我的" },
-  components: { Header },
+  components: { Header, Foot },
   props: {},
   data() {
     return {
@@ -88,9 +89,7 @@ export default {
   computed: {
     ...mapState(["uid", "initMid"]),
   },
-  created() {
-    this.$emit("footer", true);
-  },
+  created() {},
   watch: {},
   mounted() {
     this.getInfo();

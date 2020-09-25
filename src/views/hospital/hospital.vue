@@ -11,7 +11,7 @@
       </ul>
     </div>
     <div class="look-more" @click="goToMmessage" v-show="messageList.length != 0">查看更多 ></div>
-    <div class="expert-list">
+    <div class="expert-list" v-show="expertList.length != 0">
       <div class="title">本院专家</div>
       <ul class="expert-ul clearfix">
         <li v-for="item in expertList" :key="item.expertid">
@@ -19,7 +19,7 @@
         </li>
       </ul>
     </div>
-    <div class="look-more" @click="goToExperts">查看更多 ></div>
+    <div class="look-more" @click="goToExperts" v-show="expertList.length != 0">查看更多 ></div>
     <div class="online-list">
       <div class="title">网诊</div>
       <ul class="ul-online">
@@ -64,16 +64,17 @@ export default {
       mpublic: "",
     };
   },
-  created() {
-    this.$emit("footer", true);
-  },
+  created() {},
   computed: {
-    ...mapState(["uid", "mid"]),
+    ...mapState(["uid", "mid", "isMember"]),
   },
   watch: {
-    $route() {
+    // $route(newVal) {
+    //   // console.log("newVal :>> ", newVal);
+    //   // this.getHospitalData(this.mid);
+    // },
+    mid() {
       this.getHospitalData(this.mid);
-      this.$emit("footer", true);
     },
   },
   mounted() {
@@ -81,7 +82,7 @@ export default {
   },
   destroyed() {},
   methods: {
-    ...mapMutations(["setJoinTime"]),
+    ...mapMutations(["setJoinTime", "setHospitalIsMember"]),
     getHospitalData(mid) {
       this.$axios
         .fetchPost("Mobile/Mpublic/MpublicPage", {
@@ -97,6 +98,7 @@ export default {
             this.title = data.mpublic.name;
             this.mpublic = data.mpublic;
             this.setJoinTime(data.mpublic.addtime);
+            this.setHospitalIsMember(data.mpublic.ismember);
           }
         });
     },

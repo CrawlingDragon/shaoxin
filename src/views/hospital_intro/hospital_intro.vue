@@ -19,9 +19,9 @@
         <div class="left">医院地址：</div>
         <div class="text">{{intro.address}}</div>
       </div>
-      <div class="item"> <span class="number num1"> 专家 {{intro.enum}} </span><span v-if="intro.isstore == 1" class="number num2">会员 {{intro.mnum}}</span><span class="number num3"> 处方 {{intro.rnum}}</span></div>
-      <div class="title2">直属下级医院</div>
-      <ul class="lower-level-ul" v-if="intro.mpublic.length != 0">
+      <div class="item num-item"> <span class="number num1"> 专家 {{intro.enum}} </span><span v-if="intro.isstore == 1" class="number num2">会员 {{intro.mnum}}</span><span class="number num3"> 处方 {{intro.rnum}}</span></div>
+      <div class="title2" v-if="mpublic.length != 0">直属下级医院</div>
+      <ul class="lower-level-ul" v-if="mpublic.length != 0">
         <li v-for="item in intro.mpublic" :key="item.mid">{{item.name}}</li>
       </ul>
     </div>
@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       intro: "",
+      mpublic: [],
     };
   },
   computed: {
@@ -76,6 +77,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.intro = res.data.data;
+            this.mpublic = res.data.data.mpublic;
           }
         });
     },
@@ -103,6 +105,8 @@ export default {
     .title
       color #333333
       font-size 16px
+    .num-item
+      padding-bottom 5px
     .item
       display flex
       color #656565

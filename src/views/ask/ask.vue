@@ -32,6 +32,7 @@
       <div id="container" style="width:100px;height:0"></div>
     </van-form>
     <router-view @getCrop="getCrop"></router-view>
+    <Foot></Foot>
   </div>
 </template>
 
@@ -39,9 +40,10 @@
 import Header from "@/components/header/header";
 import { mapState } from "vuex";
 import AMapLoader from "@amap/amap-jsapi-loader";
+import Foot from "@/components/foot/foot";
 export default {
   name: "ask",
-  components: { Header },
+  components: { Header, Foot },
   props: {},
   metaInfo: {
     title: "提问",

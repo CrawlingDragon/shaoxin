@@ -30,9 +30,7 @@ export default {
       noData: false,
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {
     ...mapState(["uid"]),
   },

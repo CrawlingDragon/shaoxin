@@ -28,16 +28,18 @@
     </div>
     <van-loading size="24px" vertical style="height:200px;padding-top:130px" v-if="loading">加载中...</van-loading>
     <div id="container" style="display:none"></div>
+    <Foot></Foot>
   </div>
 </template>
 <script>
 import Header from "@/components/hospital_header/hospital_header";
 import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
 import { mapState } from "vuex";
+import Foot from "@/components/foot/foot";
 import AMapLoader from "@amap/amap-jsapi-loader";
 export default {
   name: "intoHospital",
-  components: { Header, RecommendHospital },
+  components: { Header, RecommendHospital, Foot },
   props: {},
   metaInfo: {
     title: "进院",

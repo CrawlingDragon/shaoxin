@@ -42,9 +42,9 @@
       </div>
       <div class="item">
         <p class="p1">基地面积</p>
-        <p class="p2">{{base.guimo}}亩</p>
+        <p class="p2">{{base.guimo}}</p>
       </div>
-      <div class="item">
+      <div class="item" @click="goToHospital(base.mid)">
         <p class="p1">服务医院</p>
         <p class="p3">{{base.mpublic}}</p>
       </div>
@@ -61,6 +61,8 @@
 </template>
 <script>
 import Header from "@/components/hospital_header/hospital_header";
+import { mapMutations } from "vuex";
+
 export default {
   metaInfo: {
     title: "基地详情",
@@ -76,19 +78,16 @@ export default {
     };
   },
   computed: {},
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {
-    $route() {
-      this.$emit("footer", false);
-    },
+    $route() {},
   },
   mounted() {
     this.getBaseData();
   },
   destroyed() {},
   methods: {
+    ...mapMutations(["setMid"]),
     clickTel() {
       this.$refs.tel.click();
     },
@@ -116,6 +115,12 @@ export default {
         query: {
           location: location,
         },
+      });
+    },
+    goToHospital(mid) {
+      this.setMid(mid);
+      this.$router.push({
+        path: "/hospital",
       });
     },
   },
@@ -264,9 +269,10 @@ export default {
       display inline-block
       border-right 1px solid #e5e5e5
       text-align center
-      height 75px
+      min-height 75px
       padding-top 11px
-      overflow hidden
+      // overflow hidden
+      vertical-align middle
       &:last-child
         border-right none
       .p1

@@ -22,7 +22,7 @@
           <van-grid-item text="简介" @click="goToIntro" />
         </van-grid>
       </div>
-      <div class="join-btn" v-if="ismember == 0" @click="goToApply">
+      <div class="join-btn" v-if="hospitalIsMember == 0" @click="goToApply">
         申请加入医院
         <span class="free">免费</span>
       </div>
@@ -30,7 +30,7 @@
       <div class="know-vip" @click="goToVip">了解更多会员权益 ></div>
       <div class="go-index" @click="gotoHospitalIndex">
         <van-image class="logo" :src="require('./1.png')"></van-image>
-        {{hospitalName}}
+        <div class="name">{{hospitalName}}</div>
       </div>
     </div>
   </div>
@@ -45,25 +45,22 @@ export default {
       type: Boolean,
       default: false,
     },
-    importuser: {
-      type: Number,
-      default: 0,
-    },
-    ismember: {
-      type: Number,
-      default: 0,
-    },
   },
   data() {
     return {};
   },
   computed: {
-    ...mapState(["mid", "uid", "joinTime", "hospitalName", "hospitalIsStore"]),
+    ...mapState([
+      "mid",
+      "uid",
+      "joinTime",
+      "hospitalName",
+      "hospitalIsStore",
+      "hospitalIsMember",
+    ]),
   },
   watch: {},
-  mounted() {
-    console.log("this. :>> ", this.hospitalIsStore);
-  },
+  mounted() {},
   destroyed() {},
   methods: {
     closeNav() {
@@ -80,7 +77,7 @@ export default {
     },
     goToZuo() {
       // 路由 坐诊巡诊
-      if (this.ismember == 0) {
+      if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
             title: "提示",
@@ -105,7 +102,7 @@ export default {
     },
     goToCeTu() {
       // 路由 测土配方
-      if (this.ismember == 0) {
+      if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
             title: "提示",
@@ -134,7 +131,7 @@ export default {
     },
     goToRegistration() {
       // 路由 专家挂号
-      if (this.ismember == 0) {
+      if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
             title: "提示",
@@ -161,8 +158,13 @@ export default {
       this.$emit("changeFlag", false);
     },
     goToMessage() {
-      // 路由 会员提问
-      if (this.ismember == 0) {
+      // 路由 资讯
+      this.$router.push({ path: "/hospital_message" }).catch((err) => err);
+      this.$emit("changeFlag", false);
+    },
+    goToAsk() {
+      // 路由 提问
+      if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
             title: "提示",
@@ -180,21 +182,8 @@ export default {
             });
           });
       } else {
-        this.$router
-          .push({
-            path: "/hospital_message",
-          })
-          .catch((err) => err);
+        this.$router.push({ path: "/ask" }).catch((err) => err);
       }
-      this.$emit("changeFlag", false);
-    },
-    goToAsk() {
-      // 路由 提问
-      this.$router
-        .push({
-          path: "/ask",
-        })
-        .catch((err) => err);
       this.$emit("changeFlag", false);
     },
     goToExpert() {
@@ -339,18 +328,22 @@ export default {
     bottom 40px
     left 50%
     transform translateX(-50%)
-    display flex
     color #155BBB
     font-size 12px
     border 1px solid #155BBB
     border-radius 4px
-    padding 0 22px
-    height 30px
-    align-items center
+    display inline-block
+    line-height 30px
+    padding 0 10px
     .logo
+      display inline-block
       width 20px
       height 20px
       margin-right 5px
+      vertical-align middle
+    & > .name
+      display inline-block
+      vertical-align middle
   .joined
     color #999999
     font-size 12px

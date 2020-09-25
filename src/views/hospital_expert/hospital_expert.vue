@@ -24,9 +24,7 @@ export default {
       list: [],
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {
     ...mapState(["mid"]),
   },

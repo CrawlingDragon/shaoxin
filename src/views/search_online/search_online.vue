@@ -48,14 +48,10 @@ export default {
       page: 0,
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {},
   watch: {
-    $route() {
-      this.$emit("footer", false);
-    },
+    $route() {},
   },
   mounted() {},
   destroyed() {},

@@ -30,9 +30,7 @@ export default {
   computed: {
     ...mapState(["mid"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {},
   mounted() {
     this.getOnlineList();

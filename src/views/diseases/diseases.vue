@@ -49,13 +49,9 @@ export default {
     ...mapState(["mid"]),
   },
   watch: {
-    $route() {
-      this.$emit("footer", false);
-    },
+    $route() {},
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   mounted() {
     this.getKind();
   },

@@ -39,9 +39,7 @@ export default {
       this.getDetail();
     },
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   mounted() {
     this.getDetail();
   },

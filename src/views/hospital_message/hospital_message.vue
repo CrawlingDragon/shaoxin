@@ -35,13 +35,10 @@ export default {
   computed: {
     ...mapState(["mid"]),
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   watch: {
     $route() {
       // this.$emit("footer", false)
-      this.$emit("footer", false);
     },
   },
   mounted() {},

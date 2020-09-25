@@ -45,9 +45,7 @@ export default {
       noResult: false,
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {
     ...mapState(["uid"]),
     letterList() {

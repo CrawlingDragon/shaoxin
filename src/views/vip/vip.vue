@@ -44,7 +44,7 @@
           <div class="right">会员优先享受惠农贷款服务</div>
         </li>
       </ul>
-      <div class="btn" v-if="user.importuser == 0" @click="goToApply">选择医院加入会员<div class="free">免费</div>
+      <div class="btn" v-if="hospitalIsMember == 0" @click="goToApply">选择医院加入会员<div class="free">免费</div>
       </div>
     </div>
   </div>
@@ -65,11 +65,9 @@ export default {
       user: "",
     };
   },
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   computed: {
-    ...mapState(["uid", "initMid,"]),
+    ...mapState(["hospitalIsMember"]),
   },
   watch: {},
   mounted() {
@@ -77,18 +75,6 @@ export default {
   },
   destroyed() {},
   methods: {
-    getUserInfo() {
-      this.$axios
-        .fetchPost("Mobile/User/userCenter", {
-          uId: this.uid,
-          mId: this.initMid,
-        })
-        .then((res) => {
-          if (res.data.code == 0) {
-            this.user = res.data.data;
-          }
-        });
-    },
     goToApply() {
       this.$router.push({
         path: "/apply_vip",

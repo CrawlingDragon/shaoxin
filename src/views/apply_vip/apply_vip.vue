@@ -2,17 +2,17 @@
   <div class="apply_vip-container">
     <Header header="indexHeader" navHeader="申请会员"></Header>
     <van-form @submit="onSubmit">
-      <van-field v-model="name" name="name" label="姓名" placeholder="请输入姓名" required :rules="[{ required: true, message: '请输入姓名' }]" />
+      <van-field v-model="name" name="name" label="姓名" placeholder="请输入姓名" required :rules="[{ required: true }]" />
       <van-field v-model="phone" name="phone" label="手机号" readonly />
-      <van-field v-model="card" name="card" label="身份证" placeholder="请输入身份证号码" @click="cardShow = true" />
+      <van-field v-model="card" name="card" label="身份证" placeholder="请输入身份证号码" @click="cardShow = true" :rules="[{ validator, message: '请输入正确的身份证格式' }]" />
       <van-number-keyboard :show="cardShow" extra-key="X" close-button-text="完成" @blur="cardShow = false" v-model="card" />
-      <van-field v-model="sex" name="sex" @click="sexShow = true" label="性别" placeholder="请选择" required readonly />
+      <van-field v-model="sex" name="sex" @click="sexShow = true" label="性别" placeholder="请选择" required readonly :rules="[{ required: true }]" />
       <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelectSex" />
-      <van-field readonly required clickable name="area" :value="address" label="地区选择" placeholder="点击选择省市区" @click="showArea = true" :rules="[{ required: true, message: '请选择地区' }]" />
+      <van-field readonly required clickable name="area" :value="address" label="地区选择" placeholder="点击选择省市区" @click="showArea = true" :rules="[{ required: true }]" />
       <van-popup v-model="showArea" position="bottom">
         <van-area :area-list="areaList" @confirm="onConfirm" @cancel="showArea = false" />
       </van-popup>
-      <van-field v-model="detailAddress" name="详细地址" label="详细地址" placeholder="请输入详细地址" required :rules="[{ required: true, message: '请输入详细地址' }]" />
+      <van-field v-model="detailAddress" name="detailAddress" label="详细地址" placeholder="请输入详细地址" required :rules="[{ required: true }]" />
       <div class="title">种植作物情况</div>
       <div class="add-box" v-for="(item, index) in addList" :key="index">
         <van-field v-model="item.name" name="作物名" label="作物名" placeholder="请选择" readonly @click="goToChooseCrop(index)" />
@@ -72,21 +72,40 @@ export default {
       areaList: areaList, // 数据格式见 Area 组件文档
       actions: [{ name: "男" }, { name: "女" }],
       choosedIndex: 0, //选中的作物 数组index
+      hospitalTown: "",
     };
   },
   computed: {
     ...mapState(["mid", "uid", "initMid"]),
+    cropNumberBoolean() {
+      let x = true;
+      this.addList.forEach((item) => {
+        if (item.name != "") {
+          if (item.mushu == "") {
+            x = false;
+          }
+        }
+      });
+      return x;
+    },
   },
   watch: {},
-  created() {
-    this.$emit("footer", false);
-  },
+  created() {},
   mounted() {
-    this.$emit("footer", false);
     this.getUserInfo();
+    this.getHospitalTown();
   },
   destroyed() {},
   methods: {
+    // /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i
+    validator(val) {
+      if (val == "") {
+        return true;
+      }
+      return /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
+        val
+      );
+    },
     add() {
       this.addList.push({ fid: "", name: "", mushu: "", unit: "亩" });
     },
@@ -102,12 +121,46 @@ export default {
       this.showArea = false;
     },
     onSubmit(values) {
-      console.log("submit", values);
-      if (values.sex == "") {
-        this.$toast("请先选择性别");
+      if (
+        values.sex == "" ||
+        values.name == "" ||
+        values.area == "" ||
+        values.detailAddress == ""
+      ) {
+        this.$dialog
+          .alert({
+            message: "提交失败，请修改信息后再提交",
+            confirmButtonText: "知道了",
+          })
+          .then(() => {
+            // on close
+          });
         return;
       }
-      this.apply();
+      if (!this.cropNumberBoolean) {
+        this.$toast("作物亩数不能为空");
+        return;
+      }
+      // 申请地址和医院地址不是同一个
+      if (this.town != this.hospitalTown) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "您的地址位置离医院较远,确定继续提交吗?",
+            confirmButtonText: "继续提交",
+            cancelButtonText: "我在想想",
+          })
+          .then(() => {
+            // on confirm
+            this.apply();
+          })
+          .catch(() => {
+            // on cancel
+          });
+      } else {
+        this.apply();
+      }
+      // this.apply();
     },
     apply() {
       this.$axios
@@ -127,16 +180,18 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.$toast(res.data.message);
-            this.$router.go();
+            this.$router.push({
+              path: "/apply_vip_succeed",
+            });
           }
         });
     },
-    validatorPhone(val) {
-      if (val == "") {
-        return true;
-      }
-      return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
-    },
+    // validatorPhone(val) {
+    //   if (val == "") {
+    //     return true;
+    //   }
+    //   return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
+    // },
     removeItem(index) {
       this.addList.splice(index, 1);
     },
@@ -155,11 +210,23 @@ export default {
       this.$axios
         .fetchPost("Mobile/User/userCenter", {
           uId: this.uid,
-          mId: this.initMid,
+          mId: this.mid,
         })
         .then((res) => {
           if (res.data.code == 0) {
             this.phone = res.data.data.username;
+          }
+        });
+    },
+    getHospitalTown() {
+      this.$axios
+        .fetchPost("Mobile/Mpublic/MpublicPage", {
+          mId: this.mid,
+          uId: this.uid,
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.hospitalTown = res.data.data.mpublic.town;
           }
         });
     },
