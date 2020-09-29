@@ -15,11 +15,11 @@
     <div class="hot" v-if="hispital.length != 0">
       <div class="title">历史搜索</div>
       <ul class="history-ul">
-        <li v-for="item in hispital" :key="item.title" @click="goToHospital(item.mid)">
+        <li v-for="item in hispital" :key="item.title" @click="search(item)">
           {{ item.title }}
         </li>
       </ul>
-      <div class="clear">清空历史</div>
+      <div class="clear" @click="clearHispital()">清空历史</div>
     </div>
     <div class="result-box">
       <div class="title">搜索结果</div>
@@ -75,12 +75,17 @@ export default {
     onCancel() {
       this.$router.push({ path: "/into_hospital" });
     },
+    search(item) {
+      let keyword = item.title;
+      this.getSearchresult(keyword);
+    },
     getSearchresult(keyword) {
       this.noData = false;
       this.$axios
         .fetchPost("Mobile/Entrance/lists", {
           keyword: keyword,
           location: this.location,
+          uId: this.uid,
         })
         .then((res) => {
           if (res.data.code == 0) {
@@ -112,6 +117,16 @@ export default {
       this.$router.push({
         path: "/hospital",
       });
+    },
+    clearHispital() {
+      this.$axios
+        .fetchPost("/Mobile/Entrance/clearRecord", { uId: this.uid })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.$toast(res.data.message);
+            this.getHispital();
+          }
+        });
     },
   },
 };

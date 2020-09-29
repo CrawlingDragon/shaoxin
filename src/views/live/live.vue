@@ -10,7 +10,7 @@
           <div class="left">{{item.name}}</div>
           <div class="right">{{item.endtime}}</div>
         </div>
-        <div class="hospital" @click.stop="goToHospital(item.mid)" v-if="item.mname != ''">{{item.mname}}</div>
+        <div class="hospital" @click.stop="goToHospital(item.mid)" v-if="from == 'index' && item.mname != ''">{{item.mname}}</div>
         <div class="status living" :class="{'living':item.status == '直播中','lived':item.status == '回放','before_live':item.status == '预告'}">{{item.status}}</div>
       </li>
     </ul>

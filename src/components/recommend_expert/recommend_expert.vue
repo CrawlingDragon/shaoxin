@@ -72,7 +72,7 @@ export default {
   border-radius 8px
   .top
     display flex
-    padding-bottom 15px
+    padding-bottom 5px
     .img
       width 60px
       height 60px
@@ -103,12 +103,13 @@ export default {
         line-height 14px
         overflow hidden
         text-overflow ellipsis
-        word-wrap nowrap
         display -webkit-box
         -webkit-line-clamp 2
         -webkit-box-orient vertical
   .kind
     font-size 0
+    max-height 48px
+    overflow hidden
     .item
       display inline-block
       padding 2px 5px

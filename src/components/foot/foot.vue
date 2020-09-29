@@ -88,7 +88,7 @@ export default {
     getRouterName(name) {
       switch (name) {
         case "hospital":
-          this.hospital = "/hospital";
+          this.hospital = "/into_hospital";
           this.indexRoute = "/index";
           break;
         case "intoHospital":

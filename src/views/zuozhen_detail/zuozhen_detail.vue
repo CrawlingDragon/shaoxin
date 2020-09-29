@@ -19,7 +19,7 @@
         <div class="left">病情描述</div>
         <div class="right">{{zuozhen.content}}</div>
       </li>
-      <div class="img-ul" v-if="zuozhen.pic_urls_tiny.length != 0">
+      <div class="img-ul" v-if="zuozhen.pic_urls_tiny && zuozhen.pic_urls_tiny.length != 0">
         <div class="t1">病情图片</div>
         <div class="item">
           <van-image class="img" v-for="(item,index) in zuozhen.pic_urls_tiny" :key="item" :src="item" @click="preverImg(index)"></van-image>
@@ -37,6 +37,24 @@
         <div class="right">{{zuozhen.result}}</div>
       </div>
     </div>
+    <div class="bottom">
+      <div class="title">用药信息</div>
+      <div class="list">
+        <div class="left">看诊结果</div>
+        <div class="right">{{zuozhen.result}}</div>
+      </div>
+    </div>
+    <ul class="bottom" v-show="products.length != 0">
+      <li class="title">处方药({{products.length}})</li>
+      <li class="chufang-li" v-for="item in zuozhen.products" :key="item.id">
+        <van-image fit="cover" :src="item.thumb_pic" class="chufang-img"></van-image>
+        <div class="mid">
+          <p class="p1">{{item.name}}</p>
+          <p class="p2">规格:{{item.spec}} 单价:¥{{item.price}}</p>
+        </div>
+        <div class="number">x{{item.quantity}}</div>
+      </li>
+    </ul>
   </div>
 </template>
 <script>
@@ -55,6 +73,7 @@ export default {
     return {
       zuozhen: "",
       id: this.$route.query.id,
+      products: [],
     };
   },
   computed: {},
@@ -74,6 +93,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.zuozhen = res.data.data;
+            this.products = res.data.data.products;
           }
         });
     },
@@ -130,6 +150,8 @@ export default {
     .title
       font-size 17px
       color #155BBB
+      padding 15px 12px
+      border-bottom 1px solid #e5e5e5
     & > div
       padding 15px 12px
       border-bottom 1px solid #e5e5e5
@@ -145,4 +167,20 @@ export default {
         flex 1
         color #333
         font-size 15px
+  .chufang-li
+    display flex
+    padding 15px 12px
+    .chufang-img
+      width 100px
+      height 100px
+      margin-right 10px
+    .mid
+      flex 1
+      display flex
+      flex-direction column
+      justify-content space-between
+      margin 0
+      .p2
+        color #999
+        font-size 14px
 </style>

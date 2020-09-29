@@ -47,6 +47,17 @@
         <div class="right">{{soil.chufang_result || '无'}}</div>
       </li>
     </ul>
+    <ul class="bottom" v-show="products.length != 0">
+      <li class="title">处方药({{products.length}})</li>
+      <li class="chufang-li" v-for="item in soil.products" :key="item.id">
+        <van-image fit="cover" :src="item.thumb_pic" class="chufang-img"></van-image>
+        <div class="mid">
+          <p class="p1">{{item.name}}</p>
+          <p class="p2">规格:{{item.spec}} 单价:¥{{item.price}}</p>
+        </div>
+        <div class="number">x{{item.quantity}}</div>
+      </li>
+    </ul>
   </div>
 </template>
 <script>
@@ -65,6 +76,7 @@ export default {
       id: this.$route.query.id,
       title: "",
       soil: "",
+      products: "",
     };
   },
   computed: {},
@@ -85,6 +97,7 @@ export default {
           if (res.data.code == 0) {
             this.soil = res.data.data;
             this.title = res.data.data.title;
+            this.products = res.data.data.products;
           }
         });
     },
@@ -161,4 +174,19 @@ export default {
     .title
       font-size 15px
       color #155BBB
+    .chufang-li
+      display flex
+      .chufang-img
+        width 100px
+        height 100px
+        margin-right 10px
+      .mid
+        flex 1
+        display flex
+        flex-direction column
+        justify-content space-between
+        margin 0
+        .p2
+          color #999
+          font-size 14px
 </style>

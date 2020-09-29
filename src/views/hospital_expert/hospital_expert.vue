@@ -2,10 +2,13 @@
   <div class="hospital_expert-container">
     <Header header="indexHeader" navHeader="专家"></Header>
     <ul class="expert-ul">
-      <li v-for="item in list" :key="item.id">
-        <RecommendExpert :list="item"></RecommendExpert>
-      </li>
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <li v-for="item in list" :key="item.id">
+          <RecommendExpert :list="item"></RecommendExpert>
+        </li>
+      </van-list>
     </ul>
+    <van-empety description='暂无医院专家'></van-empety>
   </div>
 </template>
 <script>
@@ -22,6 +25,10 @@ export default {
   data() {
     return {
       list: [],
+      loading: false,
+      finished: false,
+      page: 0,
+      noData: false,
     };
   },
   created() {},
@@ -29,17 +36,26 @@ export default {
     ...mapState(["mid"]),
   },
   watch: {},
-  mounted() {
-    this.getList();
-  },
+  mounted() {},
   destroyed() {},
   methods: {
+    onLoad() {
+      this.getList();
+    },
     getList() {
+      this.page += 1;
+
       this.$axios
-        .fetchPost("Mobile/User/expertList", { mId: this.mid })
+        .fetchPost("Mobile/User/expertList", { mId: this.mid, page: this.page })
         .then((res) => {
           if (res.data.code == 0) {
-            this.list = res.data.data;
+            this.list = this.list.concat(res.data.data);
+            this.loading = false;
+          } else if (res.data.code == 201) {
+            if (this.page == 1) {
+              this.noData = true;
+            }
+            this.finished = true;
           }
         });
     },
@@ -62,10 +78,19 @@ export default {
       margin-bottom 10px
       width 50%
       display inline-block
-      height 160px
+      height 170px
       vertical-align top
       .recommend_expert-container
         height 100%
-        .top
-          height 88px
+        position relative
+        /deep/.top
+          height 80px
+          .right
+            .address
+              overflow hidden
+              text-overflow ellipsis
+              white-space nowrap
+        /deep/.join
+          position absolute
+          bottom 5px
 </style>

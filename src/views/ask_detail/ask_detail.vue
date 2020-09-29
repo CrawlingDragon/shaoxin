@@ -3,7 +3,7 @@
     <Header :indexHeader="false"></Header>
     <div class="online-box">
       <div class="top">
-        <van-image round class="avator" :src="detail.avatar" @click="goToExpert(detail.authorid)"></van-image>
+        <van-image round class="avator" :src="detail.avatar" @click="goToExpert(0,detail.authorid)"></van-image>
         <div class="name">
           {{detail.author}}
           <div class="time">{{detail.addtime}} · {{detail.area}}</div>
@@ -23,7 +23,7 @@
         </div>
         <div class="right" v-if="detail.ishaveexpert">
           <div class="content">咨询专家</div>
-          <van-image class="icon icon3" :src="detail.ishaveexpert.avatar" round @click="goToExpert(detail.ishaveexpert.expertid)"></van-image>
+          <van-image class="icon icon3" :src="detail.ishaveexpert.avatar" round @click="goToExpert(0,detail.ishaveexpert.expertid)"></van-image>
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <ul class="answer-ul">
         <li v-for="item in detail.answers" :key="item.pid">
           <div class="top">
-            <van-image round fit="cover" :src="item.avatar" class="avator" @click="goToExpert(item.authorid)"></van-image>
+            <van-image round fit="cover" :src="item.avatar" class="avator" @click="goToExpert(item.isexpert,item.authorid)"></van-image>
             <div class="name">{{item.author}}({{item.groupname}})</div>
             <div class="time">{{item.addtime}}</div>
           </div>
@@ -42,13 +42,14 @@
               <van-image :src="it" fit="cover" class="answer-img"></van-image>
             </div>
           </div>
-          <div class="rote" @click="showPopupRote(item)" v-if="item.isself == 1">
+          <div class="lookat-yinongbao">{{item.add_wenlist_tips}}</div>
+          <div class="rote" @click="showPopupRote(item)" v-if="detail.isself == 1 && item.isself == 0 && item.score == '' && item.isexpert != 0">
             <div class="icon"></div>
             评分
           </div>
-          <div class="roted-box" v-if="item.score != ''">
+          <div class="roted-box" v-if="item.score != '' && item.score.viewstatus == 1">
             <div class=" top">
-              <van-image round :src="item.score.avatar" fit="cover" class="img"></van-image>
+              <van-image round :src="item.score.avatar" fit="cover" class="img" @click="goToExpert(item.isexpert,detail.authorid)"></van-image>
               <div class="rig">
                 <p class="p1">{{item.score.name}}</p>
                 <p class="p2">{{item.score.addtime}}</p>
@@ -85,13 +86,13 @@
       <span v-if="roteValue == 3" class="rote-text">解答一般</span>
       <span v-if="roteValue == 4" class="rote-text">解答好</span>
       <span v-if="roteValue == 5" class="rote-text">解答很好</span>
-      <van-field v-model="messageRote" rows="3" type="textarea" maxlength="200" placeholder="评价 常山胡柚专科医院" show-word-limit class="message" />
+      <van-field v-model="messageRote" rows="3" type="textarea" maxlength="200" :placeholder="'请评价'+author" show-word-limit class="message" />
     </van-popup>
   </div>
 </template>
 <script>
 import Header from "@/components/header/header";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { ImagePreview } from "vant";
 export default {
   name: "askDetail",
@@ -129,6 +130,7 @@ export default {
   },
   destroyed() {},
   methods: {
+    ...mapMutations(["setMid"]),
     getDetail() {
       // 解答详情
       this.$axios
@@ -195,12 +197,19 @@ export default {
         closeable: true,
       });
     },
-    goToExpert(id) {
-      // 路由 去个人中心主页
-      this.$router.push({
-        path: "/expert",
-        query: { id: id },
-      });
+    goToExpert(isExpert, id) {
+      // 路由 去个人中心主页 或者医院主页
+      if (isExpert == 0 || isExpert == 1) {
+        this.$router.push({
+          path: "/expert",
+          query: { id: id },
+        });
+      } else if (isExpert == 2) {
+        this.setMid(id);
+        this.$router.push({
+          path: "/hospital",
+        });
+      }
     },
   },
 };
@@ -271,6 +280,9 @@ export default {
             height 105px
             .answer-img
               height 100%
+        .lookat-yinongbao
+          font-size 14px
+          color #999
         .rote
           display flex
           align-items center

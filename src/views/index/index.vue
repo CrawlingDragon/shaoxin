@@ -1,5 +1,5 @@
 <template>
-  <div class="index-container">
+  <div class="index-container" ref="index">
     <Header></Header>
     <div class="swiper-box">
       <van-swipe :autoplay="3000" style="height: 130px;">
@@ -98,17 +98,21 @@ export default {
       onlineArr: [],
     };
   },
-  beforeRouteEnter(to, from, next) {
-    // ...
-    next((vm) => {
-      vm.$emit("footer", true);
-    });
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   // ...
+  //   // next((vm) => {
+  //   //   // vm.$emit("footer", true);
+  //   // });
+  // },
   created() {},
   computed: {
     ...mapState(["initMid"]),
   },
-  watch: {},
+  watch: {
+    $route() {
+      this.$refs.index.scrollTo(0, 0);
+    },
+  },
   mounted() {
     this.getIndexData();
     this.setMid(this.initMid);

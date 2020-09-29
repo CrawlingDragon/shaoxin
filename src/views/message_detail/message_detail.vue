@@ -5,7 +5,7 @@
       <div class="title">{{detail.title}}</div>
       <div class="small-bar">
         <div class="left">{{detail.inputtime}} {{detail.copyfrom}}</div>
-        <div class="right" @click="GoToHospital(mpublic.mid)">{{mpublic.name}}</div>
+        <div class="right" @click="GoToHospital(mpublic.mid)" v-if="from == 'index'">{{mpublic.title}}</div>
       </div>
       <div class="text" v-html="detail.content"></div>
     </div>
@@ -28,6 +28,7 @@ export default {
       catid: this.$route.query.catid,
       detail: "",
       mpublic: "",
+      from: this.$route.query.from,
     };
   },
   computed: {

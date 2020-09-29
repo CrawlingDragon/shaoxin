@@ -67,6 +67,7 @@ export default {
         query: {
           id: id,
           catid: catId,
+          from: "index",
         },
       });
     },

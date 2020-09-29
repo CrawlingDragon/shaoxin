@@ -1,7 +1,7 @@
 
 <template>
   <div id="app">
-    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert" include="index,searchOnline,hospital,searchHospital,applyVip,live">
+    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert,live,searchOnline" include="index,hospital,applyVip">
       <router-view />
     </keep-alive>
   </div>
@@ -32,6 +32,9 @@ export default {
       "setAiExpertId",
     ]),
     getUserInfo() {
+      if (this.uid == undefined) {
+        return;
+      }
       this.$axios
         .fetchPost("Mobile/User/userCenter", {
           uId: this.uid,

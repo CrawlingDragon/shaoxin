@@ -36,7 +36,7 @@
           <p>农资店铺</p>
         </a>
       </li>
-      <li @click="goToRegistration" v-if="hospitalIsStore == 0">
+      <li v-if="hospitalIsStore == 0" @click="goToExpert() ">
         <div class="icon icon04"></div>
         <p>专家</p>
       </li>
@@ -82,6 +82,12 @@ export default {
     },
     goToZuo() {
       // 路由 坐诊巡诊
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "/zuozhen_list",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
@@ -102,6 +108,12 @@ export default {
     },
     goToCeTu() {
       // 路由 测土配方
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "/cetu_list",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
@@ -123,6 +135,12 @@ export default {
     },
     goToRegistration() {
       // 路由 专家挂号
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "/expert_registration",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
@@ -146,6 +164,12 @@ export default {
     },
     goToAsk() {
       // 路由 提问
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "/ask",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({

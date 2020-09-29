@@ -10,7 +10,7 @@
         </li>
       </ul>
     </div>
-    <div class="look-more" @click="goToMmessage" v-show="messageList.length != 0">查看更多 ></div>
+    <div class="look-more" @click="goToMmessage" v-show="messageList.length != 0 && messageList.length >= 3">查看更多 ></div>
     <div class="expert-list" v-show="expertList.length != 0">
       <div class="title">本院专家</div>
       <ul class="expert-ul clearfix">
@@ -21,14 +21,15 @@
     </div>
     <div class="look-more" @click="goToExperts" v-show="expertList.length != 0">查看更多 ></div>
     <div class="online-list">
-      <div class="title">网诊</div>
-      <ul class="ul-online">
+      <div class="title" v-show="wenList.length !=0">网诊</div>
+      <ul class="ul-online" v-show="wenList.length !=0">
         <li v-for="item in wenList" :key="item.tid">
           <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
         </li>
       </ul>
     </div>
-    <div class="look-more" @click="lookMoreHospital">查看更多 ></div>
+    <van-empty description="本院暂时还没有网诊" v-show="wenList.length ==0 && wenListNoData"></van-empty>
+    <div class="look-more" @click="lookMoreHospital" v-show="wenList.length !=0">查看更多 ></div>
   </div>
 </template>
 <script>
@@ -51,7 +52,7 @@ export default {
   },
   metaInfo() {
     return {
-      title: this.title + "新型庄稼医院",
+      title: this.title,
     };
   },
   props: {},
@@ -61,6 +62,7 @@ export default {
       messageList: [],
       expertList: [],
       wenList: [],
+      wenListNoData: false,
       mpublic: "",
     };
   },
@@ -99,6 +101,9 @@ export default {
             this.mpublic = data.mpublic;
             this.setJoinTime(data.mpublic.addtime);
             this.setHospitalIsMember(data.mpublic.ismember);
+            if (data.list_wen.length == 0) {
+              this.wenListNoData = true;
+            }
           }
         });
     },

@@ -3,18 +3,20 @@
     <Header :indexHeader="false"></Header>
     <van-tabs v-model="active" sticky title-active-color="#155BBB" color="#155BBB">
       <van-tab title="医院">
-        <ul class="hospital-ul">
+        <ul class="hospital-ul" v-if="!noDataHospital">
           <li v-for="item in hospitalList" :key="item.id">
             <RecommendHospital :list="item"></RecommendHospital>
           </li>
         </ul>
+        <van-empty description="暂无关注医院" v-if="noDataHospital"></van-empty>
       </van-tab>
       <van-tab title="专家">
-        <ul>
+        <ul v-if="!noDataExpert">
           <li v-for="item in expertList" :key="item.id">
             <RecommendExpert :list="item"></RecommendExpert>
           </li>
         </ul>
+        <van-empty description="暂无关注专家" v-if="noDataExpert"></van-empty>
       </van-tab>
     </van-tabs>
   </div>
@@ -37,6 +39,8 @@ export default {
       active: 0,
       hospitalList: [],
       expertList: [],
+      noDataHospital: false,
+      noDataExpert: false,
     };
   },
   computed: {
@@ -50,20 +54,32 @@ export default {
   destroyed() {},
   methods: {
     hospitals() {
+      this.noDataHospital = false;
       this.$axios
-        .fetchPost("Mobile/user/getFavoriteHospital", { uId: this.uid })
+        .fetchPost("Mobile/user/getFavoriteHospital", {
+          uId: this.uid,
+          pagesize: 40,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.hospitalList = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noDataHospital = true;
           }
         });
     },
     experts() {
+      this.noDataExpert = false;
       this.$axios
-        .fetchPost("Mobile/user/getFavoriteExpert", { uId: this.uid })
+        .fetchPost("Mobile/user/getFavoriteExpert", {
+          uId: this.uid,
+          pagesize: 40,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.expertList = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noDataExpert = true;
           }
         });
     },

@@ -149,7 +149,12 @@ export default {
       position absolute
       left 0
       top 5px
-      background #ff6600
+      &.gold
+        background #ff6600
+      &.base
+        background #155BBB
+      &.none
+        background #838383
     .company
       display flex
       padding 0 12px 0 25px

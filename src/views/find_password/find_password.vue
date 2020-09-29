@@ -3,8 +3,8 @@
     <Header :indexHeader="false"></Header>
     <div class="title">找回密码</div>
     <van-form @submit="onSubmit" class="from">
-      <van-field v-model="findPhone" name="手机号" type="tel" placeholder="请输入手机号" :rules="[{validator:validatorPhone, message: '请填写正确的手机号' },{ required: true, message: '请填写手机号' }]" />
-      <van-field v-model="findCode" name="验证码" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true, message: '请输入验证码' }]">
+      <van-field v-model="findPhone" name="手机号" type="tel" placeholder="请输入手机号" :rules="[{validator:validatorPhone },{ required: true }]" />
+      <van-field v-model="findCode" name="验证码" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true }]">
         <template #button>
           <div class=" btn" v-if="showBtn" @click="start">发送验证码
           </div>
@@ -13,8 +13,8 @@
           </div>
         </template>
       </van-field>
-      <van-field v-model="findPassword" type="password" name="密码" placeholder="请输入密码（6-20位）" maxlength="20" :rules="[{ required: true, message: '请输入新密码（6-20位） ' }]" />
-      <van-field v-model="findPassword2" type="password" name="密码" placeholder="请确认密码" maxlength="20" :rules="[{validator:validatorPw2,message:'两次密码不相同'},{ required: true, message: '再次输入新密码 ' }]" />
+      <van-field v-model="findPassword" type="password" name="密码" placeholder="请输入密码（6-20位）" maxlength="20" :rules="[{ required: true }]" />
+      <van-field v-model="findPassword2" type="password" name="密码" placeholder="请确认密码" maxlength="20" :rules="[{validator:validatorPw2},{ required: true}]" />
       <div style="margin: 16px;margin-top:45px">
         <van-button round block type="info" native-type="submit" class="sub">
           保存

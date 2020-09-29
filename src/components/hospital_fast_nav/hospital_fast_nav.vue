@@ -12,7 +12,7 @@
           <van-grid-item text="线上网诊" @click="goToOnline" />
           <van-grid-item text="坐诊巡诊" @click="goToZuo" v-if="hospitalIsStore == 1" />
           <van-grid-item text="测土配方" @click="goToCeTu" v-if="hospitalIsStore == 1" />
-          <van-grid-item :text="hospitalIsStore == 1?'专家挂号':'专家'" @click="goToRegistration" />
+          <van-grid-item text='专家挂号' @click="goToRegistration" />
           <van-grid-item text="资讯" @click="goToMessage" />
           <van-grid-item text="专家" @click="goToExpert" />
           <van-grid-item text="优质基地" @click="goToGoodBase" v-if="hospitalIsStore == 1" />
@@ -77,6 +77,12 @@ export default {
     },
     goToZuo() {
       // 路由 坐诊巡诊
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "zuozhen_list",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
@@ -102,6 +108,12 @@ export default {
     },
     goToCeTu() {
       // 路由 测土配方
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "cetu_list",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
@@ -131,6 +143,12 @@ export default {
     },
     goToRegistration() {
       // 路由 专家挂号
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "/expert_registration",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
@@ -164,6 +182,12 @@ export default {
     },
     goToAsk() {
       // 路由 提问
+      if (this.uid == "" || this.uid == undefined) {
+        this.$router.push({
+          path: "/ask",
+        });
+        return;
+      }
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({

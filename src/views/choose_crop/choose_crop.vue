@@ -1,11 +1,11 @@
 <template>
   <div class="choose_crop-container">
     <form action="/" class="from">
-      <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
+      <van-search v-model="value" show-action placeholder="请输入作物名" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
     </form>
     <div class="history-box">
       <div class="title">当前选择：{{cropName}}</div>
-      <div class="history-ul">
+      <div class="history-ul" v-show="hispitalList.length != 0">
         <div class="small-title">最近选择/全部作物</div>
         <li v-for="item in hispitalList" :key="item.fid" @click="choose(item)">{{item.name}}</li>
       </div>
@@ -119,7 +119,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .choose_crop-container
-  padding-top 54px
+  padding-top 5px
   position relative
   .from
     position fixed

@@ -1,12 +1,13 @@
 <template>
   <div class="zuozhen_list-container">
     <Header :indexHeader="false"></Header>
-    <ul>
+    <ul v-if="!noData">
       <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
         <p class="p1">{{item.title}}</p>
         <p class="p2">{{item.showtime}}<span class="hospital">{{item.mpublic}}</span></p>
       </li>
     </ul>
+    <van-empty description="暂无医院就诊记录" v-if="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -22,6 +23,7 @@ export default {
   data() {
     return {
       list: [],
+      noData: false,
     };
   },
   computed: {
@@ -35,11 +37,14 @@ export default {
   destroyed() {},
   methods: {
     getOnlineList() {
+      this.noData = false;
       this.$axios
         .fetchPost("/Mobile/Treatment/getWenzhen", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

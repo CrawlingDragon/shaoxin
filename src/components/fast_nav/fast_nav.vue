@@ -66,7 +66,7 @@
         </van-grid-item>
       </van-grid>
     </div>
-    <div class="btns" v-if="uid == ''">
+    <div class="btns" v-if="uid == '' || uid == undefined">
       <div class="btn1" @click="goToLogin">登录</div>
       <div class="btn2" @click="goToSign">注册</div>
     </div>

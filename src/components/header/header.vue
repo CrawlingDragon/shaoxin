@@ -13,7 +13,7 @@
       绍兴市为农服务平台首页
     </div>
     <div class="right-nav van-hairline--left">
-      <div class="index-icon" @click="goToIndex">
+      <div class="index-icon" @click.stop="goToIndex">
         <van-icon name="wap-home-o" />
       </div>
       <div class="fast-nav-icon" @click="openFastNav">

@@ -51,7 +51,9 @@ export default {
   created() {},
   computed: {},
   watch: {
-    $route() {},
+    $route(newval) {
+      console.log("newval :>> ", newval);
+    },
   },
   mounted() {},
   destroyed() {},

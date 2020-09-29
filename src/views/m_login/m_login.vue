@@ -3,8 +3,8 @@
     <Header :indexHeader="false"></Header>
     <div class="title">短信快捷登录<span @click="goToSign">注册</span></div>
     <van-form @submit="onSubmit" class="from">
-      <van-field v-model="mPhone" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone, message: '请填写正确的手机号' },{ required: true, message: '请填写手机号' }]" />
-      <van-field v-model="mCode" name="code" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true, message: '请输入验证码' }]">
+      <van-field v-model="mPhone" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone },{ required: true, message: '请填写手机号' }]" />
+      <van-field v-model="mCode" name="code" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true }]">
         <template #button>
           <div class="btn" v-show="showBtn" @click="start">发送验证码</div>
           <div v-show="!showBtn">
@@ -46,7 +46,7 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    ...mapMutations(["setUid"]),
+    ...mapMutations(["setUid", "setIsMember"]),
     validatorPhone(val) {
       // 验证手机号码
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val)) {

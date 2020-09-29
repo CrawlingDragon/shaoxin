@@ -3,8 +3,8 @@
     <Header :indexHeader="false"></Header>
     <div class="title-bar">账号密码登录<span @click="goToSign">注册</span></div>
     <van-form @submit="onSubmit" class="from">
-      <van-field v-model="username" type="tel" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone, message: '请填写正确的手机号' },{ required: true, message: '请填写手机号' }]" />
-      <van-field v-model="password" type="password" name="pwd" placeholder="请输入密码" :rules="[{ required: true, message: '请填写密码' }]" />
+      <van-field v-model="username" type="tel" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone, },{ required: true }]" />
+      <van-field v-model="password" type="password" name="pwd" placeholder="请输入密码" :rules="[{ required: true }]" />
       <div class="forget" @click="goToForget">忘记密码？</div>
       <div style="margin: 16px;margin-top:45px">
         <van-button round block type="info" native-type="submit" class="sub" :class="{'success':(this.username && this.password)}">
@@ -13,8 +13,7 @@
       </div>
     </van-form>
     <div class="message-login" @click="goTo_M_Login">短信快捷登录</div>
-    <van-divider class="line">第三方登录</van-divider>
-    <div class="wechat"></div>
+
   </div>
 </template>
 <script>
@@ -98,7 +97,7 @@ export default {
     font-size 24px
     color #333333
     text-align center
-    margin 40px 0
+    margin 80px 0 40px
     span
       font-size 15px
       margin-left 19px

@@ -1,5 +1,5 @@
 <template>
-  <div class="index_online-container">
+  <div class="index_online-container" ref="online">
     <Header :tabbarActive="1"></Header>
     <div class="choose-box">
       <div class="back" @click="goBack"></div>
@@ -44,6 +44,11 @@ export default {
     [ImagePreview.Component.name]: ImagePreview.Component,
     Foot,
   },
+  beforeRouteLeave(to, from, next) {
+    // ... to
+    window.scrollTo(0, 0);
+    next();
+  },
   props: {},
   data() {
     return {
@@ -59,7 +64,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["mid", "uid"]),
+    ...mapState(["mid", "uid", "initMid"]),
   },
   watch: {
     fid() {
@@ -95,7 +100,7 @@ export default {
       this.page += 1;
       this.$axios
         .fetchPost("/Mobile/Wen/index", {
-          mId: this.mid,
+          mId: this.initMid,
           fId: this.fid,
           areaId: this.area,
           page: this.page,

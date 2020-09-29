@@ -1,7 +1,7 @@
 <template>
   <div class="cetu_list-container">
     <Header :indexHeader="false" v-if="from == 'me'"></Header>
-    <HeaderHospital :header="headerKind" navHeader="测土配方" v-else></HeaderHospital>
+    <HeaderHospital navHeader="测土配方" v-else></HeaderHospital>
     <ul class="cetu_ul">
       <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
         <div class="top">
@@ -79,6 +79,8 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

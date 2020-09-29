@@ -44,7 +44,7 @@
           <div class="right">会员优先享受惠农贷款服务</div>
         </li>
       </ul>
-      <div class="btn" v-if="hospitalIsMember == 0" @click="goToApply">选择医院加入会员<div class="free">免费</div>
+      <div class="btn" @click="goToIntoHospital">选择医院加入会员<div class="free">免费</div>
       </div>
     </div>
   </div>
@@ -75,9 +75,9 @@ export default {
   },
   destroyed() {},
   methods: {
-    goToApply() {
+    goToIntoHospital() {
       this.$router.push({
-        path: "/apply_vip",
+        path: "/into_hospital",
       });
     },
   },

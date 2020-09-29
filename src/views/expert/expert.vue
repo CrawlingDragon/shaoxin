@@ -4,7 +4,20 @@
     <div class="person-box">
       <div class="name-bar">
         <van-image class="avator" :src="expertData.avatar"></van-image>
-        <div class="name">{{expertData.name}}<span v-if="identity == 1">{{expertData.groupname}}</span><span v-if="identity == 0" @click="goToCrop">{{expertData.forum}}</span></div>
+        <div class="name">{{expertData.name}}<span v-if="identity == 1 && id != aiExpertId">{{expertData.groupname}}</span></div>
+        <div v-if="identity == 0" @click="goToCrop" class="name-bar-crop">{{expertData.forum}}</div>
+        <van-overlay :show="skillShow" @click="skillShow = false">
+          <div class="wrapper" @click.stop @click="skillShow = false">
+            <div class="avatar-box">
+              <van-image :src="expertData.avatar" fit="cover" radius="5px"></van-image>
+              <p class="avatar-p1">{{expertData.name}}</p>
+            </div>
+            <div class="crop-lis">
+              <div class="left">种植作物</div>
+              <div class="crop">{{identity == 1 ? expertData.skill : expertData.forum}}</div>
+            </div>
+          </div>
+        </van-overlay>
         <div class="p1">{{expertData.company}}</div>
       </div>
       <div class="btns">
@@ -26,19 +39,7 @@
         个人简介
         <div class="look-more">详细资料 ></div>
       </div>
-      <p class="goodat" v-if="expertData.skill" @click="goToCrop">擅长：{{expertData.skill}}</p>
-      <van-overlay :show="skillShow" @click="skillShow = false">
-        <div class="wrapper" @click.stop @click="skillShow = false">
-          <div class="avatar-box">
-            <van-image :src="expertData.avatar" fit="cover" radius="5px"></van-image>
-            <p class="avatar-p1">{{expertData.name}}</p>
-          </div>
-          <div class="crop-lis">
-            <div class="left">种植作物</div>
-            <div class="crop">{{identity == 1 ? expertData.skill : expertData.forum}}</div>
-          </div>
-        </div>
-      </van-overlay>
+      <p class="goodat" v-if="expertData.skill">擅长：{{expertData.skill}}</p>
       <p class="explan" v-if="expertData.introduce">
         {{expertData.introduce}}</p>
     </div>
@@ -336,6 +337,9 @@ export default {
         overflow hidden
         text-overflow ellipsis
         white-space nowrap
+      .name-bar-crop
+        font-size 12px
+        color #fff
   .btns
     padding-left 80px
     font-size 0
@@ -384,6 +388,7 @@ export default {
   .person-info
     margin-top 10px
     background #fff
+    padding-bottom 12px
     .title-bar
       height 40px
       line-height 40px
@@ -406,7 +411,7 @@ export default {
       text-overflow ellipsis
       white-space nowrap
     .explan
-      padding 5px 12px 12px
+      margin 5px 12px 0
       color #9A9A9A
       font-size 12px
       display -webkit-box

@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: window.localStorage.getItem("token") || undefined, // 从缓存中获取token
-    uid: window.localStorage.getItem("uid"), //登录用户uid
+    uid: window.localStorage.getItem("uid") || undefined, //登录用户uid
     initMid: 56915, //绍兴市顶级医院mid
     mid: window.localStorage.getItem("mid"), //医院mid
     joinTime: window.localStorage.getItem("joinTime"), //用户加入医院的时间

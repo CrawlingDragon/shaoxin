@@ -49,7 +49,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["uid", "mid"]),
+    ...mapState(["uid", "mid", "initMid"]),
   },
   watch: {},
   created() {},
@@ -68,6 +68,8 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.ask = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData1 = true;
           }
         });
     },
@@ -81,6 +83,8 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.answer = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData2 = true;
           }
         });
     },
@@ -91,6 +95,9 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.information = res.data.data;
+          }
+          if (res.data.code == 201) {
+            this.noData3 = true;
           }
         });
     },

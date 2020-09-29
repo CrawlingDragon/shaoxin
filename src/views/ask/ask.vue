@@ -19,7 +19,7 @@
         <div class="left">咨询专家</div>
         <div class="right">{{ expert }}</div>
       </div>
-      <div class="choose-crop" v-show="expert && ismember == 0">
+      <div class="choose-crop" v-if="ismember == 0 || isShaoxing != '绍兴市'">
         <div class="left">所在位置</div>
         <div class="right location">{{ address }}</div>
         <van-icon name="arrow" class="arrow" />
@@ -59,6 +59,8 @@ export default {
       uploader: [],
       imgList: [],
       ismember: 0,
+      isShaoxing: "",
+      userInfo: "",
     };
   },
   computed: {
@@ -138,7 +140,9 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             let myAddress = res.data.data.ismember;
+            this.isShaoxing = res.data.data.residecity;
             this.ismember = res.data.data.ismember;
+            this.userInfo = res.data.data;
             if (myAddress == 1) {
               this.address = "浙江省,绍兴市";
               // this.address = "绍兴市";
@@ -166,17 +170,38 @@ export default {
           });
           map.getCity(function (info) {
             // console.table("info :>> ", info);
-            if (info.city != "绍兴市") {
-              that.address = "浙江省,绍兴市";
-              // that.address = "绍兴市";
-            } else if (info.city == "绍兴市") {
-              that.address = "浙江省,绍兴市," + info.district;
-              // that.address = info.district;
-            }
+            that.address = info.province + info.city + info.district;
           });
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
+          let adressTitle =
+            that.userInfo.resideprovince +
+            that.userInfo.residecity +
+            that.userInfo.residedist;
+          if (adressTitle != "") {
+            that.$dialog
+              .alert({
+                title: "定位失败",
+                message: "抱歉未定位到您的所在地址,已自动切换至 " + adressTitle,
+                confirmButtonText: "好的",
+              })
+              .then(() => {
+                // on close
+                that.address = adressTitle;
+              });
+          } else {
+            that.$dialog
+              .alert({
+                title: "定位失败",
+                message:
+                  "抱歉未定位到您的所在地址,后期可以在“我的-编辑资料-所在地”完善信息",
+                confirmButtonText: "不显示地址",
+              })
+              .then(() => {
+                // on close
+                that.address = "定位失败";
+              });
+          }
         });
     },
   },

@@ -417,7 +417,7 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
 };
 router.beforeEach((to, from, next) => {
   let uid = store.state.uid;
-  if (uid == "") {
+  if (uid == "" || uid == undefined) {
     //没登录的状态 不能去这些页面
     if (
       to.name == "ask" ||

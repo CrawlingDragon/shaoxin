@@ -1,7 +1,8 @@
 <template>
   <div class="me-container">
     <Header :indexHeader="false"></Header>
-    <div class="user-box" @click="goToExpert(info.uid)">
+    <div class="user-box" @click="goToExpert()">
+      <!-- info.uid -->
       <van-image class="avator" round fit="cover" :src="info.avatar"></van-image>
       <div class="mid">
         <p class="p1">
@@ -116,10 +117,10 @@ export default {
     callPhone() {
       this.$refs.tel.click();
     },
-    goToExpert(id) {
+    goToExpert() {
       this.$router.push({
         path: "/expert",
-        query: { id: id },
+        query: { id: this.uid, from: "my" },
       });
     },
   },

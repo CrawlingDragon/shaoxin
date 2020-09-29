@@ -61,7 +61,7 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    if (this.uid == "") {
+    if (this.uid == "" || this.uid == undefined) {
       this.getaddress();
     } else {
       this.getMyAddress();
@@ -90,6 +90,15 @@ export default {
             if (info.city != "绍兴市") {
               that.location = "浙江省,绍兴市";
               that.address = "绍兴市";
+              that.$dialog
+                .alert({
+                  message: "检测到你的地址不在绍兴市，已自动切换至绍兴市",
+                  confirmButtonText: "知道了",
+                  confirmButtonColor: "#ff6600",
+                })
+                .then(() => {
+                  // on close
+                });
             } else if (info.city == "绍兴市") {
               that.location = "浙江省,绍兴市," + info.district;
               that.address = info.district;
@@ -99,8 +108,16 @@ export default {
             }, 100);
           });
         })
-        .catch((e) => {
-          console.log(e);
+        .catch(() => {
+          that.$dialog
+            .alert({
+              message: "定位失败,已自动切换到绍兴市",
+              confirmButtonText: "知道了",
+              confirmButtonColor: "#ff6600",
+            })
+            .then(() => {
+              // on close
+            });
         });
     },
     getList() {

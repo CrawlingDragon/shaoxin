@@ -18,7 +18,7 @@
       <li @click="clickName">
         <div class="left">名字</div>
         <div class="mid">{{ name }}</div>
-        <van-icon name="arrow" class="arrow" v-if="identity != 1 || ismember != 1" />
+        <van-icon name="arrow" class="arrow" v-if="identity == 0 || ismember == 0" />
       </li>
       <li @click="sexShow = true">
         <div class="left">性别</div>
@@ -35,7 +35,7 @@
     </ul>
     <van-dialog v-model="nameShow" title="修改名字" show-cancel-button @confirm="confirmName">
       <!-- 修改用户名 -->
-      <van-field v-model="names" placeholder="请输入用户名" class="name" />
+      <van-field v-model="names" placeholder="请输入用户名" class="name" maxlength="10" />
     </van-dialog>
     <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelect" />
     <!-- 选择性别 -->
@@ -80,13 +80,28 @@ export default {
   },
   computed: { ...mapState(["uid", "mid"]) },
   watch: {
-    name() {
+    name(newVal, oldVal) {
+      if (oldVal == "") {
+        return false;
+      }
       this.upDate();
     },
-    sex() {
+    sex(newVal, oldVal) {
+      if (oldVal == "请选择") {
+        return;
+      }
       this.upDate();
     },
-    residedist() {
+    residedist(newVal, oldVal) {
+      if (oldVal == "") {
+        return;
+      }
+      this.upDate();
+    },
+    residecity(newVal, oldVal) {
+      if (oldVal == "") {
+        return;
+      }
       this.upDate();
     },
   },
@@ -94,6 +109,9 @@ export default {
     this.getInfo();
   },
   created() {},
+  beforeDestroy() {
+    // this.upDate();
+  },
   destroyed() {},
   methods: {
     afterRead(file) {
@@ -106,9 +124,8 @@ export default {
           // console.log("res :>> ", res);
           if (res.data.code == 0) {
             this.avatar = res.data.data;
-          } else {
-            this.$toast(res.data.message);
           }
+          this.$toast(res.data.message);
         });
     },
     getInfo() {

@@ -6,9 +6,9 @@
     <p class="p2">{{list.level}}·{{list.issort}}医院</p>
     <p class="p3" v-show="list.zuowu != '暂未设置'">科室：{{list.zuowu}}</p>
     <div class="number">
-      <div class="expert">专家 {{list.num_expert}}</div>
-      <div class="line">|</div>
-      <div class="online" v-if="list.isstore == 1 && list.num_chufang != 0">处方 {{list.num_chufang}}</div>
+      <div class="expert" v-if="list.num_expert != 0">专家 {{list.num_expert}}</div>
+      <div class="line" v-show="list.num_expert != 0 || list.num_chufang != 0">|</div>
+      <div class="online" v-if="list.num_chufang != 0">处方 {{list.num_chufang}}</div>
       <div class="online" v-else>网诊 {{list.num_wen}}</div>
     </div>
     <div class="icon" v-show="list.isstore == 1"></div>
