@@ -108,7 +108,7 @@ export default {
         -webkit-box-orient vertical
   .kind
     font-size 0
-    max-height 48px
+    max-height 45px
     overflow hidden
     .item
       display inline-block

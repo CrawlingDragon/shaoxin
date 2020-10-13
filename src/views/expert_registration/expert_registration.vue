@@ -71,7 +71,7 @@ export default {
     },
     registration(item, halfDay) {
       if (item.surplus == 0) {
-        this.$toast("抱歉,该时间段没有专家号！");
+        this.$toast("抱歉,该时间段没有专家号");
         return;
       }
       let title = `${this.timeFormat(parseInt(item.ymd) * 1000)}${halfDay}${

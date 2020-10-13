@@ -2,8 +2,14 @@
   <div class="cetu_list-container">
     <Header :indexHeader="false" v-if="from == 'me'"></Header>
     <HeaderHospital navHeader="测土配方" v-else></HeaderHospital>
-    <ul class="cetu_ul">
-      <li v-for="item in list" :key="item.id" @click="goToDetail(item.id)">
+    <ul class="cetu_ul" v-show="!noData">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+      <li v-for="item in list" :key="item.ids" @click="goToDetail(item.id)">
         <div class="top">
           <div class="title">
             {{item.title}}
@@ -12,6 +18,7 @@
         </div>
         <div class="hospital" v-if="from == 'me'">{{item.mpublic}}</div>
       </li>
+      </van-list>
     </ul>
     <van-empty description="暂无土壤检测报告" v-show="noData"></van-empty>
   </div>
@@ -36,51 +43,63 @@ export default {
       list: [],
       noData: false,
       from: this.$route.query.from,
+      loading:false,
+      finished:false,
+      page:0,
+      meUid:''
     };
   },
   computed: {
     ...mapState(["mid", "uid"]),
   },
   watch: {
-    $route() {
-      if (this.from != "me") {
-        this.getList(this.mid);
-      } else {
-        this.getMeList(this.uid);
-      }
-    },
+    // $route() {
+    //   if (this.from != "me") {
+    //     this.getList();
+    //   } else {
+    //     this.getMeList();
+    //   }
+    // },
   },
   mounted() {
     if (this.from != "me") {
-      this.getList(this.mid);
-    } else {
-      this.getMeList(this.uid);
-    }
+        this.meUid = ''
+      } else {
+        this.meUid = this.uid
+       }
   },
   destroyed() {},
   methods: {
-    getList(mid) {
-      // 获取测土配方列表 医院
-      this.noData = false;
-      this.$axios
-        .fetchPost("/Mobile/Treatment/getTestingsoil", { mId: mid })
-        .then((res) => {
-          if (res.data.code == 0) {
-            this.list = res.data.data;
-          } else if (res.data.code == 201) {
-            this.noData = true;
-          }
-        });
+    onLoad(){
+      this.getMeList();
     },
-    getMeList(uid) {
+    // getList() {
+    //   // 获取测土配方列表 医院
+    //   this.noData = false;
+    //   this.$axios
+    //     .fetchPost("/Mobile/Treatment/getTestingsoil", { mId: this.mid,page:this.page })
+    //     .then((res) => {
+    //       if (res.data.code == 0) {
+    //         this.list = res.data.data;
+    //       } else if (res.data.code == 201) {
+    //         this.noData = true;
+    //       }
+    //     });
+    // },
+    getMeList() {
       // 获取测土配方列表  个人
+      this.page += 1
       this.$axios
-        .fetchPost("/Mobile/Treatment/getTestingsoil", { uId: uid })
+        .fetchPost("/Mobile/Treatment/getTestingsoil", { uId: this.meUid ,mId:this.mid,page:this.page})
         .then((res) => {
           if (res.data.code == 0) {
-            this.list = res.data.data;
+            this.loading = false;
+            this.list = this.list.concat(res.data.data);
           } else if (res.data.code == 201) {
-            this.noData = true;
+            if(this.page == 1){
+              this.noData = true;
+            }
+            this.finished = true;
           }
         });
     },

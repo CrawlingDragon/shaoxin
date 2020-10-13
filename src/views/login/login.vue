@@ -61,11 +61,21 @@ export default {
           this.$toast(res.data.message);
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
+            this.createScript(res.data.data.msg[0])
+            this.createScript(res.data.data.msg[1])
+            this.createScript(res.data.data.msg[2])
+            this.createScript(res.data.data.msg[3])
             this.$router.push({
               path: "/index",
             });
           }
         });
+    },
+    createScript(src){
+      let js = document.createElement('script')
+      js.setAttribute('type','text/javascript')
+      js.src = src
+      document.getElementsByTagName('head')[0].appendChild(js)
     },
     goTo_M_Login() {
       this.$router.push({

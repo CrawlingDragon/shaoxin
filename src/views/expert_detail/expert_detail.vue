@@ -1,30 +1,30 @@
 <template>
   <div class="expert_detail-container">
     <Header :indexHeader="false"></Header>
-    <div class="avator-box">
+    <div class="avator-box" v-if="person.name || person.avatar">
       <van-image class="avator" :src="person.avatar" fit="cover"></van-image>
       <p class="p1">{{person.name}}</p>
     </div>
     <ul class="info-ul" v-if="person.identity ==  1">
-      <li>
+      <li v-if="person.skill">
         <div class="left">擅长</div>
-        <div class="right">{{person.skill ||  '暂无设置'}}</div>
+        <div class="right">{{person.skill}}</div>
       </li>
-      <li>
+      <li v-if="person.residecity">
         <div class="left">所在地</div>
-        <div class="right">{{person.residecity || '无'}}</div>
+        <div class="right">{{person.residecity}}</div>
       </li>
-      <li>
+      <li v-if="person.company">
         <div class="left">单位</div>
-        <div class="right">{{person.company || '无'}}</div>
+        <div class="right">{{person.company}}</div>
       </li>
-      <li>
+      <li v-if="person.position != ''">
         <div class="left">职称</div>
-        <div class="right">{{person.position || '无'}}</div>
+        <div class="right">{{person.position}}</div>
       </li>
-      <li>
+      <li v-if="person.introduce != ''">
         <div class="left">简介</div>
-        <div class="right">{{person.introduce || '无'}} </div>
+        <div class="right">{{person.introduce}} </div>
       </li>
     </ul>
     <ul class="info-ul" v-if="person.identity !=  1">

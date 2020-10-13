@@ -18,13 +18,13 @@
             </div>
           </div>
         </van-overlay>
-        <div class="p1">{{expertData.company}}</div>
+        <div class="p1">{{expertData.company}} {{expertData.position}}</div>
       </div>
       <div class="btns">
         <div class="btn-look" v-if="$route.query.from != 'my' && expertData.isme == 0" @click="attention">
           <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}
         </div>
-        <div class="btn-ask" v-if="expertData.identity == 1 && $route.query.from != 'my' && id != aiExpertId" @click="goToAsk">
+        <div class="btn-ask" v-if="expertData.identity == 1 && $route.query.from != 'my' && id != aiExpertId && expertData.isme != 1" @click="goToAsk">
           <van-icon name="records" class="records" />提问
         </div>
         <div class="edit" v-if="$route.query.from == 'my' || expertData.isme == 1" @click="goToMeEdit">编辑资料</div>
@@ -34,7 +34,7 @@
         <div class="item">粉丝 {{expertData.follower}}</div>
       </div>
     </div>
-    <div class="person-info" v-if="expertData.identity == 1">
+    <div class="person-info" v-if="expertData.identity == 1 && (expertData.skill != '' || expertData.introduce != '')">
       <div class="title-bar" @click="goToPersondetail">
         个人简介
         <div class="look-more">详细资料 ></div>
@@ -61,10 +61,11 @@
         <template #title>
           提问 {{expertData.threads}}
         </template>
-        <ul class="answer-ul" v-show="id != aiExpertId">
+        <van-empty description="暂无提问" v-if="noData2" />
+        <ul class="answer-ul" v-show="id != aiExpertId" v-else>
           <van-list v-model="loading2" :finished="finished2" finished-text="没有更多了" @load="onLoad2" :immediate-check="false">
             <li v-for="item in askMeList" :key="item.id">
-              <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>2
+              <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
             </li>
           </van-list>
         </ul>
@@ -73,7 +74,8 @@
         <template #title>
           加入的医院 {{expertData.join}}
         </template>
-        <ul class="hospital-ul" v-show="id != aiExpertId">
+        <van-empty description="暂未加入医院" v-if="noData3" />
+        <ul class="hospital-ul" v-show="id != aiExpertId" v-else>
           <van-list v-model="loading3" :finished="finished3" finished-text="没有更多了" @load="onLoad3" :immediate-check="false">
             <li v-for="item in hospitalList" :key="item.id">
               <RecommendHospital :list="item"></RecommendHospital>
@@ -123,9 +125,11 @@ export default {
       loading2: false,
       finished2: false,
       page2: 0,
+      noData2: false,
       loading3: false,
       finished3: false,
       page3: 0,
+      noData3: false,
       skillShow: false,
     };
   },
@@ -134,8 +138,16 @@ export default {
   },
   created() {},
   watch: {
-    id(newVal) {
-      this.getExpertData(newVal);
+    $route(newVal) {
+      this.id = newVal.query.id;
+      this.page = 0;
+      this.page2 = 0;
+      this.page3 = 0;
+      this.askedList = []; // 解答列表
+      this.askMeList = []; // 提问立标
+      this.hospitalList = []; // 计入的医院列表
+      // console.log("newVal :>> ", newVal);
+      this.getExpertData(this.id);
     },
   },
   mounted() {
@@ -201,6 +213,7 @@ export default {
     getAskMe() {
       //提问 ===> 就是我
       this.page2 += 1;
+      this.noData2 = false;
       this.$axios
         .fetchPost("/Mobile/User/getWenList", {
           uId: this.expertid,
@@ -213,6 +226,9 @@ export default {
             this.loading = false;
             this.askMeList = res.data.data;
           } else if (res.data.code == 201) {
+            if (this.page2 == 1) {
+              this.noData2 = true;
+            }
             this.finished2 = true;
           }
         });
@@ -220,6 +236,7 @@ export default {
     getHospitalList() {
       // 我加入的 医院
       this.page3 += 1;
+      this.noData3 = false;
       this.$axios
         .fetchPost("/Mobile/User/myJoinHospital", {
           uId: this.expertid,
@@ -230,6 +247,9 @@ export default {
             this.hospitalList = res.data.data.list;
             this.loading3 = false;
           } else if (res.data.code == 201) {
+            if (this.page3 == 1) {
+              this.noData3 = true;
+            }
             this.finished3 = true;
           }
         });

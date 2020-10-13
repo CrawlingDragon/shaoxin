@@ -16,7 +16,8 @@ export default new Vuex.Store({
     userName: window.localStorage.getItem("userName"), //用户名字
     userAvatar: window.localStorage.getItem("userAvatar"), //用户头像
     hospitalIsMember: window.localStorage.getItem("hospitalIsMember"), //是否是医院会员
-    aiExpertId: window.localStorage.getItem("aiExpertId") //ai 智能专家id
+    aiExpertId: window.localStorage.getItem("aiExpertId"), //ai 智能专家id
+    ucuid:window.localStorage.getItem('ucuid') //农资店铺 ucuid
   },
   mutations: {
     setToken(state, data) {
@@ -66,6 +67,10 @@ export default new Vuex.Store({
     setAiExpertId(state, aiExpertId) {
       state.aiExpertId = aiExpertId;
       window.localStorage.setItem("aiExpertId", aiExpertId);
+    },
+    setUcUid(state,ucuid){
+      state.ucuid = ucuid
+      window.localStorage.setItem("ucuid", ucuid);
     }
   },
   actions: {},

@@ -31,7 +31,7 @@
         <p>优质基地</p>
       </li>
       <li>
-        <a href="http://sxmvip.114nz.com" target="_blank" style="display:block;color: #AED0FF;">
+        <a :href="'http://sxmvip.nzsoso.com/Home/Company/companyDetail/ucuid/' + ucuid" target="_blank" style="display:block;color: #AED0FF;">
           <div class="icon icon07"></div>
           <p>农资店铺</p>
         </a>
@@ -70,7 +70,7 @@ export default {
     return {};
   },
   computed: {
-    ...mapState(["hospitalIsStore", "hospitalIsMember"]),
+    ...mapState(["hospitalIsStore", "hospitalIsMember", "uid", "mid",'ucuid']),
   },
   watch: {},
   mounted() {},
@@ -92,7 +92,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉坐诊巡诊是会员服务，请先申请加入医院在访问",
+            message: "抱歉坐诊巡诊是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -118,7 +118,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉测土配方是会员服务，请先申请加入医院在访问",
+            message: "抱歉测土配方是会员服务，请先申请再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -145,7 +145,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉专家挂号是会员服务，请先申请加入医院在访问",
+            message: "抱歉专家挂号是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -174,7 +174,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉会员提问是会员服务，请先申请加入医院在访问",
+            message: "抱歉会员提问是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })

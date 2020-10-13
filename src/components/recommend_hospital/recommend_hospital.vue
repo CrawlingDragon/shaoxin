@@ -7,9 +7,10 @@
     <p class="p3" v-show="list.zuowu != '暂未设置'">科室：{{list.zuowu}}</p>
     <div class="number">
       <div class="expert" v-if="list.num_expert != 0">专家 {{list.num_expert}}</div>
-      <div class="line" v-show="list.num_expert != 0 || list.num_chufang != 0">|</div>
+      <div class="line" v-show="list.num_expert != 0 && list.num_chufang != 0">|</div>
       <div class="online" v-if="list.num_chufang != 0">处方 {{list.num_chufang}}</div>
-      <div class="online" v-else>网诊 {{list.num_wen}}</div>
+      <div class="line" v-show="list.num_wen != 0 && list.isstore == 0" style="margin-left:10px">|</div>
+      <div class="online" v-if="list.num_wen != 0 && list.isstore == 0">网诊 {{list.num_wen}}</div>
     </div>
     <div class="icon" v-show="list.isstore == 1"></div>
   </div>

@@ -31,7 +31,7 @@
           <div class="icon03"></div>
         </template>
       </van-cell>
-      <van-cell title="土壤检测" :to="{path:'/cetu_list',query:{from:'me'}}" is-link>
+      <van-cell title="土壤检测" :to="{path:'/whole_cetu_list'}" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon04"></div>

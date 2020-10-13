@@ -18,7 +18,7 @@
       <li @click="clickName">
         <div class="left">名字</div>
         <div class="mid">{{ name }}</div>
-        <van-icon name="arrow" class="arrow" v-if="identity == 0 || ismember == 0" />
+        <van-icon name="arrow" class="arrow" v-if="identity == 0 && ismember == 0" />
       </li>
       <li @click="sexShow = true">
         <div class="left">性别</div>
@@ -104,6 +104,12 @@ export default {
       }
       this.upDate();
     },
+    resideprovince(newVal, oldVal){
+      if (oldVal == "") {
+        return;
+      }
+      this.upDate();
+    }
   },
   mounted() {
     this.getInfo();

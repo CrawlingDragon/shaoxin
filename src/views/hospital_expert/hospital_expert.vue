@@ -1,14 +1,14 @@
 <template>
   <div class="hospital_expert-container">
     <Header header="indexHeader" navHeader="专家"></Header>
-    <ul class="expert-ul">
+    <ul class="expert-ul" v-if="!noData">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <li v-for="item in list" :key="item.id">
           <RecommendExpert :list="item"></RecommendExpert>
         </li>
       </van-list>
     </ul>
-    <van-empety description='暂无医院专家'></van-empety>
+    <van-empety description='暂无医院专家' v-if="noData"></van-empety>
   </div>
 </template>
 <script>

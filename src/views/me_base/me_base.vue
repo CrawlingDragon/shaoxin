@@ -51,7 +51,8 @@ export default {
       this.$axios
         .fetchPost("Mobile/Mpublic/getFineBaseCom", {
           uId: this.uid,
-          page: 100,
+          page: 1,
+          pagesize:20
         })
         .then((res) => {
           if (res.data.code == 0) {

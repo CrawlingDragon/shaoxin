@@ -61,11 +61,12 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    if (this.uid == "" || this.uid == undefined) {
-      this.getaddress();
-    } else {
-      this.getMyAddress();
-    }
+    // if (this.uid == "" || this.uid == undefined) {
+    //   this.getaddress();
+    // } else {
+    //   this.getMyAddress();
+    // }
+    this.getaddress();
   },
   destroyed() {},
   methods: {
@@ -137,32 +138,32 @@ export default {
           }
         });
     },
-    getMyAddress() {
-      this.$axios
-        .fetchPost("Mobile/User/userCenter", {
-          uId: this.uid,
-          mId: this.mid,
-        })
-        .then((res) => {
-          if (res.data.code == 0) {
-            this.$nextTick(() => {
-              this.loading = false;
-            });
-            let myAddress = res.data.data.ismember;
-            if (myAddress == 1) {
-              this.location = "浙江省,绍兴市";
-              this.address = "绍兴市";
-              setTimeout(() => {
-                this.getList();
-              }, 100);
-            } else {
-              setTimeout(() => {
-                this.getaddress();
-              }, 100);
-            }
-          }
-        });
-    },
+    // getMyAddress() {
+    //   this.$axios
+    //     .fetchPost("Mobile/User/userCenter", {
+    //       uId: this.uid,
+    //       mId: this.mid,
+    //     })
+    //     .then((res) => {
+    //       if (res.data.code == 0) {
+    //         this.$nextTick(() => {
+    //           this.loading = false;
+    //         });
+    //         let myAddress = res.data.data.ismember;
+    //         if (myAddress == 1) {
+    //           this.location = "浙江省,绍兴市";
+    //           this.address = "绍兴市";
+    //           setTimeout(() => {
+    //             this.getList();
+    //           }, 100);
+    //         } else {
+    //           setTimeout(() => {
+    //             this.getaddress();
+    //           }, 100);
+    //         }
+    //       }
+    //     });
+    // },
   },
 };
 </script>

@@ -304,7 +304,7 @@ const routes = [
   },
   {
     path: "/whole_cetu_list",
-    name: "wholeCetuList",
+    name: "wholeCeTuList",
     component: () =>
       import(
         /*webpackChunkName:"whole_cetu_list" */ "@/views/whole_cetu_list/whole_cetu_list"
@@ -420,17 +420,19 @@ router.beforeEach((to, from, next) => {
   if (uid == "" || uid == undefined) {
     //没登录的状态 不能去这些页面
     if (
+      to.name == "wholeCeTuList" ||
       to.name == "ask" ||
       to.name == "me" ||
       to.name == "zuozhenList" ||
       to.name == "cetuList" ||
-      to.name == "expertRegistration"
+      to.name == "expertRegistration" ||
+      to.name == "wholeZuoZhenList"
     ) {
       next("/login");
     }
   } else {
     if (to.name == "Login" || to.name == "mLogin") {
-      next("/");
+      next("/index");
     }
   }
   next(true);

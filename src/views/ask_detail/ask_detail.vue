@@ -9,7 +9,7 @@
           <div class="time">{{detail.addtime}} · {{detail.area}}</div>
         </div>
       </div>
-      <div class="subsidy" v-if="detail.isbenefit == 1"></div>
+      <div class="subsidy" v-if="detail.isbenefit == 1" @click="benefit"></div>
       <div class="text">{{detail.content}}</div>
       <div class="img-list">
         <div class="item" v-for="(item,index) in detail.urls_tiny" :key="item" @click="preview(detail.urls,index)">
@@ -33,7 +33,7 @@
         <li v-for="item in detail.answers" :key="item.pid">
           <div class="top">
             <van-image round fit="cover" :src="item.avatar" class="avator" @click="goToExpert(item.isexpert,item.authorid)"></van-image>
-            <div class="name">{{item.author}}({{item.groupname}})</div>
+            <div class="name">{{item.name}}<span v-show="item.groupname != ''">({{item.groupname}})</span></div>
             <div class="time">{{item.addtime}}</div>
           </div>
           <div class="text">{{item.content}}</div>
@@ -80,7 +80,7 @@
     <van-popup v-model="showRote" position="bottom" :style="{ height: '234px' }" class="rotes">
       <div class="sub" @click="subRemark">发表</div>
       <div class="title">评价 {{author}}</div>
-      <van-rate v-model="roteValue" color="#ff6600" size="27px" @change="onChangeRote" />
+      <van-rate v-model="roteValue" color="#ff6600" size="27px" />
       <span v-if="roteValue == 1" class="rote-text">解答非常差</span>
       <span v-if="roteValue == 2" class="rote-text">解答差</span>
       <span v-if="roteValue == 3" class="rote-text">解答一般</span>
@@ -158,13 +158,14 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.getDetail();
+            this.message = "";
           }
           this.show = false;
           this.$toast(res.data.message);
         });
     },
     showPopupRote(item) {
-      this.author = item.author;
+      this.author = item.name;
       this.pid = item.pid;
       this.showRote = true;
     },
@@ -182,13 +183,15 @@ export default {
           if (res.data.code == 0) {
             this.showRote = false;
             this.getDetail();
+            this.roteValue = 1;
+            this.messageRote = "";
           }
           this.$toast(res.data.message);
         });
     },
-    onChangeRote(value) {
-      console.log("1 :>> ", value);
-    },
+    // onChangeRote(value) {
+    //   // console.log("1 :>> ", value);
+    // },
     preview(item, index) {
       //网诊的图片预览
       ImagePreview({
@@ -210,6 +213,18 @@ export default {
           path: "/hospital",
         });
       }
+    },
+    benefit() {
+      // 补助提示
+      this.$dialog
+        .alert({
+          message: "回答该问题，能获得平台补助",
+          confirmButtonText: "知道了",
+          confirmButtonColor: "#ff6600",
+        })
+        .then(() => {
+          // on close
+        });
     },
   },
 };

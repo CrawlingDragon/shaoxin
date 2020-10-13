@@ -12,7 +12,7 @@
           <van-grid-item text="线上网诊" @click="goToOnline" />
           <van-grid-item text="坐诊巡诊" @click="goToZuo" v-if="hospitalIsStore == 1" />
           <van-grid-item text="测土配方" @click="goToCeTu" v-if="hospitalIsStore == 1" />
-          <van-grid-item text='专家挂号' @click="goToRegistration" />
+          <van-grid-item text='专家挂号' @click="goToRegistration" v-if="hospitalIsStore == 1" />
           <van-grid-item text="资讯" @click="goToMessage" />
           <van-grid-item text="专家" @click="goToExpert" />
           <van-grid-item text="优质基地" @click="goToGoodBase" v-if="hospitalIsStore == 1" />
@@ -57,6 +57,7 @@ export default {
       "hospitalName",
       "hospitalIsStore",
       "hospitalIsMember",
+      'ucuid'
     ]),
   },
   watch: {},
@@ -87,7 +88,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉坐诊巡诊是会员服务，请先申请加入医院在访问",
+            message: "抱歉坐诊巡诊是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -118,7 +119,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉测土配方是会员服务，请先申请加入医院在访问",
+            message: "抱歉测土配方是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -153,7 +154,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉专家挂号是会员服务，请先申请加入医院在访问",
+            message: "抱歉专家挂号是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -192,7 +193,7 @@ export default {
         this.$dialog
           .confirm({
             title: "提示",
-            message: "抱歉会员提问是会员服务，请先申请加入医院在访问",
+            message: "抱歉会员提问是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
           })
@@ -272,7 +273,10 @@ export default {
       this.$emit("changeFlag", false);
     },
     goToShop() {
-      window.open("http://sxmvip.114nz.com", "_blank");
+      window.open(
+        "http://sxmvip.nzsoso.com/Home/Company/companyDetail/ucuid/" + this.ucuid,
+        "_blank"
+      );
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="good_base-container">
     <Header indexHeader="indexHeader" navHeader="优质基地"></Header>
-    <ul class="base-ul">
+    <ul class="base-ul" v-if="!noData">
       <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
         <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
         <van-image class="img" :src="item.logo"></van-image>
@@ -15,7 +15,8 @@
         </div>
       </li>
     </ul>
-    <div class="tip">申请庄稼医院会员，提交基地认证</div>
+    <div class="tip" v-if="!noData">申请庄稼医院会员，提交基地认证</div>
+    <van-empty description="暂无基地" v-if="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -32,6 +33,7 @@ export default {
   data() {
     return {
       list: [],
+      noData: false,
     };
   },
   computed: {
@@ -51,10 +53,13 @@ export default {
         .fetchPost("/Mobile/Mpublic/getFineBaseCom", {
           mId: mid,
           uId: this.uid,
+          pagesize: 50,
         })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
+          } else if (res.data.code == 201) {
+            this.noData = true;
           }
         });
     },

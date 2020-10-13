@@ -22,7 +22,7 @@
       <div class="clear" @click="clearHispital()">清空历史</div>
     </div>
     <div class="result-box">
-      <div class="title">搜索结果</div>
+      <div class="title" v-show="list.length != 0">搜索结果</div>
       <ul>
         <li v-for="item in list" :key="item.mid" @click="goToHospital(item.mid)">
           <van-image class="img" :src="item.logo" fit="cover"></van-image>

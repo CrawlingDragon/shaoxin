@@ -27,7 +27,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid", "initMid"]),
   },
   watch: {},
   created() {},
@@ -39,7 +39,9 @@ export default {
     getOnlineList() {
       this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/Treatment/getWenzhen", { uId: this.uid })
+        .fetchPost("/Mobile/Treatment/getWenzhen", {
+          uId: this.uid,
+        })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

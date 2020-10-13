@@ -6,7 +6,7 @@ module.exports = {
     port: 8082,
     proxy: {
       "/api": {
-        target: "http://beta.sx.114nz.com/",
+        target: "http://beta.sx.nzsoso.com/",
         changeOrigin: true,
         ws: true,
         secure: false,
@@ -17,3 +17,4 @@ module.exports = {
     }
   }
 };
+// http://beta.sx.114nz.com/

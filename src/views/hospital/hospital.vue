@@ -75,6 +75,9 @@ export default {
     //   // console.log("newVal :>> ", newVal);
     //   // this.getHospitalData(this.mid);
     // },
+    uid(){
+      this.getHospitalData(this.mid);
+    },
     mid() {
       this.getHospitalData(this.mid);
     },
@@ -84,7 +87,7 @@ export default {
   },
   destroyed() {},
   methods: {
-    ...mapMutations(["setJoinTime", "setHospitalIsMember"]),
+    ...mapMutations(["setJoinTime", "setHospitalIsMember",'setUcUid']),
     getHospitalData(mid) {
       this.$axios
         .fetchPost("Mobile/Mpublic/MpublicPage", {
@@ -101,6 +104,7 @@ export default {
             this.mpublic = data.mpublic;
             this.setJoinTime(data.mpublic.addtime);
             this.setHospitalIsMember(data.mpublic.ismember);
+            this.setUcUid(data.mpublic.ucuid)
             if (data.list_wen.length == 0) {
               this.wenListNoData = true;
             }

@@ -6,8 +6,8 @@ axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded;charset=utf-8";
 axios.defaults.baseURL =
   process.env.NODE_ENV == "production"
-    ? "http://beta.sx.114nz.com/"
-    : "http://beta.sx.114nz.com/";
+    ? "http://beta.sx.nzsoso.com/"
+    : "http://beta.sx.nzsoso.com/";
 //配置接口地址
 // console.log(axios.defaults.baseURL);
 

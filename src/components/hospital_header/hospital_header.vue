@@ -63,9 +63,15 @@ export default {
   computed: {
     ...mapState(["mid", "uid", "initMid"]),
   },
-  watch: {},
+  watch: {
+    $route(){
+      this.flag = false;
+    }
+  },
   mounted() {},
-  destroyed() {},
+  destroyed() {
+    
+  },
   methods: {
     rightIcon() {
       this.flag = true;

@@ -18,7 +18,7 @@
           <div class="p">找基地</div>
         </van-grid-item>
         <van-grid-item>
-          <a href="http://vip.114nz.com/Index/Index/index.html" class="p" target="_blank">专享商城</a>
+          <a href="http://sxmvip.nzsoso.com" class="p" target="_blank">专享商城</a>
         </van-grid-item>
       </van-grid>
       <van-grid :column-num="4" :border="false">
@@ -40,7 +40,7 @@
       <div class="small-title">平台服务</div>
       <van-grid :column-num="4" :border="false">
         <van-grid-item>
-          <a href="http://sxmvip.114nz.com" class="p" target="_blank">农资商城</a>
+          <a href="http://betah5.114nz.com" class="p" target="_blank">农资商城</a>
         </van-grid-item>
         <van-grid-item @click="goToVideo">
           <div class="p">培训视频</div>
@@ -71,8 +71,8 @@
       <div class="btn2" @click="goToSign">注册</div>
     </div>
     <div class="logined" v-else>
-      <van-image width="35" height="35" round :src="userAvatar" class="avator" fit="cover" />
-      <p class="name">{{userName}}</p>
+      <van-image width="35" height="35" round :src="userAvatar" class="avator" fit="cover" @click="goToMe" />
+      <p class="name" @click="goToMe">{{userName}}</p>
       <div class="login-out" @click="loginOut">退出登录</div>
     </div>
     <div class="index-btn" @click="goToIndex">
@@ -184,6 +184,10 @@ export default {
     },
     goToAboutUs() {
       this.$router.push({ path: "/about_us" }).catch((err) => err);
+    },
+    goToMe() {
+      this.closeBox();
+      this.$router.push({ path: "/me" }).catch((err) => err);
     },
   },
 };

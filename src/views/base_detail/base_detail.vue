@@ -9,10 +9,10 @@
         <div class="share" @click="shareShow = true"></div>
         <van-overlay :show="shareShow" @click="shareShow = false" z-index="1111">
           <div class="wrapper" @click.stop>
-            <van-image :src="base.logo" fit="cover" round class="logo-img"></van-image>
-            <div class="title">{{base.name}}</div>
+            <!-- <van-image :src="base.logo" fit="cover" round class="logo-img"></van-image> -->
+            <!-- <div class="title">{{base.name}}</div> -->
             <van-image :src="base.share_code" fit="cover" class="share-img" radius="5px"></van-image>
-            <p class="p1">长按扫码分享</p>
+            <!-- <p class="p1">长按扫码分享</p> -->
           </div>
         </van-overlay>
       </div>
@@ -184,9 +184,8 @@ export default {
         left 50%
         top 50%
         transform translate(-50%, -50%)
-        background url('./bj.png') no-repeat
+        // background url('./bj.png') no-repeat
         background-size 100% 100%
-        padding 0 12px
         .logo-img
           width 45px
           height 45px
@@ -199,9 +198,8 @@ export default {
           margin-bottom 50px
           text-align center
         & > .share-img
-          width 125px
-          height 125px
-          margin 0 auto
+          width 100%
+          height 100%
           display block
         & > .p1
           font-size 14px

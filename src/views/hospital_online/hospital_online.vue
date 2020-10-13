@@ -1,7 +1,7 @@
 <template>
   <div class="hospital_online-container">
     <Header header="indexHeader" navHeader="线上网诊" :mid="mid"></Header>
-    <ul>
+    <ul v-show="!noData">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <li v-for="item in list" :key="item.id">
           <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>

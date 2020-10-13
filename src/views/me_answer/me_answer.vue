@@ -3,23 +3,34 @@
     <Header :indexHeader="false"></Header>
     <van-tabs v-model="active" sticky color="#155BBB" title-active-color="#155BBB" class="tabs">
       <van-tab title="我问的" class="tab">
-
-        <div class="item" v-for="item in ask" :key="item.id">
-          <OnlineItem :list="item"></OnlineItem>
+        <div class="wrap">
+          <van-list v-model="loading1" :finished="finished1" finished-text="没有更多了" @load="onLoad1" v-if="!noData1">
+            <div class="item" v-for="item in ask" :key="item.id">
+              <OnlineItem :list="item"></OnlineItem>
+            </div>
+          </van-list>
         </div>
-        <van-empty description="暂无数据" v-if="noData1"></van-empty>
+        <van-empty description="暂无提问" v-if="noData1"></van-empty>
       </van-tab>
       <van-tab title="我答的" class="tab">
-        <div class="item" v-for="item in answer" :key="item.id">
-          <OnlineItem :list="item"></OnlineItem>
+        <div class="wrap">
+          <van-list v-model="loading2" :finished="finished2" finished-text="没有更多了" @load="onLoad2" v-if="!noData2">
+            <div class="item" v-for="item in answer" :key="item.id">
+              <OnlineItem :list="item"></OnlineItem>
+            </div>
+          </van-list>
         </div>
-        <van-empty description="暂无数据" v-if="noData2"></van-empty>
+        <van-empty description="暂无解答" v-if="noData2"></van-empty>
       </van-tab>
       <van-tab title="咨询我的" class="tab" v-if="identity == 1">
-        <div class="item" v-for="item in information" :key="item.id">
-          <OnlineItem :list="item"></OnlineItem>
+        <div class="wrap">
+          <van-list v-model="loading3" :finished="finished3" finished-text="没有更多了" @load="onLoad3" v-if="!noData3">
+            <div class="item" v-for="item in information" :key="item.id">
+              <OnlineItem :list="item"></OnlineItem>
+            </div>
+          </van-list>
         </div>
-        <van-empty description="暂无数据" v-if="noData3"></van-empty>
+        <van-empty description="暂无咨询" v-if="noData3"></van-empty>
       </van-tab>
     </van-tabs>
   </div>
@@ -44,8 +55,17 @@ export default {
       information: [],
       identity: 0,
       noData1: false,
+      loading1: false,
+      finished1: false,
+      page1: 0,
       noData2: false,
+      loading2: false,
+      finished2: false,
+      page2: 0,
       noData3: false,
+      loading3: false,
+      finished3: false,
+      page3: 0,
     };
   },
   computed: {
@@ -54,50 +74,85 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.myAsk();
-    this.myAnswer();
-    this.myInformation();
+    // this.myAsk();
+    // this.myAnswer();
+    // this.myInformation();
     this.getUserInfo();
   },
   destroyed() {},
   methods: {
+    onLoad1() {
+      this.myAsk();
+    },
+    onLoad2() {
+      this.myAnswer();
+    },
+    onLoad3() {
+      this.myInformation();
+    },
     myAsk() {
+      this.page1 += 1;
       // 我问的
       this.$axios
-        .fetchPost("/Mobile/user/getWenList", { uId: this.uid, action: "ask" })
+        .fetchPost("/Mobile/user/getWenList", {
+          uId: this.uid,
+          action: "ask",
+          page: this.page1,
+        })
         .then((res) => {
           if (res.data.code == 0) {
-            this.ask = res.data.data;
+            this.ask = this.ask.concat(res.data.data);
+            this.loading1 = false;
           } else if (res.data.code == 201) {
-            this.noData1 = true;
+            console.log("this.page1 :>> ", this.page1);
+            if (this.page1 == 1) {
+              this.noData1 = true;
+            }
+            this.finished1 = true;
           }
         });
     },
     myAnswer() {
       // 我答的
+      this.page2 += 1;
       this.$axios
         .fetchPost("/Mobile/user/getWenList", {
           uId: this.uid,
+          page: this.page2,
           action: "answer",
         })
         .then((res) => {
           if (res.data.code == 0) {
-            this.answer = res.data.data;
+            this.answer = this.answer.concat(res.data.data);
+            // this.answer = [];
+            this.loading2 = false;
           } else if (res.data.code == 201) {
-            this.noData2 = true;
+            if (this.page2 == 1) {
+              this.noData2 = true;
+            }
+            this.finished2 = true;
           }
         });
     },
     myInformation() {
-      // 资讯我的
+      // 咨询我的
+      this.page3 += 1;
       this.$axios
-        .fetchPost("/Mobile/user/getWenList", { uId: this.uid, action: "tome" })
+        .fetchPost("/Mobile/user/getWenList", {
+          uId: this.uid,
+          action: "tome",
+          page: this.page3,
+        })
         .then((res) => {
           if (res.data.code == 0) {
-            this.information = res.data.data;
+            this.information = this.information.concat(res.data.data);
+            this.loading3 = false;
           }
           if (res.data.code == 201) {
-            this.noData3 = true;
+            if (this.page3 == 1) {
+              this.noData3 = true;
+            }
+            this.finished3 = true;
           }
         });
     },
@@ -110,7 +165,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.user = res.data.data;
-            this.identity = res.data.data.this.identity;
+            this.identity = res.data.data.identity;
           }
         });
     },
@@ -122,8 +177,11 @@ export default {
   .tabs
     .tab
       margin-top 10px
-      background #fff
-      padding 0 12px
+      .wrap
+        width 100%
+        height 100%
+        background #fff
+        padding 0 12px
       .item
         border-bottom 1px solid #e5e5e5
         &:last-child

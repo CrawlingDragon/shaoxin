@@ -19,7 +19,7 @@
         <div class="left">咨询专家</div>
         <div class="right">{{ expert }}</div>
       </div>
-      <div class="choose-crop" v-if="ismember == 0 || isShaoxing != '绍兴市'">
+      <div class="choose-crop" v-if="ismember == 0 && isShaoxing != '绍兴市'" @click="reLocation">
         <div class="left">所在位置</div>
         <div class="right location">{{ address }}</div>
         <van-icon name="arrow" class="arrow" />
@@ -52,7 +52,7 @@ export default {
     return {
       expert: this.$route.query.expert,
       expertId: this.$route.query.expertId,
-      address: "",
+      address: "定位中···",
       message: "",
       crop: "请选择",
       fid: "",
@@ -61,6 +61,7 @@ export default {
       ismember: 0,
       isShaoxing: "",
       userInfo: "",
+      locationTime:'first'
     };
   },
   computed: {
@@ -79,6 +80,9 @@ export default {
         return;
       } else if (values.message.length <= 9) {
         this.$toast("问题描述不能少余10个字");
+        return;
+      } else if (this.address == "定位中···") {
+        this.$toast("地址定位中,请稍等");
         return;
       }
       this.subAsk();
@@ -143,8 +147,8 @@ export default {
             this.isShaoxing = res.data.data.residecity;
             this.ismember = res.data.data.ismember;
             this.userInfo = res.data.data;
-            if (myAddress == 1) {
-              this.address = "浙江省,绍兴市";
+            if (myAddress == 1 || this.isShaoxing == "绍兴市") {
+              // this.address = "浙江省,绍兴市";
               // this.address = "绍兴市";
             } else {
               this.getLocation();
@@ -152,56 +156,101 @@ export default {
           }
         });
     },
+    reLocation(){
+      this.getLocation()
+    },
     getLocation() {
       let that = this;
       AMapLoader.load({
         key: "23a2a13dc7fdd9a8af2ec7683b2f333e", // 申请好的Web端开发者Key，首次调用 load 时必填
         version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-        plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+        plugins: ["Geolocation"], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
         Loca: {
           // 是否加载 Loca， 缺省不加载
           version: "1.3.2", // Loca 版本，缺省 1.3.2
         },
       })
         .then((AMap) => {
-          var map = new AMap.Map("container", {
+          new AMap.Map("container", {
             resizeEnable: true, //是否监控地图容器尺寸变化
-            zoom: 11, //初始地图级别
+            zoom: 13, //初始地图级别
           });
-          map.getCity(function (info) {
-            // console.table("info :>> ", info);
-            that.address = info.province + info.city + info.district;
+          AMap.plugin("AMap.Geolocation", function () {
+            var geolocation = new AMap.Geolocation({
+              // 是否使用高精度定位，默认：true
+              enableHighAccuracy: false,
+              // 设置定位超时时间，默认：无穷大
+              timeout: 1000,
+              maximumAge: 0,
+              // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+              buttonOffset: new AMap.Pixel(10, 20),
+              //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+              zoomToAccuracy: false,
+              //  定位按钮的排放位置,  RB表示右下
+              buttonPosition: "RB",
+            });
+
+            geolocation.getCurrentPosition(function (status, result) {
+              if (status == "complete") {
+                onComplete(result);
+              } else {
+                onError(result);
+              }
+            });
+
+            function onComplete(data) {
+              // data是具体的定位信息
+              // console.log("data :>> ", data.addressComponent.province);
+              // console.log("data :>> ", data.addressComponent.city);
+              // console.log("data :>> ", data.addressComponent.district);
+              that.address = `${data.addressComponent.province},${data.addressComponent.city},${data.addressComponent.district}`;
+            }
+
+            function onError() {
+              // 定位出错
+              // console.log("data :>> ", data);
+              // that.locationTime
+              // console.log('object :>> ', that.address);
+             
+              if(that.locationTime == 'first'){
+                that.address = '抱歉未定位到';
+                that.locationTime = 'noFirst'
+                return
+              }  
+              let adressTitle =
+                that.userInfo.resideprovince +
+                "," +
+                that.userInfo.residecity + (that.userInfo.residedist == '' ? '' :',' + that.userInfo.residedist)
+              if(that.userInfo.resideprovince == '' &&  that.userInfo.residecity == '' && that.userInfo.residedist == ''){
+                that.$dialog
+                  .alert({
+                    title: "定位失败",
+                    message:
+                      "抱歉未定位到您的所在地址,后期可以在“我的-编辑资料-所在地”完善信息",
+                    confirmButtonText: "不显示地址",
+                  })
+                  .then(() => {
+                    // on close
+                    that.address = "";
+                  });
+              }else {
+                that.$dialog
+                  .alert({
+                    title: "定位失败",
+                    message:
+                      "抱歉未定位到您的所在地址,已自动切换至 " + adressTitle,
+                    confirmButtonText: "好的",
+                  })
+                  .then(() => {
+                    // on close
+                    that.address = adressTitle;
+                  });
+              }
+            }
           });
         })
         .catch(() => {
-          let adressTitle =
-            that.userInfo.resideprovince +
-            that.userInfo.residecity +
-            that.userInfo.residedist;
-          if (adressTitle != "") {
-            that.$dialog
-              .alert({
-                title: "定位失败",
-                message: "抱歉未定位到您的所在地址,已自动切换至 " + adressTitle,
-                confirmButtonText: "好的",
-              })
-              .then(() => {
-                // on close
-                that.address = adressTitle;
-              });
-          } else {
-            that.$dialog
-              .alert({
-                title: "定位失败",
-                message:
-                  "抱歉未定位到您的所在地址,后期可以在“我的-编辑资料-所在地”完善信息",
-                confirmButtonText: "不显示地址",
-              })
-              .then(() => {
-                // on close
-                that.address = "定位失败";
-              });
-          }
+          
         });
     },
   },

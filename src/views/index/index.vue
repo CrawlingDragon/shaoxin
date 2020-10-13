@@ -116,6 +116,7 @@ export default {
   mounted() {
     this.getIndexData();
     this.setMid(this.initMid);
+    // console.log('document.cookie :>> ', document.cookie);
   },
   destroyed() {},
   methods: {
