@@ -1,13 +1,13 @@
 
 <template>
-  <div class="fast_nav-conatiner" v-show="showFlag">
+  <div class="fast_nav-conatiner" v-if="showFlag">
     <div class="title van-hairline--top van-hairline--bottom">
       快速导航
       <van-icon name="cross" class="van-hairline--left" @click="closeBox" />
     </div>
     <div class="nav-list">
       <div class="small-title">新型庄稼医院</div>
-      <van-grid :column-num="4" :border="false">
+      <van-grid :column-num="4" :border="false" style="">
         <van-grid-item>
           <div class="p" @click="goToHospital">找医院</div>
         </van-grid-item>
@@ -18,7 +18,7 @@
           <div class="p">找基地</div>
         </van-grid-item>
         <van-grid-item>
-          <a href="http://sxmvip.nzsoso.com" class="p" target="_blank">专享商城</a>
+          <a :href="shareUrl" class="p" target="_blank">专享商城</a>
         </van-grid-item>
       </van-grid>
       <van-grid :column-num="4" :border="false">
@@ -40,7 +40,7 @@
       <div class="small-title">平台服务</div>
       <van-grid :column-num="4" :border="false">
         <van-grid-item>
-          <a href="http://betah5.114nz.com" class="p" target="_blank">农资商城</a>
+          <a :href="fromStoreUrl" class="p" target="_blank">农资商城</a>
         </van-grid-item>
         <van-grid-item @click="goToVideo">
           <div class="p">培训视频</div>
@@ -94,16 +94,46 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      fromStoreUrl:process.env.VUE_APP_STORE_URL,
+      shareUrl:process.env.VUE_APP_SHARE_URL
+    };
   },
   computed: {
     ...mapState(["uid", "initMid", "userAvatar", "userName", "aiExpertId"]),
+    // cook(){
+    //   return this.getCookie('ucenter_uid')
+    // }
   },
-  watch: {},
-  mounted() {},
+  watch: {
+    // cook(newVal){
+    //   // cookie 为空时清空uid,跳转到登录页
+    //   console.log('watchnewVal :>> ', newVal);
+    //   if(newVal == ''){
+    //      this.setUid("")
+    //      setTimeout(()=>{this.$router.push({ path: "/login" });},100)
+    //   }
+    // }
+  },
+  mounted() {
+  },
   destroyed() {},
   methods: {
-    ...mapMutations(["setUid", "setMid"]),
+   getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+         }
+        if (c.indexOf(name)  == 0) {
+            return c.substring(name.length, c.length);
+         }
+    }
+    return "";
+},
+    ...mapMutations(["setUid", "setMid",'setLogined']),
     closeBox() {
       this.$emit("changeFlag", false);
     },
@@ -117,18 +147,40 @@ export default {
         path: "/sign",
       });
     },
+     createScript(src){
+      let js = document.createElement('script')
+      js.setAttribute('type','text/javascript')
+      js.src = src
+      document.getElementsByTagName('head')[0].appendChild(js)
+    },
     loginOut() {
       Dialog.confirm({
-        title: "提示",
         message: "确认要退出登录吗",
+        cancelButtonColor:'#155BBB',
+        cancelButtonText:'确定',
+        confirmButtonText:'取消',
+        confirmButtonColor:'#999',
+        
       })
         .then(() => {
           // on confirm
-          this.setUid("");
-          this.$router.push({ path: "/login" });
+         
+          // setTimeout(()=>{this.$router.push({ path: "/login" });},100)
+          
         })
         .catch(() => {
           // on cancel
+           this.$axios.fetchPost('/Mobile/Member/logout').then(res => {
+            if(res.data.code == 0){
+              for(let i = 0;i<res.data.data.msg.length;i++){
+                this.createScript(res.data.data.msg[i])
+              }    
+              // setTimeout(()=>{this.setUid("");},1000)
+                  this.setUid("");
+                  this.setLogined(2)
+                  this.$router.push({ path: "/login"})
+            }
+          })
         });
     },
     goToIndex() {
@@ -165,7 +217,7 @@ export default {
       this.$router.push({ path: "/whole_zuozhen_list" }).catch((err) => err);
     },
     goToCetu() {
-      this.$router.push({ path: "/whole_cetu_list" }).catch((err) => err);
+      this.$router.push({ path: "/whole_cetu_list" })
     },
     goToAsk() {
       this.$router.push({ path: "/ask" }).catch((err) => err);
@@ -221,13 +273,14 @@ export default {
     padding-top 15px
     padding-bottom 13px
     border-bottom 1px solid #E5E5E5
+    overflow hidden
     .small-title
       font-size 12px
       color #999999
       line-height 12px
       margin 0 0 15px 11px
     .p
-      width 75px
+      width 100%
       height 26px
       background rgba(246, 246, 246, 1)
       border-radius 8px
@@ -236,6 +289,7 @@ export default {
       text-align center
       line-height 26px
       margin 0 auto
+      display block
     /deep/.van-grid-item__content
       padding-top 7px
       padding-bottom 7px
@@ -256,11 +310,12 @@ export default {
     .btn1
       color #155BBB
       border 1px solid #155BBB
-      font-size 12px
+      font-size 16px
       vertical-align middle
     .btn2
       background rgba(21, 91, 187, 1)
       color #fff
+      font-size 16px
       border 1px solid #333333
       vertical-align middle
   .logined
@@ -271,17 +326,17 @@ export default {
     .avator
       margin 0 15px 0 12px
     .name
-      font-size 14px
+      font-size 16px
       color #333
       flex 1
     .login-out
       color #155BBB
-      font-size 12px
+      font-size 16px
       margin 0 12px
   .index-btn
     position absolute
     bottom 30px
-    width 190px
+    width 230px
     height 30px
     left 50%
     transform translateX(-50%)
@@ -289,7 +344,7 @@ export default {
     border 1px solid rgba(21, 91, 187, 1)
     border-radius 4px
     line-height 30px
-    font-size 12px
+    font-size 16px
     display flex
     align-items center
     color #155BBB

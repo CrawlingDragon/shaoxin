@@ -22,7 +22,7 @@ export default {
   components: { Header, RegistrationItem },
   props: {},
   metaInfo: {
-    title: "我的挂号记录",
+    title: "挂号记录",
   },
   data() {
     return {

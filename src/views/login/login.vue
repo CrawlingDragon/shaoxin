@@ -3,7 +3,7 @@
     <Header :indexHeader="false"></Header>
     <div class="title-bar">账号密码登录<span @click="goToSign">注册</span></div>
     <van-form @submit="onSubmit" class="from">
-      <van-field v-model="username" type="tel" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone, },{ required: true }]" />
+      <van-field v-model="username" type="text" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone, },{ required: true }]" />
       <van-field v-model="password" type="password" name="pwd" placeholder="请输入密码" :rules="[{ required: true }]" />
       <div class="forget" @click="goToForget">忘记密码？</div>
       <div style="margin: 16px;margin-top:45px">
@@ -37,10 +37,11 @@ export default {
   watch: {},
   mounted() {
     // console.log("this.axios :>> ", this.$axios);
+    // document.cookie = 'ucenter_uid=123123123123123'
   },
   destroyed() {},
   methods: {
-    ...mapMutations(["setUid", "setIsMember"]),
+    ...mapMutations(["setUid", "setIsMember",'setLogined']),
     validatorPhone(val) {
       // 验证手机号码
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val)) {
@@ -61,10 +62,10 @@ export default {
           this.$toast(res.data.message);
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
-            this.createScript(res.data.data.msg[0])
-            this.createScript(res.data.data.msg[1])
-            this.createScript(res.data.data.msg[2])
-            this.createScript(res.data.data.msg[3])
+            for(let i = 0;i<res.data.data.msg.length;i++){
+              this.createScript(res.data.data.msg[i])
+            }
+            this.setLogined(1)
             this.$router.push({
               path: "/index",
             });
@@ -114,6 +115,7 @@ export default {
   .from
     width 80%
     margin 0 auto
+    position: relative;
     .sub
       background #BBBBBB
       border none
@@ -129,6 +131,8 @@ export default {
     color #FF6600
     text-align center
     font-size 15px
+    position relative
+    padding-top 10px
   .line
     color #333333
     font-size 12px

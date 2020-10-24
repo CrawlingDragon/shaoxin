@@ -36,7 +36,8 @@ import Header from "@/components/hospital_header/hospital_header";
 import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
 import { mapState } from "vuex";
 import Foot from "@/components/foot/foot";
-import AMapLoader from "@amap/amap-jsapi-loader";
+// import AMapLoader from "@amap/amap-jsapi-loader";
+import AMap from "AMap"
 export default {
   name: "intoHospital",
   components: { Header, RecommendHospital, Foot },
@@ -53,6 +54,7 @@ export default {
       // myAddress: "",
       location: "",
       loading: true,
+      
     };
   },
   computed: {
@@ -61,65 +63,78 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    // if (this.uid == "" || this.uid == undefined) {
-    //   this.getaddress();
-    // } else {
-    //   this.getMyAddress();
-    // }
     this.getaddress();
   },
   destroyed() {},
   methods: {
     getaddress() {
       let that = this;
-      AMapLoader.load({
-        key: "23a2a13dc7fdd9a8af2ec7683b2f333e", // 申请好的Web端开发者Key，首次调用 load 时必填
-        version: "1.4.15", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-        plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
-        Loca: {
-          // 是否加载 Loca， 缺省不加载
-          version: "1.3.2", // Loca 版本，缺省 1.3.2
-        },
-      })
-        .then((AMap) => {
-          var map = new AMap.Map("container", {
+         let map = new AMap.Map("container", {
             resizeEnable: true, //是否监控地图容器尺寸变化
             zoom: 11, //初始地图级别
           });
-          map.getCity(function (info) {
-            // console.table("info :>> ", info);
-            if (info.city != "绍兴市") {
-              that.location = "浙江省,绍兴市";
-              that.address = "绍兴市";
-              that.$dialog
-                .alert({
-                  message: "检测到你的地址不在绍兴市，已自动切换至绍兴市",
-                  confirmButtonText: "知道了",
-                  confirmButtonColor: "#ff6600",
-                })
-                .then(() => {
-                  // on close
-                });
-            } else if (info.city == "绍兴市") {
-              that.location = "浙江省,绍兴市," + info.district;
-              that.address = info.district;
-            }
+          AMap.plugin("AMap.Geolocation", function () {
+            //开始定位
+            console.log('开始定位111 :>> ');
+            var geolocation = new AMap.Geolocation({
+             enableHighAccuracy: true,//是否使用高精度定位，默认:true
+              timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+              maximumAge: 10000,           //定位结果缓存0毫秒，默认：0
+              convert: true,           //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+              showButton: false,        //显示定位按钮，默认：true
+              buttonPosition: 'LB',    //定位按钮停靠位置，默认：'LB'，左下角
+              buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            });
+             //替换方法
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition(function (status, result) {
+              if (status == "complete") {
+                onComplete(result);
+              } else {
+                onError(result);
+              }
+            });
+})
+          function onComplete(data) {
+            AMap.plugin('AMap.Geocoder', function() {
+              var geocoder = new AMap.Geocoder({})
+              var lnglat = [data.position.lng,data.position.lat]
+              geocoder.getAddress(lnglat, function(status, result) {
+                if (status === 'complete' && result.info === 'OK') {
+                    // result为对应的地理位置详细信息
+                console.log('result :>> ', result);
+                let city = result.regeocode.addressComponent.city
+                if (city != "绍兴市") {
+                that.location = "浙江省,绍兴市";
+                that.address = "绍兴市";
+                that.$dialog.alert({
+                    message: "检测到你的地址不在绍兴市，已自动切换至绍兴市",
+                    confirmButtonText: "知道了",
+                    confirmButtonColor:"#155BBB"
+                  })
+                  } else if (city == "绍兴市") {
+                    that.location = "浙江省,绍兴市," + result.regeocode.addressComponent.district;
+                    that.address = result.regeocode.addressComponent.district;
+                  }
+                  setTimeout(() => {
+                    that.getList();
+                  }, 100);
+                }
+              })
+            })
+          }
+          function onError() {
+            console.log('定位失败 :>> ');
+            that.$dialog.alert({
+                message: "定位失败,已自动切换到绍兴市",
+                confirmButtonText: "知道了",
+                confirmButtonColor:"#155BBB"
+            })
+            that.address = "绍兴市";
             setTimeout(() => {
               that.getList();
             }, 100);
-          });
-        })
-        .catch(() => {
-          that.$dialog
-            .alert({
-              message: "定位失败,已自动切换到绍兴市",
-              confirmButtonText: "知道了",
-              confirmButtonColor: "#ff6600",
-            })
-            .then(() => {
-              // on close
-            });
-        });
+          }    
     },
     getList() {
       this.$axios
@@ -189,8 +204,23 @@ export default {
         display inline-block
         padding-right 12px
         padding-bottom 12px
-        height 274px
+        height 300px
         vertical-align top
+        position relative
         .recommend-hospital-wrap
           height 100%
+          /deep/.p3
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;  
+            padding-right 5px
+          /deep/.p1
+            padding-right 5px 
+          /deep/.p2
+            padding-right 5px    
+          /deep/.number
+           position absolute
+           bottom 10px
+
 </style>

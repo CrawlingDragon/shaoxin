@@ -52,7 +52,7 @@ export default {
     transform translateX(-50%)
     border 1px solid #155BBB
     border-radius 4px
-    font-size 12px
+    font-size 14px
     color #155BBB
     width 110px
     line-height 30px

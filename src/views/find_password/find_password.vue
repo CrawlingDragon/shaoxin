@@ -16,7 +16,7 @@
       <van-field v-model="findPassword" type="password" name="密码" placeholder="请输入密码（6-20位）" maxlength="20" :rules="[{ required: true }]" />
       <van-field v-model="findPassword2" type="password" name="密码" placeholder="请确认密码" maxlength="20" :rules="[{validator:validatorPw2},{ required: true}]" />
       <div style="margin: 16px;margin-top:45px">
-        <van-button round block type="info" native-type="submit" class="sub">
+        <van-button round block type="info" native-type="submit" class="sub" :class="{'success':(findPhone && findCode && findPassword && findPassword2)}">
           保存
         </van-button>
       </div>

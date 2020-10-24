@@ -120,19 +120,60 @@ export default {
   },
   destroyed() {},
   methods: {
+  imgPress ({ file, rate = 1, maxSize = 800, fileType = 'file' }) {
+    return new Promise(resolve => {
+    // new一个文件读取方法，监听文件读取
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    let img = new Image()
+    reader.onload = function (e) {
+      img.src = e.target.result
+    }
+    img.onload = function () {
+      let canvas = document.createElement('canvas')
+      let context = canvas.getContext('2d')
+      // 文件大小KB
+      const fileSizeKB = file.size / 1024
+      // 配置rate和maxSize的关系
+      if (fileSizeKB * rate > maxSize) {
+        rate = Math.floor(maxSize / fileSizeKB * 10) / 10
+      }
+      // 缩放比例，默认0.5
+      let targetW = canvas.width = this.width * rate
+      let targetH = canvas.height = this.height * rate
+      context.drawImage(img, 0, 0, targetW, targetH)
+
+      if (fileType === 'file' || fileType === 'blob') {
+        canvas.toBlob(function (blob) {
+          resolve({ filePress: fileType === 'blob' ? blob : new File([blob], file.name, { type: file.type }), base64: img.src })
+        },"image/jpeg", 0.7)
+      } else {
+        resolve({ filePress: fileType === 'base64' ? canvas.toDataURL(file.type) : null, base64: img.src })
+      }
+    }
+  })
+},
     afterRead(file) {
       let formData = new FormData();
-      formData.append("urls[]", file.file);
-      formData.append("uId", this.uid);
-      this.$axios
-        .fetchPost("/Mobile/Wen/OssUploadFile", formData)
-        .then((res) => {
-          // console.log("res :>> ", res);
-          if (res.data.code == 0) {
-            this.avatar = res.data.data;
-          }
-          this.$toast(res.data.message);
-        });
+      this.imgPress(file).then(res => {
+         console.log('res :>> ', res);
+        console.log('res.filePress :>> ', res.filePress);
+        console.log('file.file :>> ', file.file);
+        formData.append("urls[]",res.filePress);
+        formData.append("uId", this.uid);
+        this.$axios
+          .fetchPost("/Mobile/Wen/OssUploadFile", formData)
+          .then((res) => {
+            // console.log("res :>> ", res);
+            if (res.data.code == 0) {
+              this.avatar = res.data.data;
+            }
+            this.$toast(res.data.message);
+          });
+      })
+      // console.log('file.file :>> ', file.file);
+      // formData.append("urls[]", file.file);
+      
     },
     getInfo() {
       this.$axios

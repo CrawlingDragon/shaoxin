@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div class="answer-box">
+    <div class="answer-box" v-if="detail.replies != 0">
       <div class="title">解答 {{detail.replies}}</div>
       <ul class="answer-ul">
         <li v-for="item in detail.answers" :key="item.pid">
@@ -72,13 +72,13 @@
       <div class="border">我来回答</div>
     </div>
     <van-popup v-model="show" closeable close-icon-position="top-left" position="bottom" :style="{ height: '220px' }" class="van-popup-box">
-      <div class="sub" @click="sub">提交</div>
+      <div class="sub subText" @click="sub" :class="{'content':message}">提交</div>
       <div class="message-box">
         <van-field v-model="message" rows="5" autosize type="textarea" maxlength="600" placeholder="我来回答" show-word-limit class="message" />
       </div>
     </van-popup>
     <van-popup v-model="showRote" position="bottom" :style="{ height: '234px' }" class="rotes">
-      <div class="sub" @click="subRemark">发表</div>
+      <div class="sub subText" :class="{'content':true}" @click="subRemark">发表</div>
       <div class="title">评价 {{author}}</div>
       <van-rate v-model="roteValue" color="#ff6600" size="27px" />
       <span v-if="roteValue == 1" class="rote-text">解答非常差</span>
@@ -99,7 +99,7 @@ export default {
   components: { Header, [ImagePreview.Component.name]: ImagePreview.Component },
   props: {},
   metaInfo: {
-    title: "解答详情",
+    title: "问答详情",
   },
   data() {
     return {
@@ -220,7 +220,7 @@ export default {
         .alert({
           message: "回答该问题，能获得平台补助",
           confirmButtonText: "知道了",
-          confirmButtonColor: "#ff6600",
+          confirmButtonColor:"#155BBB",
         })
         .then(() => {
           // on close
@@ -238,15 +238,13 @@ export default {
   bottom 0
   right 0
   left 0
-  &.jiashicang
-    background #080f3e
   .online-box
     margin-top 10px
     background #fff
     padding 12px
   .answer-box
     margin-top 10px
-    background #fff
+    background #ebebeb
     .title
       height 40px
       line-height 40px
@@ -254,14 +252,16 @@ export default {
       color #333
       font-size 16px
       border-bottom 1px solid #e5e5e5
+      background #fff
     .answer-ul
-      padding-left 12px
-      padding-bottom 50px
+      padding-bottom 55px
       li
         border-bottom 1px solid #e5e5e5
         padding-right 12px
+        padding-left 12px
         padding-top 15px
         padding-bottom 15px
+        background #fff
         &:last-child
           border none
         & > .top
@@ -479,4 +479,64 @@ export default {
         width 30px
         height 30px
         margin-left 15px
+.subText
+  &.content 
+    color #81b4f3 !important      
+.ask_detail-container        
+  &.jiashicang
+    background #080f3e 
+    top 0 
+    padding-top 30px
+    .header-container
+      background  #0c3387 
+      max-width 1200px
+      margin 0 auto
+      /deep/.no_index_header
+        color #fff
+    .answer-bar
+      background  #0c3387 
+      max-width 1200px
+      margin 0 auto
+    .online-box
+      background  #0c3387 
+      max-width 1200px
+      margin 0 auto
+      .name 
+        color #81b4f3
+      .time
+        color #81b4f3
+      .text
+        color #81b4f3
+      .bottom 
+        color #81b4f3
+    .answer-box  
+      background  #0c3387 
+      color #81b4f3
+      .name
+        color #81b4f3 !important
+      .time
+        color #81b4f3 !important 
+      .text
+        color #81b4f3 !important 
+      .lookat-yinongbao
+        color #81b4f3 !important  
+      .title
+        color #81b4f3
+        border-bottom 1px solid #9d9d9d !important 
+        background  #0c3387 
+      .roted-box  
+        background: #010f47 !important
+        .p1,.p2,.star,.txt
+          color #81b4f3 !important  
+    .van-popup,.van-cell
+      background  #0c3387 
+      .sub
+       color #81b4f3 !important     
+    /deep/.van-field__control
+      color #fff      
+    .answer-ul li
+      border-bottom 1px solid #9d9d9d !important 
+      background  #0c3387 
+    .border  
+      border 1px solid #9d9d9d !important 
 </style>

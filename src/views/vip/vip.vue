@@ -71,7 +71,7 @@ export default {
   },
   watch: {},
   mounted() {
-    this.getUserInfo();
+    // this.getUserInfo();
   },
   destroyed() {},
   methods: {
@@ -85,15 +85,20 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .vip-container
+  position fixed
+  left 0
+  right 0
+  top 40px
+  bottom 0
+  background url('./80.png') no-repeat
+  background-size 100% 100%
+  background-position center center
+  height 100%
+  padding-bottom 60px
   .content
-    position fixed
-    left 0
-    right 0
-    top 40px
-    bottom 0
-    background url('./80.png') no-repeat
-    background-size 100% 100%
-    background-position center center
+    overflow auto
+    height 100%
+    position relative
     .icon
       width 100px
       height 70px

@@ -3,7 +3,7 @@
     <Header indexHeader="indexHeader" navHeader="优质基地"></Header>
     <ul class="base-ul" v-if="!noData">
       <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
-        <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
+        <div class="status" :class="{'glod':item.ctype == '8','base':item.ctype == '6','none':item.ctype == '0'}">{{item.ctype == '8'?'金牌认证':(item.ctype == '6'?'基地认证':'未认证')}}</div>
         <van-image class="img" :src="item.logo"></van-image>
         <div class="text">
           <div class="h2">{{item.name}}</div>
@@ -54,6 +54,7 @@ export default {
           mId: mid,
           uId: this.uid,
           pagesize: 50,
+          isall:'self'
         })
         .then((res) => {
           if (res.data.code == 0) {

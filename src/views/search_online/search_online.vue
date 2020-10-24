@@ -48,12 +48,22 @@ export default {
       page: 0,
     };
   },
+  beforeRouteEnter (to, from, next) {
+    // ...
+    if(from.name != 'askDetail'){
+      // this.value = ''
+      next(vm => {
+        vm.value = ''
+        vm.zuowu = []
+        vm.online = []
+      })
+    }
+    next()
+  },
   created() {},
   computed: {},
   watch: {
-    $route(newval) {
-      console.log("newval :>> ", newval);
-    },
+   
   },
   mounted() {},
   destroyed() {},
@@ -74,7 +84,7 @@ export default {
       this.noData = false;
       this.page += 1;
       this.$axios
-        .fetchPost("Mobile/Wen/index", { keyword: this.value, page: this.page })
+        .fetchPost("Mobile/Wen/index", { keyword: this.value, page: this.page,isall:'all' })
         .then((res) => {
           if (res.data.code == 0) {
             this.loading = false;

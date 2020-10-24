@@ -4,7 +4,7 @@
     <ul class="base-ul" v-show="!noData">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
-          <div class="status" :class="{'glod':item.ctype == '6','base':item.ctype == '5','none':item.ctype == '0'}">{{item.ctype == '6'?'金牌认证':(item.ctype == '5'?'普通认证':'未认证')}}</div>
+          <div class="status" :class="{'glod':item.ctype == '8','base':item.ctype == '6','none':item.ctype == '0'}">{{item.ctype == '8'?'金牌认证':(item.ctype == '6'?'基地认证':'未认证')}}</div>
           <van-image class="img" :src="item.logo"></van-image>
           <div class="text">
             <div class="h2">{{item.name}}</div>
@@ -12,6 +12,10 @@
             <div class="join-time">
               <van-image class="avator" round :src="item.avatar"></van-image>
               <div class="time">{{item.regtime}} 加入医院</div>
+            </div>
+            <div class="hospital">
+              <div class="icon"></div>
+              <span>{{item.mpublic}}</span>
             </div>
           </div>
         </li>
@@ -61,6 +65,7 @@ export default {
         .fetchPost("/Mobile/Mpublic/getFineBaseCom", {
           mId: this.mid,
           page: this.page,
+          isall:'all'
         })
         .then((res) => {
           if (res.data.code == 0) {
@@ -143,6 +148,20 @@ export default {
           .time
             color #999
             font-size 12px
+        .hospital
+          display flex
+          align-items center
+          margin-top 10px
+          color #999999
+          font-size 12px
+          margin-left 2px
+          .icon 
+            width 20px
+            height 20px
+            margin-right 10px
+            background url(./54.png) no-repeat
+            background-size 100% 100%
+            background-position center center    
   .tip
     font-size 12px
     color #999

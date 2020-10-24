@@ -5,7 +5,7 @@
       <div class="title">{{detail.title}}</div>
       <div class="small-bar">
         <div class="left">{{detail.inputtime}} {{detail.copyfrom}}</div>
-        <div class="right" @click="GoToHospital(mpublic.mid)" v-if="from == 'index'">{{mpublic.title}}</div>
+        <div class="right" @click="GoToHospital(mpublic.mid)">{{mpublic.title}}</div>
       </div>
       <div class="text" v-html="detail.content"></div>
     </div>
@@ -39,6 +39,7 @@ export default {
       this.id = this.$route.query.id;
       this.catid = this.$route.query.catid;
       this.getMessageDetail();
+      this.from = this.$route.query.from
     },
   },
   mounted() {
@@ -85,6 +86,7 @@ export default {
       display flex
       justify-content space-between
       align-items center
+      margin-bottom 25px
       .left
         color #999999
         font-size 12px

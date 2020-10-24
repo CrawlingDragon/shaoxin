@@ -46,7 +46,7 @@ export default {
     getSearchResult() {
       this.page += 1;
       this.$axios
-        .fetchPost("Mobile/Wen/index", { fId: this.fid, page: this.page })
+        .fetchPost("Mobile/Wen/index", { fId: this.fid, page: this.page,isall:"all" })
         .then((res) => {
           if (res.data.code == 0) {
             this.loading = false;

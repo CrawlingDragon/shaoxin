@@ -4,8 +4,8 @@
     <van-form @submit="onSubmit">
       <van-field v-model="name" name="name" label="姓名" placeholder="请输入姓名" required :rules="[{ required: true }]" />
       <van-field v-model="phone" name="phone" label="手机号" readonly />
-      <van-field v-model="card" name="card" label="身份证" placeholder="请输入身份证号码" @click="cardShow = true" :rules="[{ validator, message: '请输入正确的身份证格式' }]" />
-      <van-number-keyboard :show="cardShow" extra-key="X" close-button-text="完成" @blur="cardShow = false" v-model="card" />
+      <van-field v-model="card" name="card" label="身份证" placeholder="请输入身份证号码" :rules="[{ validator, message: '请输入正确的身份证格式' }]" />
+      <!-- <van-number-keyboard :show="cardShow" extra-key="X" close-button-text="完成" @blur="cardShow = false" v-model="card" /> -->
       <van-field v-model="sex" name="sex" @click="sexShow = true" label="性别" placeholder="请选择" required readonly :rules="[{ required: true }]" />
       <van-action-sheet v-model="sexShow" :actions="actions" @select="onSelectSex" />
       <van-field readonly required clickable name="area" :value="address" label="地区选择" placeholder="点击选择省市区" @click="showArea = true" :rules="[{ required: true }]" />
@@ -263,6 +263,7 @@ export default {
           .alert({
             message: "提交失败，请修改信息后再提交",
             confirmButtonText: "知道了",
+            confirmButtonColor:"#155BBB",
           })
           .then(() => {
             // on close
@@ -277,17 +278,19 @@ export default {
       if (this.town != this.hospitalTown) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "您的地址位置离医院较远,确定继续提交吗?",
-            confirmButtonText: "继续提交",
-            cancelButtonText: "我再想想",
+            cancelButtonText:"继续提交",
+            cancelButtonColor:'#155BBB',
+            confirmButtonText: "我再想想",
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
-            this.apply();
+            
           })
           .catch(() => {
             // on cancel
+            this.apply();
           });
       } else {
         this.apply();

@@ -2,11 +2,6 @@
 
 ## Project setup
 
-2 基地详情 分享 ，
-3whole_base_list
-
-```http://sxmvip.nzsoso.com 新院商城测试版
-
 ```
 
 npm install
@@ -40,4 +35,7 @@ npm run lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+```
+
 ```

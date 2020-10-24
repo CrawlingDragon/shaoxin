@@ -2,9 +2,9 @@
   <div class="choose_crop-container">
 
     <form action="/" class="from">
-      <van-search v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
+      <van-search v-model="value" show-action placeholder="请输入作物名" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
     </form>
-    <van-index-bar class="bar" :index-list="letterList">
+    <van-index-bar class="bar" :index-list="letterList" v-show="!searchResultShow">
       <div v-for="item in list" :key="item.id">
         <van-index-anchor :index="item.letter" />
         <van-cell :title="it.name" v-for="it in item.index" :key="it.fid" @click="choose(it)" />
@@ -24,7 +24,7 @@ import { mapState } from "vuex";
 export default {
   name: "askChooseCrop",
   metaInfo: {
-    title: "搜索作物",
+    title: "选择作物",
   },
   components: {},
   props: {},
@@ -166,12 +166,12 @@ export default {
     z-index 111
     border-top 1px solid #e5e5e5
     li
-      line-height 30px
+      line-height 40px
       border-bottom 1px solid #e5e5e5
       background #fff
-      height 30px
+      height 40px
       color #333333
-      font-size 12px
+      font-size 14px
       padding 0 12px
     .noData
       height 300px

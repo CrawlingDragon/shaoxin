@@ -1,8 +1,8 @@
 <template>
   <!-- 资讯相关item -->
-  <div class="Message_item-container" @click="goToMessageDetail(list)">
+  <div class="Message_item-container">
     <div class="t">{{list.title}}</div>
-    <van-image class="img" :src="list.thumb" radius="8px" fit="cover" v-if="list.thumb != ''"></van-image>
+    <van-image class="img" :src="list.thumb" radius="8px" fit="cover" v-if="list.thumb && list.thumb != ''"></van-image>
     <div class="time">{{list.inputtime}} <span v-show="index">{{list.mpublic_name}}</span></div>
   </div>
 </template>
@@ -30,13 +30,13 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    goToMessageDetail(image) {
-      //轮播图去资讯详情页
-      this.$router.push({
-        path: "/message_detail",
-        query: { id: image.id, catid: image.catid },
-      });
-    },
+    // goToMessageDetail(image) {
+    //   //轮播图去资讯详情页
+    //   this.$router.push({
+    //     path: "/message_detail",
+    //     query: { id: image.id, catid: image.catid },
+    //   });
+    // },
   },
 };
 </script>

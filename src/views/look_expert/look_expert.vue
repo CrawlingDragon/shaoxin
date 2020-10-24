@@ -18,7 +18,7 @@ import { mapState } from "vuex";
 export default {
   metaInfo() {
     return {
-      title: "寻找专家",
+      title: "专家",
     };
   },
   name: "lookExpert",
@@ -51,6 +51,7 @@ export default {
           mId: this.mid,
           pagesize: 8,
           page: this.page,
+          isall:'all'
         })
         .then((res) => {
           if (res.data.code == 0) {
@@ -81,4 +82,6 @@ export default {
       vertical-align top
       .recommend_expert-container
         min-height 185px
+        /deep/.time 
+          display none  
 </style>

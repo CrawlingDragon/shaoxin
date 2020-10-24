@@ -22,7 +22,7 @@
       <div class="item num-item"> <span class="number num1"> 专家 {{intro.enum}} </span><span v-if="intro.isstore == 1" class="number num2">会员 {{intro.mnum}}</span><span class="number num3"> {{intro.isstore == 1?'处方':'网诊'}} {{intro.rnum}}</span></div>
       <div class="title2" v-if="mpublic.length != 0">直属下级医院</div>
       <ul class="lower-level-ul" v-if="mpublic.length != 0">
-        <li v-for="item in intro.mpublic" :key="item.mid">{{item.name}}</li>
+        <li v-for="item in intro.mpublic" :key="item.mid" @click="goToHospital(item.mid)">{{item.name}}</li>
       </ul>
     </div>
     <div class="introduce-info">
@@ -34,16 +34,16 @@
       <div class="p1">专家坐诊区</div> -->
       <div class="text" v-html="intro.case_info"></div>
     </div>
-    <div class="join-btn" v-if="intro.ismember == 0" @click="goToApplyVip">
+    <div class="join-btn" v-if="intro.ismember == 0 && intro.ismember == 1" @click="goToApplyVip">
       申请加入医院<div class="free">免费</div>
     </div>
     <div class="joined" v-if="intro.ismember ==  1">{{intro.addtime}} 加入医院成为会员</div>
-    <div class="look-more" @click="goToVip">了解更多会员权益 ></div>
+    <div class="look-more" @click="goToVip" v-show="intro.isstore == 1">了解更多会员权益 ></div>
   </div>
 </template>
 <script>
 import Header from "@/components/hospital_header/hospital_header";
-import { mapState } from "vuex";
+import { mapState,mapMutations } from "vuex";
 export default {
   name: "hospitalIntro",
   components: { Header },
@@ -57,17 +57,26 @@ export default {
     return {
       intro: "",
       mpublic: [],
+      HistoryLength:0
     };
   },
+  // beforeRouteEnter (to, from, next) {
+  //   // ...next
+  //   // console.log('to :>> ', to);
+  //   // console.log('from :>> ', from);
+  //   // next()
+  // },
   computed: {
     ...mapState(["uid", "mid"]),
   },
-  watch: {},
+  watch: {
+  },
   mounted() {
     this.getDetail();
   },
   destroyed() {},
   methods: {
+    ...mapMutations(["setMid"]),
     getDetail() {
       this.$axios
         .fetchPost("/Mobile/Mpublic/getMpublicShow", {
@@ -92,6 +101,12 @@ export default {
         path: "/vip",
       });
     },
+    goToHospital(mid){
+      this.setMid(mid)
+      this.$router.replace({
+        path:'/hospital'
+      })
+    }
   },
 };
 </script>
@@ -102,6 +117,7 @@ export default {
     padding 15px 0 0 15px
     background #fff
     margin-bottom 10px
+    padding-bottom 10px
     .title
       color #333333
       font-size 16px
@@ -171,6 +187,7 @@ export default {
       line-height 22px
       color #656565
       margin-bottom 10px
+      padding-bottom 10px
     .img
       width 100%
       height 181px

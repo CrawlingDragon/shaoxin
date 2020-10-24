@@ -7,7 +7,7 @@
         <div class="name">{{list.realname}}</div>
         <div class="title">{{list.groupname}}</div>
         <div class="address" v-if="list.company">{{list.company}}</div>
-        <div class="address" v-if="list.addtime && routeName != 'index' && routeName != '/' ">{{list.addtime}}</div>
+        <div class="address time" v-if="list.addtime && routeName != 'index' && routeName != '/' ">{{list.addtime}}</div>
       </div>
     </div>
     <div class="kind" v-if="list.skill != '' && list.skill != '暂未设置'">
@@ -85,11 +85,11 @@ export default {
       .name
         font-size 14px
         color #333333
-        line-height 14px
+        line-height 16px
         margin-bottom 9px
       .title
         font-size 12px
-        line-height 12px
+        line-height 14px
         margin-bottom 5px
         color #999999
         overflow hidden
@@ -97,10 +97,10 @@ export default {
         white-space nowrap
       .address
         font-size 12px
-        line-height 12px
+        line-height 14px
         margin-bottom 5px
         color #999999
-        line-height 14px
+        line-height 16px
         overflow hidden
         text-overflow ellipsis
         display -webkit-box
@@ -113,6 +113,8 @@ export default {
     .item
       display inline-block
       padding 2px 5px
+      height 21px
+      line-height 18px
       margin-right 3px
       font-size 12px
       background #F7D9C5

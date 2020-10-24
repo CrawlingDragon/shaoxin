@@ -61,13 +61,17 @@ export default {
   .p1
     font-size 14px
     color #343434
-    line-height 14px
+    line-height 16px
     padding-left 10px
     margin-bottom 13px
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+    word-break break-all
   .p2
     color #9A9A9A
     font-size 12px
-    line-height 12px
+    line-height 14px
     margin-bottom 10px
     padding-left 10px
   .p3

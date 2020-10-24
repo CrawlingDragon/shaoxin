@@ -1,8 +1,8 @@
 <template>
   <div class="base_detail-conatiner">
     <Header header="logoHeader"></Header>
-    <div class="nav-top">
-      <div class="status" :class="{'glod':base.ctype == '6','base':base.ctype == '5','none':base.ctype == '0'}">{{base.ctype == '6'?'金牌认证':(base.ctype == '5'?'普通认证':'未认证')}}</div>
+    <div class="nav-top" v-show="!noData">
+      <div class="status" :class="{'glod':base.ctype == '8','base':base.ctype == '6','none':base.ctype == '0'}">{{base.ctype == '8'?'金牌认证':(base.ctype == '6'?'基地认证':'未认证')}}</div>
       <div class="company">
         <van-image class="company-avator" round :src="base.logo"></van-image>
         <p class="name">{{base.name}}</p>
@@ -16,10 +16,10 @@
           </div>
         </van-overlay>
       </div>
-      <div class="contant-context">
+      <div class="contant-context" v-show="!noData">
         <div class="item">
           <div class="icon icon01"></div>
-          <a href='tel:base.telephone' class="text" ref="tel">{{base.telephone}}</a>
+          <a :href="'tel:'+base.telephone" class="text" ref="tel">{{base.telephone}}</a>
           <div class="do" @click="clickTel">拨打</div>
         </div>
         <div class="item">
@@ -30,12 +30,12 @@
         </div>
         <div class="item">
           <div class="icon icon03"></div>
-          <div class="text1">{{base.address}}</div>
-          <div class="do" @click="goToLocation(base.address)">查看</div>
+          <div class="text1">{{base.address}} <div class="do" @click="goToLocation(base.address)">查看</div></div>
+         
         </div>
       </div>
     </div>
-    <div class="info">
+    <div class="info" v-show="!noData">
       <div class="item">
         <p class="p1">主要作物</p>
         <p class="p2">{{base.zwtype}}</p>
@@ -49,14 +49,15 @@
         <p class="p3">{{base.mpublic}}</p>
       </div>
     </div>
-    <div class="swiper-box">
+    <div class="swiper-box" v-show="!noData">
       <div class="title">基地图片</div>
-      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" v-show="base.pic">
         <van-swipe-item v-for="item in base.pic" :key="item.id">
           <van-image :src="item" class="img"></van-image>
         </van-swipe-item>
       </van-swipe>
     </div>
+    <van-empty description="暂无基地" v-show="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -75,6 +76,7 @@ export default {
       id: this.$route.query.id,
       base: "",
       shareShow: false,
+      noData:true
     };
   },
   computed: {},
@@ -98,7 +100,10 @@ export default {
         .fetchPost("/Mobile/Mpublic/getBaseDetail", { id: this.id })
         .then((res) => {
           if (res.data.code == 0) {
+            this.noData = false
             this.base = res.data.data;
+          }else if(res.data.code == 201){
+            this.noData = true
           }
         });
     },
@@ -248,6 +253,7 @@ export default {
           background url('./1.png') no-repeat
           background-size 100% 100%
           background-position center
+          min-width: 35px;
       .do
         font-size 12px
         color #FF6600
@@ -258,10 +264,21 @@ export default {
         height 30px
         margin-right 12px
       .text1
-        flex 1
         overflow hidden
         min-width 0
         text-overflow ellipsis
+        position relative
+        padding-right 35px
+        overflow hidden
+        text-overflow ellipsis
+        display -webkit-box
+        -webkit-line-clamp 2
+        -webkit-box-orient vertical
+        .do
+          position absolute
+          right 0
+          top 3px
+          text-align center
   .info
     background #fff
     padding-top 100px

@@ -416,6 +416,34 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
   return originalPush.call(this, location).catch(err => err);
 };
 router.beforeEach((to, from, next) => {
+  //单点登录
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+         }
+        if (c.indexOf(name)  == 0) {
+            return c.substring(name.length, c.length);
+         }
+    }
+    return "";
+}
+
+
+
+//判断cookie 是否存在
+var ucenter_uid = getCookie("ucenter_uid");
+//是==>拿到uid，设置uid
+
+if(ucenter_uid && store.state.logined == 1){
+  store.commit('setUid',ucenter_uid)
+}
+// console.log('ucenter_uid :before>> ', ucenter_uid);
+// console.log('store.state.uid :>> ', store.state.uid);
+//否 ==> 就不处理
   let uid = store.state.uid;
   if (uid == "" || uid == undefined) {
     //没登录的状态 不能去这些页面
@@ -426,14 +454,17 @@ router.beforeEach((to, from, next) => {
       to.name == "zuozhenList" ||
       to.name == "cetuList" ||
       to.name == "expertRegistration" ||
-      to.name == "wholeZuoZhenList"
+      to.name == "wholeZuoZhenList" || 
+      to.name == 'applyVip'
     ) {
+      if(from.name == 'Login'){return}
       next("/login");
     }
   } else {
     if (to.name == "Login" || to.name == "mLogin") {
       next("/index");
     }
+    store.commit('setLogined',1)
   }
   next(true);
 });

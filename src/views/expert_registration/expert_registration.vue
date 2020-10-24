@@ -74,7 +74,7 @@ export default {
         this.$toast("抱歉,该时间段没有专家号");
         return;
       }
-      let title = `${this.timeFormat(parseInt(item.ymd) * 1000)}${halfDay}${
+      let title = `确定挂${this.timeFormat(parseInt(item.ymd) * 1000)}${halfDay}${
         item.realname
       }的号吗?`;
 
@@ -88,11 +88,18 @@ export default {
 
       this.$dialog
         .confirm({
-          title: "提示",
           message: title,
+          confirmButtonText:'取消',
+          confirmButtonColor:'#999',
+          cancelButtonText:'确定',
+          cancelButtonColor:'#155BBB'
         })
         .then(() => {
           // on confirm
+          
+        })
+        .catch(() => {
+          // on cancel
           this.$axios
             .fetchPost("Mobile/Mpublic/AddSubscribeData", obj)
             .then((res) => {
@@ -102,26 +109,32 @@ export default {
                   .confirm({
                     title: "挂号成功",
                     message: res.data.message,
-                    confirmButtonText: "挂号记录",
-                    cancelButtonText: "关闭",
+                    cancelButtonText: "挂号记录",
+                    cancelButtonColor:"#155BBB",
+                    confirmButtonText: "关闭",
+                    confirmButtonColor:'#999'
                   })
                   .then(() => {
                     // on confirm
-
-                    this.$router.push({
-                      path: "/me_registration",
-                    });
+                    
                   })
                   .catch(() => {
                     // on cancel
+                    this.$router.push({
+                      path: "/me_registration",
+                    });
                   });
               } else {
-                this.$toast(res.data.message);
+                this.$dialog.alert({
+                  message: res.data.message,
+                  confirmButtonText:'知道了',
+                   confirmButtonColor:"#155BBB"
+                }).then(() => {
+                  // on close
+                });
+                // this.$toast(res.data.message);
               }
             });
-        })
-        .catch(() => {
-          // on cancel
         });
     },
     rightNow() {

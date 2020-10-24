@@ -14,7 +14,7 @@
         <p>找答案</p>
       </div>
       <div class="item">
-        <a href="http://sxmvip.114nz.com" target="_blank" style="display:block;color:#000;">
+        <a href="http://sxmvip.nzsoso.com" target="_blank" style="display:block;color:#000;">
           <div class="icon i2"></div>
           <p>找农资</p>
         </a>
@@ -56,15 +56,14 @@
     </div>
     <div class="look-bar" @click="goToExpert">找专家 ></div>
     <div class="online-box">
-      <van-sticky @scroll="goToOnline">
-        <div class="title">网诊</div>
-      </van-sticky>
+      <div class="title">网诊</div>
       <ul class="o-ul">
-        <li v-for="item in onlineArr" :key="item.id">
+        <li v-for="item in onlineArr" :key="item.id" ref="li">
           <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
         </li>
       </ul>
     </div>
+    <div class="look-bar" @click="goToAnswer">点击加载更多 ></div>
     <Foot></Foot>
   </div>
 </template>
@@ -96,14 +95,9 @@ export default {
       hospitalArr: [],
       expertArr: [],
       onlineArr: [],
+      scrollInit:false
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   // ...
-  //   // next((vm) => {
-  //   //   // vm.$emit("footer", true);
-  //   // });
-  // },
   created() {},
   computed: {
     ...mapState(["initMid"]),
@@ -111,15 +105,38 @@ export default {
   watch: {
     $route() {
       this.$refs.index.scrollTo(0, 0);
+      this.setMid(this.initMid);
     },
   },
   mounted() {
     this.getIndexData();
     this.setMid(this.initMid);
-    // console.log('document.cookie :>> ', document.cookie);
+    // window.addEventListener('scroll', this.scrollHandler)
   },
-  destroyed() {},
+  // destroyed() { window.removeEventListener('scroll', this.scrollHandler)},
   methods: {
+    scrollHandler(){
+      this.$nextTick(() => {
+      // let l = this.onlineArr.length 
+      // let li = this.$refs.li[l - 1]
+      if(this.scrollInit){
+      var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+      //变量windowHeight是可视区的高度
+      var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      //变量scrollHeight是滚动条的总高度
+      var scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
+        //滚动条到底部的条件
+      if(scrollTop+windowHeight == scrollHeight){
+      //到了这个就可以进行业务逻辑加载后台数据了
+      setTimeout(() => { 
+          this.$router.push({
+            path:'/index_online'
+          })},500)  
+         }  
+        }   
+      })
+      
+    },
     ...mapMutations(["setMid"]),
     getIndexData() {
       // 获取首页数据
@@ -131,7 +148,8 @@ export default {
             this.hospitalArr = res.data.data.list_mpublic;
             this.expertArr = res.data.data.list_expert;
             this.onlineArr = res.data.data.list_wen;
-            this.setMid(this.initMid);
+            this.scrollInit = true
+            this.setMid(this.initMid);         
           }
         });
     },
@@ -163,12 +181,6 @@ export default {
       // 查找更多的医院
       this.$router.push({ path: "/into_hospital" }).catch((err) => err);
     },
-    goToOnline(val) {
-      // 去首页的网诊
-      if (val.isFixed) {
-        this.$router.push({ path: "/index_online" }).catch((err) => err);
-      }
-    },
     goToVip() {
       this.$router.push({ path: "/vip" }).catch((err) => err);
     },
@@ -188,7 +200,7 @@ export default {
   .swiper-box
     width 100%
     margin-top 10px
-    img
+    /deep/.van-image
       display block
       width 100%
       height 100%
@@ -284,8 +296,6 @@ export default {
       li
         width 100%
         border-bottom 1px solid #e5e5e5
-        &:last-child
-          border none
     .e-ul
       padding-top 10px
       column-gap 0
@@ -297,4 +307,9 @@ export default {
         break-inside avoid
         padding-right 12px
         padding-bottom 10px
+  .tips
+    line-height 30px
+    font-size 14px
+    color #999
+    text-align center   
 </style>

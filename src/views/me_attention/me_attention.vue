@@ -98,4 +98,6 @@ export default {
       break-inside avoid
       padding-right 12px
       margin-bottom 12px
+      /deep/.join-number
+        display none
 </style>

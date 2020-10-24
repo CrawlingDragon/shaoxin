@@ -1,7 +1,7 @@
 <template>
   <div class="choose_crop-container">
     <form action="/" class="from">
-      <van-search v-model="value" show-action placeholder="请输入作物名" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
+      <van-search v-model="chooseValue" show-action placeholder="请输入作物名" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
     </form>
     <div class="history-box">
       <div class="title">当前选择：{{cropName}}</div>
@@ -10,14 +10,15 @@
         <li v-for="item in hispitalList" :key="item.fid" @click="choose(item)">{{item.name}}</li>
       </div>
     </div>
-    <van-index-bar class="bar" :index-list="letterList">
+    <van-index-bar class="bar" :index-list="letterList" v-show='!searchResultShow'>
       <div v-for="item in list" :key="item.id">
         <van-index-anchor :index="item.letter" />
         <van-cell :title="it.name" v-for="it in item.index" :key="it.fid" @click="choose(it)" />
       </div>
     </van-index-bar>
     <ul class="search_result-ul" v-show="searchResultShow">
-      <van-empty description="抱歉没有该作物,请选择其他" v-show="noResult" />
+      <!-- <van-empty description="抱歉没有该作物,请选择其他" v-show="noResult" /> -->
+      <div class="noData" v-show="noResult">抱歉没有该作物,可选择<span class="other" @click="choose({name:'其他',fid:195})">其他</span> </div>
       <li v-for="item in searchResult" :key="item.fid" @click="choose(item)">
         {{item.name}}
       </li>
@@ -36,7 +37,7 @@ export default {
   props: {},
   data() {
     return {
-      value: "",
+      chooseValue: "",
       list: [],
       hispitalList: [],
       cropName: this.$route.query.crop,
@@ -110,7 +111,10 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
-            this.hispitalList = res.data.historydata;
+            if(res.data.historydata){
+               this.hispitalList = res.data.historydata;
+            }
+           
           }
         });
     },
@@ -127,6 +131,10 @@ export default {
     left 0
     right 0
     z-index 1111
+    &.showResult
+      height 100%
+      bottom 0
+      overflow hidden
   .history-box
     margin-top 10px
     .title
@@ -158,19 +166,25 @@ export default {
         border-radius 8px
         text-align center
   .search_result-ul
-    position absolute
-    top 15px
+    position fixed
+    top 55px
     left 0
     right 0
     bottom 0
     background #EBEBEB
     z-index 111
     li
-      line-height 30px
+      line-height 40px
       border-bottom 1px solid #e5e5e5
       background #fff
-      height 30px
+      height 40px
       color #333333
-      font-size 12px
+      font-size 14px
       padding 0 12px
+    .noData
+      height 300px
+      line-height 300px  
+      text-align center
+      span 
+        color #155BBB
 </style>

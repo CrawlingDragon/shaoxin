@@ -1,7 +1,10 @@
 <template>
-  <div class="index_online-container" ref="online">
+  <div class="index_online-container" ref="online" :class="{'addressOverflow':addressFlag}">
+   
     <Header :tabbarActive="1"></Header>
-    <div class="choose-box">
+     <van-pull-refresh v-model="isLoading" @refresh="onRefresh" loosing-text="下拉回到首页">
+    <van-sticky :offset-top="30" @scroll="scroll">
+    <div class="choose-box" v-show="secondNav" >
       <div class="back" @click="goBack"></div>
       <div class="all" @click="openBox">{{areaName}}
         <van-icon name="arrow-down" class="down" />
@@ -10,13 +13,16 @@
         <van-icon name="arrow-down" class="down" />
       </div>
       <div class="address-box" v-show="addressFlag">
-        <div class="item" @click="chooseAddress(9999,'全部地区')">全部地区</div>
-        <div class="item" @click="chooseAddress(1111,'绍兴市')">绍兴市</div>
-        <van-icon name="cross" class="cross" @click="addressFlag = false" />
+        <div class="wrap">
+          <div class="item" @click="chooseAddress(9999,'全部地区')">全部地区</div>
+          <div class="item" @click="chooseAddress(1111,'绍兴市')">绍兴市</div>
+          <van-icon name="cross" class="cross" @click="addressFlag = false" />
+        </div>
       </div>
     </div>
+    </van-sticky>
     <div class="online-box">
-      <ul class="o-ul">
+      <ul class="o-ul" ref="ul">
         <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
           <li v-for="item in onlineArr" :key="item.id">
             <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
@@ -24,13 +30,16 @@
         </van-list>
       </ul>
     </div>
+     </van-pull-refresh>
     <Foot></Foot>
+   
   </div>
 </template>
 <script>
+var Before_scollH = 0;
 import Header from "@/components/header/header.vue";
 import OnlineItem from "@/components/online_item/online_item";
-import { ImagePreview } from "vant";
+import {  ImagePreview } from "vant";
 import { mapState } from "vuex";
 import Foot from "@/components/foot/foot";
 export default {
@@ -61,6 +70,9 @@ export default {
       loading: false,
       finished: false,
       area: "",
+      scollType:'',
+      secondNav:true,
+      isLoading:false //下拉model
     };
   },
   computed: {
@@ -89,9 +101,39 @@ export default {
   created() {},
   mounted() {
     // this.getIndexData(this.mid, this.fid);
+   
+  window.addEventListener('scroll', this.scrollHandler)
   },
-  destroyed() {},
+  destroyed() {
+    window.removeEventListener('scroll',this.scrollHandler);
+  },
   methods: {
+    onRefresh(){
+      setTimeout(() => {this.$router.push({path:'/index'})},500)
+      this.isLoading = false
+    },
+    scrollHandler(){
+        var After_scollH = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        var differH = After_scollH - Before_scollH;
+        if (differH == 0) {
+            return false;
+        }
+        this.scollType = differH > 0 ? 'down' : 'up';
+        Before_scollH = After_scollH;
+    },
+    scroll(val){
+      if(val.isFixed){
+        if(this.scollType == 'down'){
+          //显示导航
+          this.secondNav = false
+          // console.log('down :>> ');
+        }else{
+          //隐藏导航
+           this.secondNav = true
+          // console.log('up :>> ');
+        }
+      }
+    },
     onLoad() {
       this.getIndexData();
     },
@@ -105,6 +147,7 @@ export default {
           areaId: this.area,
           page: this.page,
           uId: this.uid,
+          isall:'all'
         })
         .then((res) => {
           if (res.data.code == 0) {
@@ -147,6 +190,16 @@ export default {
 <style lang="stylus" scoped>
 .index_online-container
   padding-bottom 50px
+  .header-container
+    z-index 3
+  &.addressOverflow
+    position fixed
+    left 0
+    top 40px
+    right 0
+    bottom 0
+    z-index 2
+    padding-bottom: 0
   .choose-box
     height 40px
     display flex
@@ -155,6 +208,7 @@ export default {
     border-bottom 1px solid #e5e5e5
     position relative
     margin-top 10px
+    z-index 2
     .back
       width 25px
       height 25px
@@ -187,17 +241,24 @@ export default {
         font-size 18px
         color #999999
     .address-box
-      position absolute
+      position fixed
       left 0
       right 0
-      height 75px
-      bottom -76px
-      background #fff
-      display flex
-      align-items center
-      padding-left 12px
+      // height 75px
+      bottom -3px
+      background rgba(0,0,0,0.7)
+      top 90px
+      // background #fff
+     
       border-bottom 1px solid #e5e5e5
-      z-index 11
+      z-index 111
+      overflow hidden
+      .wrap 
+        height 75px
+        display flex
+        align-items center
+        background #fff
+        padding-left 12px
       .item
         width 75px
         background #F6F6F6
@@ -209,7 +270,7 @@ export default {
         line-height 25px
         margin-right 15px
       .cross
-        font-size 28px
+        font-size 18px
         position absolute
         right 15px
         top 14px

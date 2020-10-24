@@ -43,7 +43,7 @@
       <p class="explan" v-if="expertData.introduce">
         {{expertData.introduce}}</p>
     </div>
-    <van-tabs v-model="active" sticky class="tabs" color="#155BBB">
+    <van-tabs v-model="active" sticky class="tabs" color="#155BBB" :offset-top="num" :class="{'aiTab':id == aiExpertId}" @scroll="scroll">
       <van-tab>
         <template #title>
           解答 {{expertData.posts}}
@@ -87,6 +87,7 @@
   </div>
 </template>
 <script>
+var Before_scollH = 0;
 import Header from "@/components/header/header";
 import OnlineItem from "@/components/online_item/online_item";
 import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
@@ -95,7 +96,7 @@ import { mapState } from "vuex";
 export default {
   metaInfo() {
     return {
-      title: "专家" + this.expertData.name,
+      title: this.expertData.name + (this.identity == 1?'专家':''),
     };
   },
   name: "expert",
@@ -131,6 +132,8 @@ export default {
       page3: 0,
       noData3: false,
       skillShow: false,
+      scollType:'',
+      num:0
     };
   },
   computed: {
@@ -139,6 +142,7 @@ export default {
   created() {},
   watch: {
     $route(newVal) {
+      this.from =  this.$route.query.from,
       this.id = newVal.query.id;
       this.page = 0;
       this.page2 = 0;
@@ -146,17 +150,26 @@ export default {
       this.askedList = []; // 解答列表
       this.askMeList = []; // 提问立标
       this.hospitalList = []; // 计入的医院列表
-      // console.log("newVal :>> ", newVal);
       this.getExpertData(this.id);
     },
+    scollType(newVal){
+      if(newVal == 'down'){
+        this.num = 0
+      }else{
+        this.num = 40
+      }
+    }
   },
   mounted() {
-    // console.log("this.aiExpeartId :>> ", this.aiExpertId);
+     window.addEventListener('scroll', this.scrollHandler)
     this.getExpertData(this.id);
     // console.log("this.id,this.from :>> ", this.id, this.from);
   },
-  destroyed() {},
+  destroyed() {window.removeEventListener('scroll',this.scrollHandler);},
   methods: {
+    scroll(){
+      console.log('this.scollType :>> ', this.scollType);
+    },
     onLoad() {
       this.getIAsked();
     },
@@ -319,6 +332,16 @@ export default {
     goToCrop() {
       this.skillShow = true;
     },
+    scrollHandler(){
+        var After_scollH = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        var differH = After_scollH - Before_scollH;
+        if (differH == 0) {
+            return false;
+        }
+        this.scollType = differH > 0 ? 'down' : 'up';
+        Before_scollH = After_scollH;
+    },
+
   },
 };
 </script>
@@ -456,10 +479,27 @@ export default {
       column-gap 0
       padding-top 15px
       margin-left 12px
+      padding-bottom 40px
+      position relative
       li
         break-inside avoid
         padding-right 12px
         margin-bottom 10px
+        vertical-align top
+      /deep/.van-list__finished-text
+        position absolute
+        bottom 0
+        line-height 40px
+        left 0 
+        right 0
+        text-align center
+      /deep/.van-list__placeholder  
+        position absolute
+        bottom 0
+        line-height 40px
+        left 0 
+        right 0
+        text-align center
 .van-overlay
   z-index 2
   top 40px
@@ -493,4 +533,20 @@ export default {
       width 103px
       color #999999
       margin-right 15px
+.aiTab
+  .van-tabs__nav
+    flex 0
+  /deep/.van-tab--active
+    width 100px
+    display block
+    flex 0
+    text-align left
+    line-height 43px
+    padding-left 12px
+    .van-tab__text--ellipsis
+      width 70px
+  /deep/.van-tabs__line
+    display none      
+/deep/.van-empty__image
+  display none
 </style>

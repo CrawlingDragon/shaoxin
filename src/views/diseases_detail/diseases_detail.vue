@@ -74,19 +74,21 @@ export default {
 <style lang="stylus" scoped>
 .diseases_detail-container
   padding-bottom 50px
+  .text 
+     word-break: break-all;
   .content
     margin-top 10px
     background #fff
-    padding 20px 12px
+    padding 0 12px 20px
     .title
       color #333333
       font-size 17px
-      padding 10px 0 15px
+      padding 15px 0 15px
   .next
     text-align right
     padding 20px 12px
     color #155BBB
-    font-size 12px
+    font-size 16px
     line-height 1.2
   .my-swipe
     height 200px

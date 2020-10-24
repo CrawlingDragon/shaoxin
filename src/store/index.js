@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     token: window.localStorage.getItem("token") || undefined, // 从缓存中获取token
     uid: window.localStorage.getItem("uid") || undefined, //登录用户uid
-    initMid: 56915, //绍兴市顶级医院mid
+    initMid: process.env.VUE_APP_MID, //绍兴市顶级医院mid 63580    56915
     mid: window.localStorage.getItem("mid"), //医院mid
     joinTime: window.localStorage.getItem("joinTime"), //用户加入医院的时间
     hospitalName: window.localStorage.getItem("hospitalName"), //医院名字
@@ -16,8 +16,10 @@ export default new Vuex.Store({
     userName: window.localStorage.getItem("userName"), //用户名字
     userAvatar: window.localStorage.getItem("userAvatar"), //用户头像
     hospitalIsMember: window.localStorage.getItem("hospitalIsMember"), //是否是医院会员
+    hospitalLogo:window.localStorage.getItem("hospitalLogo"), //医院主页logo
     aiExpertId: window.localStorage.getItem("aiExpertId"), //ai 智能专家id
-    ucuid:window.localStorage.getItem('ucuid') //农资店铺 ucuid
+    ucuid:window.localStorage.getItem('ucuid'), //农资店铺 ucuid
+    logined:window.localStorage.getItem('logined') || 1
   },
   mutations: {
     setToken(state, data) {
@@ -71,6 +73,13 @@ export default new Vuex.Store({
     setUcUid(state,ucuid){
       state.ucuid = ucuid
       window.localStorage.setItem("ucuid", ucuid);
+    },
+    setLogined(state,logined){
+      state.logined = logined
+      window.localStorage.setItem("logined", logined);
+    },
+    setHospitalLogo(state,hospitalLogo){
+      window.localStorage.setItem("hospitalLogo",hospitalLogo)
     }
   },
   actions: {},

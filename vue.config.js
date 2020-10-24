@@ -1,12 +1,17 @@
 module.exports = {
   publicPath: "./",
   filenameHashing: false,
+  configureWebpack:{
+    externals:{
+      'AMap':"AMap"
+    }
+  },
   devServer: {
     hot: true,
     port: 8082,
     proxy: {
       "/api": {
-        target: "http://beta.sx.nzsoso.com/",
+        target: process.env.VUE_APP_API,
         changeOrigin: true,
         ws: true,
         secure: false,

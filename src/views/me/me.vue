@@ -25,7 +25,7 @@
           <div class="icon02"></div>
         </template>
       </van-cell>
-      <van-cell title="我的基地" to="/me_base" is-link>
+      <van-cell title="我的基地" :to="{path:'/base_detail',query:{id:info.bid}}" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon03"></div>
@@ -128,6 +128,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .me-container
+  padding-bottom 60px
   .user-box
     display flex
     padding 20px 12px

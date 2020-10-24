@@ -37,7 +37,11 @@ export default {
     ...mapState(["mid", "initMid"]),
   },
   created() {},
-  watch: {},
+  watch: {
+    $route(newVal){
+      console.log('newVal :>> ', newVal);
+    }
+  },
   mounted() {},
   destroyed() {},
   methods: {

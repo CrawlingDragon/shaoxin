@@ -22,15 +22,17 @@
           <van-grid-item text="简介" @click="goToIntro" />
         </van-grid>
       </div>
-      <div class="join-btn" v-if="hospitalIsMember == 0" @click="goToApply">
+      <div class="join-btn" v-if="hospitalIsStore == 1 && hospitalIsMember == 0 " @click="goToApply">
         申请加入医院
         <span class="free">免费</span>
       </div>
-      <div class="joined" v-else>{{joinTime}} 加入医院成为会员</div>
-      <div class="know-vip" @click="goToVip">了解更多会员权益 ></div>
+      <div class="joined" v-if="joinTime">{{joinTime}} 加入医院成为会员</div>
+      <div class="know-vip" @click="goToVip" v-show="hospitalIsStore == 1">了解更多会员权益 ></div>
       <div class="go-index" @click="gotoHospitalIndex">
-        <van-image class="logo" :src="require('./1.png')"></van-image>
-        <div class="name">{{hospitalName}}</div>
+        <div class="box">
+          <van-image class="logo" :src="hospitalLogo"></van-image>
+          <div class="name">{{hospitalName}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -40,6 +42,11 @@ import { mapState } from "vuex";
 export default {
   name: "hospitalFastNav",
   components: {},
+  metaInfo() {
+    return {
+      title: this.hospitalName,
+    };
+  },
   props: {
     showFlag: {
       type: Boolean,
@@ -47,7 +54,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      shareUrl:process.env.VUE_APP_SHARE_URL
+    };
   },
   computed: {
     ...mapState([
@@ -57,7 +66,8 @@ export default {
       "hospitalName",
       "hospitalIsStore",
       "hospitalIsMember",
-      'ucuid'
+      'ucuid',
+      "hospitalLogo"
     ]),
   },
   watch: {},
@@ -87,10 +97,12 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉坐诊巡诊是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
+            
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {})
           .catch(() => {
@@ -118,10 +130,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉测土配方是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
@@ -153,10 +166,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉专家挂号是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
@@ -192,10 +206,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉会员提问是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
@@ -240,11 +255,10 @@ export default {
     },
     goToIntro() {
       // 路由 简介
-      this.$router
-        .push({
-          path: "/hospital_intro",
+      this.$router.replace({
+          path: "/hospital_intro"
         })
-        .catch((err) => err);
+        // .catch((err) => err);
       this.$emit("changeFlag", false);
     },
     gotoHospitalIndex() {
@@ -274,7 +288,7 @@ export default {
     },
     goToShop() {
       window.open(
-        "http://sxmvip.nzsoso.com/Home/Company/companyDetail/ucuid/" + this.ucuid,
+        this.shareUrl + "/Home/Company/companyDetail/ucuid/" + this.ucuid,
         "_blank"
       );
     },
@@ -354,24 +368,26 @@ export default {
   .go-index
     position absolute
     bottom 40px
-    left 50%
-    transform translateX(-50%)
+    left 0 
+    right 0
     color #155BBB
-    font-size 12px
-    border 1px solid #155BBB
-    border-radius 4px
-    display inline-block
-    line-height 30px
-    padding 0 10px
-    .logo
+    font-size 14px
+    text-align center
+    .box
+      border 1px solid #155BBB
+      border-radius 4px
       display inline-block
-      width 20px
-      height 20px
-      margin-right 5px
-      vertical-align middle
-    & > .name
-      display inline-block
-      vertical-align middle
+      padding 0 10px
+      line-height 30px
+      .logo
+        display inline-block
+        width 20px
+        height 20px
+        margin-right 5px
+        vertical-align middle
+      & > .name
+        display inline-block
+        vertical-align middle
   .joined
     color #999999
     font-size 12px

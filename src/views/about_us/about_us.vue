@@ -14,7 +14,7 @@
       <div class="btn" @click="call">申请开通庄稼医院</div>
     </div>
     <div class="tip">
-      <p class="p2">绍兴市已开通{{us.mpnum}}家新型庄稼医院</p>
+      <p class="p2">绍兴市已开通{{us.mpnum}}家庄稼医院</p>
       <p class="p2"> 收录{{us.enum}}位专家</p>
       <p class="p2"> 累积处方{{us.rnum}}次</p>
     </div>
@@ -96,7 +96,7 @@ export default {
     padding 15px 12px
     .p1
       color #333
-      font-size 12px
+      font-size 15px
       line-height 20px
       margin-bottom 20px
       &:last-child
@@ -107,7 +107,7 @@ export default {
     margin-top 10px
     .small-title
       color #333333
-      font-size 15px
+      font-size 16px
       padding 8px 0 15px
       text-align center
     .number

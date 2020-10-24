@@ -5,7 +5,7 @@
       <van-image round class="avator" :src="list.avatar"></van-image>
       <div class="name">
         {{list.author}}
-        <div class="time">{{list.addtime}} · {{list.area}}</div>
+        <div class="time">{{list.addtime}} <span v-show="list.area">·</span> {{list.area}}</div>
       </div>
     </div>
     <div class="subsidy" v-if="list.isbenefit == 1"></div>

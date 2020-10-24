@@ -8,16 +8,15 @@
       <div class="item" :class="{'active':tabbarActive == 0}" @click="goToIndex">推荐</div>
       <div class="item" :class="{'active':tabbarActive == 1}" @click="goToOnline">网诊</div>
     </div>
-    <div class="no_index_header" v-if="!indexHeader">
+    <div class="no_index_header" v-if="!indexHeader" @click="clickLogo">
       <van-image :src="require('./1.png')" class="logo"></van-image>
       绍兴市为农服务平台首页
     </div>
     <div class="right-nav van-hairline--left">
       <div class="index-icon" @click.stop="goToIndex">
-        <van-icon name="wap-home-o" />
+        <!-- <van-icon name="wap-home-o" /> -->
       </div>
       <div class="fast-nav-icon" @click="openFastNav">
-        <van-icon name="qr" />
       </div>
     </div>
     <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav"></fastNav>
@@ -54,6 +53,10 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
+    clickLogo(){
+      this.$emit('clickLogoImg')
+      this.$router.push({path:'/index'}).catch((err) => err);
+    },
     goToSearch() {
       // 路由  搜索网诊
       this.$router
@@ -97,7 +100,7 @@ export default {
   .search-icon
     margin-left 22px
     margin-right 20px
-    font-size 20px
+    font-size 25px
     color #9D9D9D
     .van-icon
       line-height inherit
@@ -118,13 +121,22 @@ export default {
     width 85px
     display flex
     justify-content space-around
+    align-items center
     color #9D9D9D
     .index-icon
       display inline-block
-      font-size 20px
+      background url('./46.png') no-repeat
+      background-position center center
+      background-size 20px 20px
+      width 20px
+      height 20px
     .fast-nav-icon
       display inline-block
-      font-size 20px
+      background url('./sx_47.png') no-repeat
+      background-position center center
+      background-size 20px 20px
+      width 20px
+      height 20px
     .van-icon
       line-height inherit
   .no_index_header

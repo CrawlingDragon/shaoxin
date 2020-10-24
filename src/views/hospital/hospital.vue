@@ -1,11 +1,11 @@
 <template>
   <div class="hospital-container">
     <HospitalHeader header='indexHeader' navHeader='医院主页'></HospitalHeader>
-    <HospitalNav :isistore="mpublic.isistore" :ismember="mpublic.ismember"></HospitalNav>
+    <HospitalNav :isistore="mpublic.isistore" :ismember="mpublic.ismember" :caseImg='mpublic.case_img'></HospitalNav>
     <div class="info-list" v-show="messageList.length != 0">
       <div class="title">资讯</div>
       <ul>
-        <li v-for="item in messageList" :key="item.id">
+        <li v-for="item in messageList" :key="item.id" @click="goToMessageDetail(item)">
           <MessageItem :list="item"></MessageItem>
         </li>
       </ul>
@@ -38,6 +38,7 @@ import HospitalNav from "@/components/hospital_nav/hospital_nav";
 import MessageItem from "@/components/message_item/message_item";
 import RecommendExpert from "@/components/recommend_expert/recommend_expert";
 import OnlineItem from "@/components/online_item/online_item";
+
 import { mapState, mapMutations } from "vuex";
 import { ImagePreview } from "vant";
 export default {
@@ -48,7 +49,7 @@ export default {
     MessageItem,
     RecommendExpert,
     OnlineItem,
-    [ImagePreview.Component.name]: ImagePreview.Component,
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   metaInfo() {
     return {
@@ -71,23 +72,28 @@ export default {
     ...mapState(["uid", "mid", "isMember"]),
   },
   watch: {
-    // $route(newVal) {
-    //   // console.log("newVal :>> ", newVal);
-    //   // this.getHospitalData(this.mid);
+    // $route() {
+    //   this.getHospitalData(this.mid);
     // },
-    uid(){
-      this.getHospitalData(this.mid);
-    },
-    mid() {
-      this.getHospitalData(this.mid);
-    },
+    // uid(){
+    //   this.getHospitalData(this.mid);
+    // },
+    // mid() {
+    //   this.getHospitalData(this.mid);
+    // },
   },
   mounted() {
     this.getHospitalData(this.mid);
   },
   destroyed() {},
   methods: {
-    ...mapMutations(["setJoinTime", "setHospitalIsMember",'setUcUid']),
+    goToMessageDetail(item) {
+      this.$router.push({
+        path: "/message_detail",
+        query: { id: item.id, catid: item.catid },
+      });
+    },
+    ...mapMutations(["setJoinTime", "setHospitalIsMember",'setUcUid',"setHospitalIsStore","setHospitalName","setHospitalLogo"]),
     getHospitalData(mid) {
       this.$axios
         .fetchPost("Mobile/Mpublic/MpublicPage", {
@@ -105,6 +111,9 @@ export default {
             this.setJoinTime(data.mpublic.addtime);
             this.setHospitalIsMember(data.mpublic.ismember);
             this.setUcUid(data.mpublic.ucuid)
+            this.setHospitalIsStore(data.mpublic.isstore)
+            this.setHospitalName(data.mpublic.name);
+            this.setHospitalLogo(data.mpublic.logo)
             if (data.list_wen.length == 0) {
               this.wenListNoData = true;
             }
@@ -180,6 +189,7 @@ export default {
     .expert-ul
       margin-left 12px
       column-count 2
+      -webkit-column-count 2
       column-gap 0
       border-bottom 1px solid #e5e5e5
       padding-bottom 15px
@@ -188,6 +198,12 @@ export default {
         padding-right 12px
         margin-bottom 10px
         break-inside avoid
+        -webkit-column-break-inside:avoid
+        page-break-inside: avoid; 
+        vertical-align: top;
+        display: inline-block;
+        width 100%
+        
   .online-list
     background #fff
     .title
@@ -206,5 +222,5 @@ export default {
         border-bottom 1px solid #e5e5e5
         width 100%
         &:last-child
-          border none
+          border none        
 </style>

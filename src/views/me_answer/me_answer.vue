@@ -1,7 +1,7 @@
 <template>
   <div class="me_answer-container">
     <Header :indexHeader="false"></Header>
-    <van-tabs v-model="active" sticky color="#155BBB" title-active-color="#155BBB" class="tabs">
+    <van-tabs v-model="active" sticky color="#155BBB" title-active-color="#155BBB" class="tabs" :offset-top="num" @scroll="scroll">
       <van-tab title="我问的" class="tab">
         <div class="wrap">
           <van-list v-model="loading1" :finished="finished1" finished-text="没有更多了" @load="onLoad1" v-if="!noData1">
@@ -39,7 +39,7 @@
 import Header from "@/components/header/header";
 import OnlineItem from "@/components/online_item/online_item";
 import { mapState } from "vuex";
-
+var Before_scollH = 0;
 export default {
   name: "meAnswer",
   components: { Header, OnlineItem },
@@ -66,21 +66,44 @@ export default {
       loading3: false,
       finished3: false,
       page3: 0,
+      scollType:'',
+      num: 0
     };
   },
   computed: {
     ...mapState(["uid", "mid", "initMid"]),
   },
-  watch: {},
+  watch: {
+    scollType(newVal){
+      if(newVal == 'down'){
+        this.num = 0
+      }else{
+        this.num = 30
+      }
+    }
+  },
   created() {},
   mounted() {
-    // this.myAsk();
-    // this.myAnswer();
-    // this.myInformation();
+     window.addEventListener('scroll', this.scrollHandler)
     this.getUserInfo();
   },
-  destroyed() {},
+  destroyed() {
+    window.removeEventListener('scroll',this.scrollHandler);
+  },
   methods: {
+    scrollHandler(){
+        var After_scollH = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        var differH = After_scollH - Before_scollH;
+        if (differH == 0) {
+            return false;
+        }
+        this.scollType = differH > 0 ? 'down' : 'up';
+        Before_scollH = After_scollH;
+    },
+    scroll(){
+      // console.log('val :>> ', val);
+      // val
+    },
     onLoad1() {
       this.myAsk();
     },
@@ -186,4 +209,7 @@ export default {
         border-bottom 1px solid #e5e5e5
         &:last-child
           border none
+  .van-sticky
+    position relative
+    z-index 3        
 </style>

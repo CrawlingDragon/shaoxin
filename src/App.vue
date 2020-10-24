@@ -1,7 +1,7 @@
 
 <template>
   <div id="app">
-    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert,live,searchOnline" include="index,hospital,applyVip">
+    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert,live,messageDetail" include="applyVip,searchOnline">
       <router-view />
     </keep-alive>
   </div>
@@ -60,7 +60,6 @@ export default {
 </script>
 <style lang="stylus">
 #app
-  font-family Avenir, Helvetica, Arial, sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   text-align left
@@ -68,4 +67,6 @@ export default {
   min-height 100%
   position relative
   padding-top 40px
+body 
+	background #EBEBEB
 </style>

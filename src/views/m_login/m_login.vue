@@ -46,7 +46,7 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    ...mapMutations(["setUid", "setIsMember"]),
+    ...mapMutations(["setUid", "setIsMember","setLogined"]),
     validatorPhone(val) {
       // 验证手机号码
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val)) {
@@ -69,11 +69,6 @@ export default {
         return;
       }
       this.sendPhone();
-      this.clickTrue = false;
-      this.showBtn = false;
-      setTimeout(() => {
-        this.$refs.countDown.start();
-      }, 100);
     },
     sendPhone() {
       //发送验证码
@@ -84,8 +79,14 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.$toast(res.data.message);
+            this.clickTrue = false;
+            this.showBtn = false;
+            setTimeout(() => {
+              this.$refs.countDown.start();
+            }, 100);
           } else {
             this.$toast(res.data.message);
+            
           }
         });
     },
@@ -96,12 +97,22 @@ export default {
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
             this.setIsMember(res.data.data.ismember);
+             this.setLogined(1)
+            for(let i = 0;i<res.data.data.msg.length;i++){
+              this.createScript(res.data.data.msg[i])
+            }
             this.$router.push({
               path: "/",
             });
           }
           this.$toast(res.data.message);
         });
+    },
+    createScript(src){
+      let js = document.createElement('script')
+      js.setAttribute('type','text/javascript')
+      js.src = src
+      document.getElementsByTagName('head')[0].appendChild(js)
     },
     goToSign() {
       this.$router.push({

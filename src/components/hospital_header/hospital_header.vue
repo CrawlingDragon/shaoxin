@@ -21,11 +21,9 @@
       <slot></slot>
     </div>
     <div class="right-nav van-hairline--left">
-      <div class="index-icon">
-        <van-icon name="wap-home-o" @click="goToIndex" />
+      <div class="index-icon" @click="goToIndex">
       </div>
-      <div class="fast-nav-icon">
-        <van-icon name="qr" @click="rightIcon" />
+      <div class="fast-nav-icon" @click="rightIcon">
       </div>
     </div>
     <fastNav :showFlag="flag" @changeFlag="closeFast"></fastNav>
@@ -141,7 +139,7 @@ export default {
       font-size 15px
       color #155BBB
     .address-icon
-      font-size 16px
+      font-size 25px
       margin-left 15px
       color #9D9D9D
       margin-right 6px
@@ -150,19 +148,28 @@ export default {
       color #999999
       margin-right 25px
     .search
-      font-size 20px
+      font-size 25px
       color #9D9D9D
   .right-nav
     width 85px
     display flex
     justify-content space-around
     color #9D9D9D
+    align-items center
     .index-icon
       display inline-block
-      font-size 20px
+      background url('./46.png') no-repeat
+      background-position center center
+      background-size 20px 20px
+      width 20px
+      height 20px
     .fast-nav-icon
       display inline-block
-      font-size 20px
+      background url('./sx_47.png') no-repeat
+      background-position center center
+      background-size 20px 20px
+      width 20px
+      height 20px
     .van-icon
       line-height inherit
   .no_index_header

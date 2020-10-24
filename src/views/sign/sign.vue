@@ -64,8 +64,8 @@ export default {
       this.showBtn = true;
       this.clickTrue = true;
     },
-    onSubmit2(val) {
-      console.log("val :>> ", val);
+    onSubmit2() {
+      // console.log("val :>> ", val);
       this.signFn(this.username, this.password, this.sms);
     },
     signFn(username, password, code) {
@@ -84,11 +84,6 @@ export default {
         return;
       }
       this.sendPhone();
-      this.clickTrue = false;
-      this.showBtn = false;
-      setTimeout(() => {
-        this.$refs.countDown.start();
-      }, 100);
     },
     sendPhone() {
       //发送验证码
@@ -99,6 +94,11 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.$toast(res.data.message);
+            this.clickTrue = false;
+            this.showBtn = false;
+            setTimeout(() => {
+              this.$refs.countDown.start();
+            }, 100);
           } else {
             this.$toast(res.data.message);
           }

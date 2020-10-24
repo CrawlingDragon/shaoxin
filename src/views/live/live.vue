@@ -14,7 +14,7 @@
         <div class="status living" :class="{'living':item.status == '直播中','lived':item.status == '回放','before_live':item.status == '预告'}">{{item.status}}</div>
       </li>
     </ul>
-    <van-empty :description="from == 'index'?'暂无直播':'本院暂无直播'" v-show="noData" />
+    <van-empty :description="from == 'index'?'暂无直播,敬请期待':'本院暂无直播'" v-show="noData" />
     <div class="lookOther" @click="goToWholeLive" v-show="noData && from !='index'">查看其他直播</div>
   </div>
 </template>
@@ -44,8 +44,8 @@ export default {
   },
   watch: {
     $route() {
-      this.getList();
       this.from = this.$route.query.from;
+      this.getList();
     },
   },
   created() {},
@@ -58,7 +58,7 @@ export default {
     getList() {
       this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Live/getLiveList", { mId: this.mid })
+        .fetchPost("Mobile/Live/getLiveList", { mId: this.mid,isall:this.from == 'index'?'all':'self' })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

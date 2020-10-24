@@ -1,5 +1,6 @@
 <template>
   <div class="hospital_nav-container">
+    <van-image :src="caseImg" class="bj-img"></van-image>
     <div class="bg"></div>
     <div class="titles">
       <div class="left-title">会员服务</div>
@@ -65,9 +66,15 @@ export default {
       type: Number,
       default: 0,
     },
+    caseImg:{
+      type:String,
+      default:'http://www.114nz.com/statics/images/httpsxone.114nz.com_default.png'
+    }
   },
   data() {
-    return {};
+    return {
+      bjSrc:''
+    };
   },
   computed: {
     ...mapState(["hospitalIsStore", "hospitalIsMember", "uid", "mid",'ucuid']),
@@ -91,10 +98,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉坐诊巡诊是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {})
           .catch(() => {
@@ -117,10 +125,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉测土配方是会员服务，请先申请再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
@@ -144,10 +153,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉专家挂号是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
@@ -173,10 +183,11 @@ export default {
       if (this.hospitalIsMember == 0) {
         this.$dialog
           .confirm({
-            title: "提示",
             message: "抱歉会员提问是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
+            cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
           })
           .then(() => {
             // on confirm
@@ -188,7 +199,7 @@ export default {
             });
           });
       } else {
-        this.$router.push({ path: "/ask" }).catch((err) => err);
+        this.$router.push({ path: "/ask" ,query:{from:'hospital'}}).catch((err) => err);
       }
     },
     goToExpert() {
@@ -225,6 +236,8 @@ export default {
           message: "您已是新型庄稼医院会员",
           cancelButtonText: "查看会员权益",
           confirmButtonText: "好的",
+          cancelButtonColor:'#155BBB',
+            confirmButtonColor:'#999'
         })
         .then(() => {
           // on confirm
@@ -242,7 +255,7 @@ export default {
 <style lang="stylus" scoped>
 .hospital_nav-container
   padding 15px 0
-  background-image url('https://img.yzcdn.cn/vant/apple-2.jpg')
+  // background-image url('https://img.yzcdn.cn/vant/apple-2.jpg')
   background-color rgba(0, 0, 0, 0.5)
   background-size cover
   background-position center center
@@ -250,6 +263,13 @@ export default {
   height 190px
   margin-bottom 10px
   z-index 1
+  .bj-img
+    position absolute
+    width 100%
+    height 100%
+    left 0
+    top 0
+    z-index 0
   .bg
     position absolute
     width 100%
@@ -351,4 +371,8 @@ export default {
         margin 0 auto 10px
       .p2
         color #ff6600
+/deep/.van-dialog__content 
+  font-size 16px 
+  /deep/.van-dialog__message 
+    font-size 16px
 </style>
