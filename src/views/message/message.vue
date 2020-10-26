@@ -38,9 +38,9 @@ export default {
   },
   created() {},
   watch: {
-    $route(newVal){
-      console.log('newVal :>> ', newVal);
-    }
+    // $route(newVal){
+    //   // console.log('newVal :>> ', newVal);
+    // }
   },
   mounted() {},
   destroyed() {},

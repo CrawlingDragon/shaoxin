@@ -127,7 +127,7 @@ export default {
             this.ask = this.ask.concat(res.data.data);
             this.loading1 = false;
           } else if (res.data.code == 201) {
-            console.log("this.page1 :>> ", this.page1);
+            // console.log("this.page1 :>> ", this.page1);
             if (this.page1 == 1) {
               this.noData1 = true;
             }

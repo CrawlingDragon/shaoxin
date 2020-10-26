@@ -168,7 +168,7 @@ export default {
   destroyed() {window.removeEventListener('scroll',this.scrollHandler);},
   methods: {
     scroll(){
-      console.log('this.scollType :>> ', this.scollType);
+      // console.log('this.scollType :>> ', this.scollType);
     },
     onLoad() {
       this.getIAsked();

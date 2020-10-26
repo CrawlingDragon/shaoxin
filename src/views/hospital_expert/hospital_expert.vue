@@ -8,7 +8,7 @@
         </li>
       </van-list>
     </ul>
-    <van-empety description='暂无医院专家' v-if="noData"></van-empety>
+    <van-empty description="暂无医院专家" v-show="noData"></van-empty>
   </div>
 </template>
 <script>
@@ -44,7 +44,6 @@ export default {
     },
     getList() {
       this.page += 1;
-
       this.$axios
         .fetchPost("Mobile/User/expertList", { mId: this.mid, page: this.page,isall:'self' })
         .then((res) => {

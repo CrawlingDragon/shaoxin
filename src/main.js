@@ -21,10 +21,10 @@ Vue.prototype.$axios = axios; // 全局重定义axios
 Vue.prototype.$dialog = Dialog;
 
 
-// if(process.env.NODE_ENV == 'development'){
+ if(process.env.NODE_ENV == 'development'){
   // eslint-disable-next-line no-unused-vars
   var vsconsole = new VConsole()
-// }
+ }
 
 //vsconsole 手机真级打印
 

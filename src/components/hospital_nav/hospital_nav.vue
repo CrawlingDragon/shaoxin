@@ -32,7 +32,7 @@
         <p>优质基地</p>
       </li>
       <li>
-        <a :href="'http://sxmvip.nzsoso.com/Home/Company/companyDetail/ucuid/' + ucuid" target="_blank" style="display:block;color: #AED0FF;">
+        <a :href="shareUrl + 'Home/Company/companyDetail/ucuid/' + ucuid" target="_blank" style="display:block;color: #AED0FF;">
           <div class="icon icon07"></div>
           <p>农资店铺</p>
         </a>
@@ -73,7 +73,8 @@ export default {
   },
   data() {
     return {
-      bjSrc:''
+      bjSrc:'',
+      shareUrl:process.env.VUE_APP_SHARE_URL
     };
   },
   computed: {

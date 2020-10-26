@@ -45,11 +45,11 @@ export default {
         geocoder.getLocation(that.location, function(status, result) {
           if (status === 'complete' && result.info === 'OK') {
             // result中对应详细地理坐标信息
-            console.log('mark_result :>> ', result.geocodes);
             that.lng = result.geocodes[0].location.lng
             that.lat =  result.geocodes[0].location.lat
             
           }else{
+            // console.log('失败result :>> ', result);
             that.$dialog.alert({
               message:"获取地址失败",
               confirmButtonText:'知道了'

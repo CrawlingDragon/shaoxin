@@ -43,6 +43,7 @@ import HospitalHeader from "@/components/hospital_header/hospital_header";
 import { mapState } from "vuex";
 import Foot from "@/components/foot/foot";
 import AMap from 'AMap'
+import EXIF from 'exif-js'
 export default {
   name: "ask",
   components: { Header, Foot ,HospitalHeader},
@@ -65,7 +66,7 @@ export default {
       userInfo: "",
       locationTime:'first',
       submitBoolean:true,
-      from:this.$route.query.from
+       from:this.$route.query.from
     };
   },
   computed: {
@@ -112,10 +113,16 @@ export default {
       // console.log('file :>> ', file);
       let that = this
       return new Promise((resolve) => {
-        that.imgPress({file:file}).then(res => {
-          console.log('res :>> ', res);
+       
+        EXIF.getData(file, function() {
+          let Orientation
+          Orientation = EXIF.getTag(this, 'Orientation')
+          that.imgPress({file:file,Orientation:Orientation}).then(res => {
+            console.log('file :>> ', res);
           resolve(res.filePress);
         })
+        })
+        
       })
     },
     afterRead(file,detail) {
@@ -210,13 +217,11 @@ export default {
     },
     getLocation() {
       let that = this
-      console.log('开始定位。。。。 ');
           var map = new AMap.Map("container", {
             resizeEnable: true, //是否监控地图容器尺寸变化
             zoom: 13, //初始地图级别
           });
           AMap.plugin("AMap.Geolocation", function () {
-               console.log('开始定位111 :>> ');
             var geolocation = new AMap.Geolocation({
              enableHighAccuracy: true,//是否使用高精度定位，默认:true
               timeout: 10000,          //超过10秒后停止定位，默认：无穷大
@@ -237,14 +242,12 @@ export default {
             });
             function onComplete(data) {
               // data是具体的定位信息
-            console.log('定位成功 :>> ', data);
              AMap.plugin('AMap.Geocoder', function() {
               var geocoder = new AMap.Geocoder({})
               var lnglat = [data.position.lng,data.position.lat]
               geocoder.getAddress(lnglat, function(status, result) {
                 if (status === 'complete' && result.info === 'OK') {
                     // result为对应的地理位置详细信息
-                  console.log('result :>> ', result.regeocode.addressComponent);
                   that.address = `${result.regeocode.addressComponent.province},${result.regeocode.addressComponent.city},${result.regeocode.addressComponent.district}`;
                 }
               })
@@ -253,7 +256,6 @@ export default {
             }
             function onError(error) {
               // 定位出错
-              console.log("定位失败",error);
 
               if(that.locationTime == 'first'){
                 that.address = '抱歉未定位到';
@@ -281,15 +283,15 @@ export default {
                 }else{
                    //个人资料地址不为空
                    that.$dialog.alert({
-                                    title: "定位失败",
-                                    message:"检测到您未打开定位服务,已自动切换至 " + adressTitle,
-                                    confirmButtonText: "好的",
-                                    confirmButtonColor:'#155BBB'
-                                  })
-                                  .then(() => {
-                                    // on close
-                                    that.address = adressTitle;
-                                  });
+                      title: "定位失败",
+                      message:"检测到您未打开定位服务,已自动切换至 " + adressTitle,
+                      confirmButtonText: "好的",
+                      confirmButtonColor:'#155BBB'
+                    })
+                    .then(() => {
+                      // on close
+                      that.address = adressTitle;
+                    });
                 }
                 
               }else{
@@ -326,18 +328,19 @@ export default {
             }
           });
     },
-    imgPress ({ file, rate = 1, maxSize = 20800, fileType = 'file' }) {
-    return new Promise(resolve => {
-    // new一个文件读取方法，监听文件读取
-    let reader = new FileReader()
-    reader.readAsDataURL(file)
-    let img = new Image()
-    reader.onload = function (e) {
-      img.src = e.target.result
-    }
+    imgPress ({ file,Orientation, rate = 1, maxSize = 20800, fileType = 'file' }) {
+      let that =this
+      return new Promise(resolve => {
+      // new一个文件读取方法，监听文件读取
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+      let img = new Image()
+      reader.onload = function (e) {
+        img.src = e.target.result
+      }
     img.onload = function () {
       let canvas = document.createElement('canvas')
-      let context = canvas.getContext('2d')
+      // let context = canvas.getContext('2d')
       // 文件大小KB
       const fileSizeKB = file.size / 1024
       // 配置rate和maxSize的关系
@@ -345,20 +348,93 @@ export default {
         rate = Math.floor(maxSize / fileSizeKB * 10) / 10
       }
       // 缩放比例，默认0.5
-      let targetW = canvas.width = this.width * rate
-      let targetH = canvas.height = this.height * rate
-      context.clearRect(0, 0, targetW, targetH)
-      context.drawImage(img, 0, 0, targetW, targetH)
+      // let targetW = canvas.width = this.width * rate
+      // let targetH = canvas.height = this.height * rate
+      // context.clearRect(0, 0, targetW, targetH)
+      // context.drawImage(img, 0, 0, targetW, targetH)
+      let width = this.width;
+      let height = this.height;
+      canvas.width = width;
+      canvas.height = height;
+      if(Orientation && Orientation != 1){
+      switch(Orientation){
+        case 6:     // 旋转90度
+          canvas.width = this.height;
+          canvas.height = this.width;
+          that.rotateImg(img, 'left', canvas, width, height);
+          break;
+        case 3:// 旋转180度
+         that.rotateImg(img, 'right2', canvas, width, height);
+          break;
+        case 8:     // 旋转-90度
+        that.rotateImg(img, 'right2', canvas, width, height);
+          break;
+           default:
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          break;
+        }}else{
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        }
+
+
+
       if (fileType === 'file' || fileType === 'blob') {
         canvas.toBlob(function (blob) {
           resolve({ filePress: fileType === 'blob' ? blob : new File([blob], file.name, { type: file.type }), base64: img.src })
-        },"image/jpeg", 0.4)
+        },"image/jpeg", 0.4) 
       } else {
         resolve({ filePress: fileType === 'base64' ? canvas.toDataURL(file.type) : null, base64: img.src })
       }
     }
   })
 },
+  rotateImg(img, direction, canvas, width, height) {
+    var min_step = 0;
+    var max_step = 3;
+    if (img == null) {
+      return;
+    }
+    var step = 2;
+    if (step == null) {
+      step = min_step;
+    }
+    if (direction == 'right') {
+      step++;
+      step > max_step && (step = min_step);
+    }else if(direction == 'right2'){
+      step = 2;
+    }else {
+      step--;
+      step < min_step && (step = max_step);
+    }
+    var degree = step * 90 * Math.PI / 180;
+    var ctx = canvas.getContext('2d');
+    switch (step) {
+      case 0:
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        break;
+      case 1:
+        canvas.width = height;
+        canvas.height = width;
+        ctx.rotate(degree);
+        ctx.drawImage(img, 0, -height, width, height);
+        break;
+      case 2:
+        canvas.width = width;
+        canvas.height = height;
+        ctx.rotate(degree);
+        ctx.drawImage(img, -width, -height, width, height);
+        break;
+      case 3:
+        canvas.width = height;
+        canvas.height = width;
+        ctx.rotate(degree);
+        ctx.drawImage(img, -width, 0, width, height);
+        break;
+      }
+   },
   },
 };
 </script>

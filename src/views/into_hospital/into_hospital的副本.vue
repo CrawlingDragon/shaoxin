@@ -106,7 +106,7 @@ AMap.plugin("AMap.Geolocation", function () {
               geocoder.getAddress(lnglat, function(status, result) {
                 if (status === 'complete' && result.info === 'OK') {
                     // result为对应的地理位置详细信息
-                console.log('result :>> ', result);
+                // console.log('result :>> ', result);
                 let city = result.regeocode.addressComponent.city
                 if (city != "绍兴市") {
                 that.location = "浙江省,绍兴市";
@@ -128,7 +128,7 @@ AMap.plugin("AMap.Geolocation", function () {
             })
           }
           function onError() {
-            console.log('定位失败 :>> ');
+            // console.log('定位失败 :>> ');
             that.$dialog.alert({
                 message: "定位失败,已自动切换到绍兴市",
                 confirmButtonText: "知道了",

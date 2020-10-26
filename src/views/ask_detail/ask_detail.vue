@@ -512,6 +512,8 @@ export default {
     .answer-box  
       background  #0c3387 
       color #81b4f3
+      max-width: 1200px;
+      margin: 0 auto;
       .name
         color #81b4f3 !important
       .time

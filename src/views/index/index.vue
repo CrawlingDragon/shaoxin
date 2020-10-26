@@ -14,7 +14,7 @@
         <p>找答案</p>
       </div>
       <div class="item">
-        <a href="http://sxmvip.nzsoso.com" target="_blank" style="display:block;color:#000;">
+        <a :href="shareStoreUrl" target="_blank" style="display:block;color:#000;">
           <div class="icon i2"></div>
           <p>找农资</p>
         </a>
@@ -63,7 +63,7 @@
         </li>
       </ul>
     </div>
-    <div class="look-bar" @click="goToAnswer">点击加载更多 ></div>
+    <div class="look-bar" @click="goToAnswer">找答案 ></div>
     <Foot></Foot>
   </div>
 </template>
@@ -95,7 +95,8 @@ export default {
       hospitalArr: [],
       expertArr: [],
       onlineArr: [],
-      scrollInit:false
+      scrollInit:false,
+      shareStoreUrl:process.env.VUE_APP_STORE_URL
     };
   },
   created() {},

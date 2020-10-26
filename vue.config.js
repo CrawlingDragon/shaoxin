@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: "./",
-  filenameHashing: false,
+  filenameHashing: true,
   configureWebpack:{
     externals:{
       'AMap':"AMap"

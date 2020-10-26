@@ -156,9 +156,9 @@ export default {
     afterRead(file) {
       let formData = new FormData();
       this.imgPress(file).then(res => {
-         console.log('res :>> ', res);
-        console.log('res.filePress :>> ', res.filePress);
-        console.log('file.file :>> ', file.file);
+        //  console.log('res :>> ', res);
+        // console.log('res.filePress :>> ', res.filePress);
+        // console.log('file.file :>> ', file.file);
         formData.append("urls[]",res.filePress);
         formData.append("uId", this.uid);
         this.$axios
