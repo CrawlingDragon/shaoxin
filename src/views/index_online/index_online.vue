@@ -162,6 +162,7 @@ export default {
       this.area = area;
       // this.getIndexData();
       this.areaName = name;
+      this.finished = false;
       this.addressFlag = false;
     },
     goBack() {

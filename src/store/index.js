@@ -19,7 +19,7 @@ export default new Vuex.Store({
     hospitalLogo:window.localStorage.getItem("hospitalLogo"), //医院主页logo
     aiExpertId: window.localStorage.getItem("aiExpertId"), //ai 智能专家id
     ucuid:window.localStorage.getItem('ucuid'), //农资店铺 ucuid
-    logined:window.localStorage.getItem('logined') || 1
+    logined:window.localStorage.getItem('logined') || 2
   },
   mutations: {
     setToken(state, data) {

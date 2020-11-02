@@ -2,17 +2,33 @@
   <div class="login-container">
     <Header :indexHeader="false"></Header>
     <div class="title-bar">账号密码登录<span @click="goToSign">注册</span></div>
-    <van-form @submit="onSubmit" class="from">
-      <van-field v-model="username" type="text" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone, },{ required: true }]" />
-      <van-field v-model="password" type="password" name="pwd" placeholder="请输入密码" :rules="[{ required: true }]" />
-      <div class="forget" @click="goToForget">忘记密码？</div>
+    <van-form @submit="onSubmit"
+              class="from">
+      <van-field v-model="username"
+                 type="text"
+                 name="phone"
+                 placeholder="请输入手机号"
+                 :rules="[{validator:validatorPhone, },{ required: true }]" />
+      <van-field v-model="password"
+                 type="password"
+                 name="pwd"
+                 placeholder="请输入密码"
+                 :rules="[{ required: true }]" />
+      <div class="forget"
+           @click="goToForget">忘记密码？</div>
       <div style="margin: 16px;margin-top:45px">
-        <van-button round block type="info" native-type="submit" class="sub" :class="{'success':(this.username && this.password)}">
+        <van-button round
+                    block
+                    type="info"
+                    native-type="submit"
+                    class="sub"
+                    :class="{'success':(this.username && this.password)}">
           登录
         </van-button>
       </div>
     </van-form>
-    <div class="message-login" @click="goTo_M_Login">短信快捷登录</div>
+    <div class="message-login"
+         @click="goTo_M_Login">短信快捷登录</div>
 
   </div>
 </template>
@@ -26,23 +42,23 @@ export default {
   name: "Login",
   components: { Header },
   props: {},
-  data() {
+  data () {
     return {
       username: "",
       password: "",
     };
   },
-  created() {},
+  created () { },
   computed: {},
   watch: {},
-  mounted() {
+  mounted () {
     // console.log("this.axios :>> ", this.$axios);
     // document.cookie = 'ucenter_uid=123123123123123'
   },
-  destroyed() {},
+  destroyed () { },
   methods: {
-    ...mapMutations(["setUid", "setIsMember",'setLogined']),
-    validatorPhone(val) {
+    ...mapMutations(["setUid", "setIsMember", 'setLogined']),
+    validatorPhone (val) {
       // 验证手机号码
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val)) {
         this.clickTrue = true;
@@ -51,7 +67,7 @@ export default {
       }
       return /^1(3|4|5|6|7|8|9)\d{9}$/.test(val);
     },
-    onSubmit() {
+    onSubmit () {
       // console.log("submit", values);
       this.$axios
         .fetchPost("Mobile/Member/login", {
@@ -62,33 +78,49 @@ export default {
           this.$toast(res.data.message);
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
-            for(let i = 0;i<res.data.data.msg.length;i++){
+            for (let i = 0; i < res.data.data.msg.length; i++) {
               this.createScript(res.data.data.msg[i])
             }
             this.setLogined(1)
-            this.$router.push({
-              path: "/index",
-            });
+            setTimeout(() => {
+              this.$router.push({
+                path: "/index",
+              });
+            }, 500)
           }
         });
     },
-    createScript(src){
+    getCookie (cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
+    createScript (src) {
       let js = document.createElement('script')
-      js.setAttribute('type','text/javascript')
+      js.setAttribute('type', 'text/javascript')
       js.src = src
       document.getElementsByTagName('head')[0].appendChild(js)
     },
-    goTo_M_Login() {
+    goTo_M_Login () {
       this.$router.push({
         path: "/m_login",
       });
     },
-    goToSign() {
+    goToSign () {
       this.$router.push({
         path: "/sign",
       });
     },
-    goToForget() {
+    goToForget () {
       this.$router.push({
         path: "/find_password",
       });
@@ -115,7 +147,7 @@ export default {
   .from
     width 80%
     margin 0 auto
-    position: relative;
+    position relative
     .sub
       background #BBBBBB
       border none

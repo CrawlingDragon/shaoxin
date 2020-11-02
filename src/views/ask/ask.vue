@@ -134,7 +134,7 @@ export default {
         .then((res) => {
           // console.log("res :>> ", res);
           if (res.data.code == 0) {
-            this.imgList.push(res.data.data);
+            this.imgList.push(res.data.data_tiny);
             // this.uploader.push({url:res.data.data,name:'img'})
           } else {
             this.$toast(res.data.message);

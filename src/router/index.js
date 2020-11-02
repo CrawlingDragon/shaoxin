@@ -415,34 +415,48 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
     return originalPush.call(this, location, onResolve, onReject);
   return originalPush.call(this, location).catch(err => err);
 };
+
 router.beforeEach((to, from, next) => {
-  //单点登录
-  function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-         }
-        if (c.indexOf(name)  == 0) {
-            return c.substring(name.length, c.length);
-         }
-    }
-    return "";
-}
-
-
+    //单点登录
+    function getCookie(cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for(var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+          }
+          if (c.indexOf(name)  == 0) {
+              return c.substring(name.length, c.length);
+          }
+      }
+      return "";
+  }
 
 //判断cookie 是否存在
-var ucenter_uid = getCookie("ucenter_uid");
-//是==>拿到uid，设置uid
+  var ucenter_uid = getCookie("ucenter_uid"); //是==>拿到uid，设置uid
+  let ucenter_islogin = getCookie('ucenter_islogin') // cookie的username
 
-if(ucenter_uid && store.state.logined == 1){
-  store.commit('setUid',ucenter_uid)
-}
-// console.log('ucenter_uid :before>> ', ucenter_uid);
-// console.log('store.state.uid :>> ', store.state.uid);
+// console.log('ucenter_uid :>> ', ucenter_uid);
+  let env = process.env.NODE_ENV == 'development'
+  if (!env) { 
+    if(!ucenter_uid) {
+      store.commit('setLogined',2)
+    }
+    if (store.state.logined == 1) {
+      next(true);
+    } else { 
+      if (ucenter_uid && ucenter_islogin == 1) {
+        store.commit('setUid', ucenter_uid)
+      }
+      if (ucenter_islogin == 0) {
+        store.commit('setUid','')
+      }
+    }
+  }
+  // console.log('store.state.logined :>> ', store.state.logined);
+  
+
 //否 ==> 就不处理
   let uid = store.state.uid;
   if (uid == "" || uid == undefined) {

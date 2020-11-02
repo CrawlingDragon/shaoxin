@@ -29,7 +29,7 @@
       </div>
       <div class="item" @click="goToLive">
         <div class="icon i5"></div>
-        <p>直播</p>
+        <p>看直播</p>
       </div>
     </div>
     <div class="hospital-box">
@@ -96,7 +96,7 @@ export default {
       expertArr: [],
       onlineArr: [],
       scrollInit:false,
-      shareStoreUrl:process.env.VUE_APP_STORE_URL
+      shareStoreUrl:process.env.VUE_APP_SHARE_URL
     };
   },
   created() {},

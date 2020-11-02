@@ -75,7 +75,7 @@ export default {
           });
           AMap.plugin("AMap.Geolocation", function () {
             //开始定位
-            console.log('开始定位2222 :>> ');
+            // console.log('开始定位2222 :>> ');
             var geolocation = new AMap.Geolocation({
              enableHighAccuracy: true,//是否使用高精度定位，默认:true
               timeout: 10000,          //超过10秒后停止定位，默认：无穷大

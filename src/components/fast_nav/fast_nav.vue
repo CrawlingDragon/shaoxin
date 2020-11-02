@@ -177,7 +177,7 @@ export default {
               }    
               // setTimeout(()=>{this.setUid("");},1000)
                   this.setUid("");
-                  this.setLogined(2)
+                  this.setLogined(1)
                   this.$router.push({ path: "/login"})
             }
           })

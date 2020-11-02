@@ -72,15 +72,6 @@ export default {
     ...mapState(["uid", "mid", "isMember"]),
   },
   watch: {
-    // $route() {
-    //   this.getHospitalData(this.mid);
-    // },
-    // uid(){
-    //   this.getHospitalData(this.mid);
-    // },
-    // mid() {
-    //   this.getHospitalData(this.mid);
-    // },
   },
   mounted() {
     this.getHospitalData(this.mid);
@@ -201,7 +192,7 @@ export default {
         -webkit-column-break-inside:avoid
         page-break-inside: avoid; 
         vertical-align: top;
-        display: inline-block;
+        // display: inline-block;
         width 100%
         
   .online-list

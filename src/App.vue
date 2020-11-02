@@ -1,7 +1,8 @@
 
 <template>
   <div id="app">
-    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert,live,messageDetail" include="applyVip,searchOnline">
+    <keep-alive exclude="Login,mLogin,findPassword,sign,lookExpert,live,messageDetail"
+                include="applyVip,searchOnline">
       <router-view />
     </keep-alive>
   </div>
@@ -9,29 +10,52 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 export default {
-  data() {
-    return {};
+  data () {
+    return {
+
+    };
   },
   computed: {
-    ...mapState(["uid", "initMid"]),
+    ...mapState(["uid", "initMid","logined"]),
   },
   watch: {
-    uid() {
+    uid () {
       this.getUserInfo();
     },
   },
-  mounted() {
+  mounted () {
     this.getUserInfo();
     this.getAiId();
+    window.addEventListener('beforeunload', function() {
+      // dosomething
+      if(this.getCookie('ucenter_uid')) {
+        this.setLogined(2)
+      }
+    }); 
   },
   methods: {
+    getCookie (cname) {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
     ...mapMutations([
       "setIsMember",
       "setUserName",
       "setUserAvatar",
       "setAiExpertId",
+      "setLogined"
     ]),
-    getUserInfo() {
+    getUserInfo () {
       if (this.uid == undefined) {
         return;
       }
@@ -48,7 +72,7 @@ export default {
           }
         });
     },
-    getAiId() {
+    getAiId () {
       this.$axios.fetchPost("Mobile/Sysconfig/getAiExpert").then((res) => {
         if (res.data.code == 0) {
           this.setAiExpertId(res.data.data);
@@ -67,6 +91,6 @@ export default {
   min-height 100%
   position relative
   padding-top 40px
-body 
-	background #EBEBEB
+body
+  background #EBEBEB
 </style>
