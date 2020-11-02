@@ -61,6 +61,7 @@ export default {
       fid: "",
       uploader: [],
       imgList: [],
+      imgListTiny:[],
       ismember: '',
       isShaoxing: "",
       userInfo: "",
@@ -134,7 +135,8 @@ export default {
         .then((res) => {
           // console.log("res :>> ", res);
           if (res.data.code == 0) {
-            this.imgList.push(res.data.data_tiny);
+            this.imgList.push(res.data.data);
+            this.imgListTiny.push(res.data.data_tiny)
             // this.uploader.push({url:res.data.data,name:'img'})
           } else {
             this.$toast(res.data.message);
@@ -163,6 +165,7 @@ export default {
     deleteItem(file, val) {
       let index = val.index;
       this.imgList = this.imgList.splice(0, index, 1);
+      this.imgListTiny = this.imgList.splice(0, index, 1);
       return true;
     },
     subAsk() {
@@ -173,6 +176,7 @@ export default {
         fId: this.fid, //作物ID
         expertId: this.expertId,
         picurl: this.imgList.join(","),
+        picurl_tiny:this.imgListTiny.join(","),
         location: this.address,
       };
       if(this.submitBoolean){
