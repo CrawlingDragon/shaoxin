@@ -1,102 +1,120 @@
 <template>
   <!-- 首页推荐的header -->
-  <div class="header-container van-hairline--top van-hairline--bottom">
-    <div class="search-icon" v-if="indexHeader" @click="goToSearch">
-      <van-icon name="search" />
-    </div>
-    <div class="tabbar" v-if="indexHeader">
-      <div class="item" :class="{'active':tabbarActive == 0}" @click="goToIndex">推荐</div>
-      <div class="item" :class="{'active':tabbarActive == 1}" @click="goToOnline">网诊</div>
-    </div>
-    <div class="no_index_header" v-if="!indexHeader" @click="clickLogo">
-      <van-image :src="require('./1.png')" class="logo"></van-image>
-      绍兴市为农服务平台首页
-    </div>
-    <div class="right-nav van-hairline--left">
-      <div class="index-icon" @click.stop="goToIndex">
-        <!-- <van-icon name="wap-home-o" /> -->
+  <div class="header-container ">
+    <div class="wrap van-hairline--top van-hairline--bottom">
+      <div class="search-icon" v-if="indexHeader" @click="goToSearch">
+        <van-icon name="search" />
       </div>
-      <div class="fast-nav-icon" @click="openFastNav">
+      <div class="tabbar" v-if="indexHeader">
+        <div
+          class="item"
+          :class="{ active: tabbarActive == 0 }"
+          @click="goToIndex"
+        >
+          推荐
+        </div>
+        <div
+          class="item"
+          :class="{ active: tabbarActive == 1 }"
+          @click="goToOnline"
+        >
+          网诊
+        </div>
       </div>
+      <div class="no_index_header" v-if="!indexHeader" @click="clickLogo">
+        <van-image :src="require('./1.png')" class="logo"></van-image>
+        绍兴市为农服务平台首页
+      </div>
+      <div class="right-nav van-hairline--left">
+        <div class="index-icon" @click.stop="goToIndex">
+          <!-- <van-icon name="wap-home-o" /> -->
+        </div>
+        <div class="fast-nav-icon" @click="openFastNav"></div>
+      </div>
+      <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav"></fastNav>
     </div>
-    <fastNav :showFlag="fastNavShowFlag" @changeFlag="closeFaseNav"></fastNav>
   </div>
 </template>
 <script>
-import fastNav from "@/components/fast_nav/fast_nav";
-import { mapState } from "vuex";
+import fastNav from '@/components/fast_nav/fast_nav'
+import { mapState } from 'vuex'
 export default {
-  name: "headers",
+  name: 'headers',
   components: { fastNav },
   props: {
     indexHeader: {
       type: Boolean,
-      default: true,
+      default: true
     },
     tabbarActive: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   data() {
     return {
       fastNavShowFlag: false,
-      user: {},
-    };
+      user: {}
+    }
   },
-  computed: { ...mapState(["uid", "initMid"]) },
+  computed: { ...mapState(['uid', 'initMid']) },
   watch: {
     $route() {
-      this.fastNavShowFlag = false;
-    },
+      this.fastNavShowFlag = false
+    }
   },
   mounted() {},
   destroyed() {},
   methods: {
-    clickLogo(){
+    clickLogo() {
       this.$emit('clickLogoImg')
-      this.$router.push({path:'/index'}).catch((err) => err);
+      this.$router.push({ path: '/index' }).catch(err => err)
     },
     goToSearch() {
       // 路由  搜索网诊
       this.$router
         .push({
-          path: "/search_online",
+          path: '/search_online'
         })
-        .catch((err) => err);
-      this.fastNavShowFlag = false;
+        .catch(err => err)
+      this.fastNavShowFlag = false
     },
     goToOnline() {
       // 路由  网诊
-      this.$router.push({ path: "/index_online" }).catch((err) => err);
-      this.fastNavShowFlag = false;
+      this.$router.push({ path: '/index_online' }).catch(err => err)
+      this.fastNavShowFlag = false
     },
     goToIndex() {
       // 路由 首页
-      this.$router.push({ path: "/index" }).catch((err) => err);
+      this.$router.push({ path: '/index' }).catch(err => err)
     },
     openFastNav() {
       // 打开快速导航
-      this.fastNavShowFlag = !this.fastNavShowFlag;
+      this.fastNavShowFlag = !this.fastNavShowFlag
     },
     closeFaseNav(boolean) {
       // 关闭快速导航
-      this.fastNavShowFlag = boolean;
-    },
-  },
-};
+      this.fastNavShowFlag = boolean
+    }
+  }
+}
 </script>
 <style lang="stylus" scoped>
 .header-container
   height 40px
   line-height 40px
-  display flex
-  background #FFFFFF
   position fixed
   top 0
   right 0
   left 0
   z-index 2
+  width 100%
+  .wrap
+    display flex
+    max-width 640px
+    width 100%
+    margin 0 auto
+    background #FFFFFF
   .search-icon
     margin-left 22px
     margin-right 20px

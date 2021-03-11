@@ -1,9 +1,14 @@
 <template>
   <div class="index-container" ref="index">
     <Header></Header>
-    <div class="swiper-box">
-      <van-swipe :autoplay="3000" style="height: 130px;">
-        <van-swipe-item v-for="image in swiperArr" :key="image.id" fit="cover" @click="goToMessageDetail(image)">
+    <div class="swiper-box" ref="swiper">
+      <van-swipe :autoplay="3000" :style="{ height: h }">
+        <van-swipe-item
+          v-for="image in swiperArr"
+          :key="image.id"
+          fit="cover"
+          @click="goToMessageDetail(image)"
+        >
           <van-image fit="cover" :src="image.thumb" lazy-load />
         </van-swipe-item>
       </van-swipe>
@@ -14,7 +19,11 @@
         <p>找答案</p>
       </div>
       <div class="item">
-        <a :href="shareStoreUrl" target="_blank" style="display:block;color:#000;">
+        <a
+          :href="shareStoreUrl"
+          target="_blank"
+          style="display:block;color:#000;"
+        >
           <div class="icon i2"></div>
           <p>找农资</p>
         </a>
@@ -68,25 +77,25 @@
   </div>
 </template>
 <script>
-import Header from "@/components/header/header.vue";
-import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
-import RecommendExpert from "@/components/recommend_expert/recommend_expert";
-import OnlineItem from "@/components/online_item/online_item";
-import { ImagePreview } from "vant";
-import { mapMutations, mapState } from "vuex";
-import Foot from "@/components/foot/foot";
+import Header from '@/components/header/header.vue'
+import RecommendHospital from '@/components/recommend_hospital/recommend_hospital'
+import RecommendExpert from '@/components/recommend_expert/recommend_expert'
+import OnlineItem from '@/components/online_item/online_item'
+import { ImagePreview } from 'vant'
+import { mapMutations, mapState } from 'vuex'
+import Foot from '@/components/foot/foot'
 export default {
   metaInfo: {
-    title: "绍兴市为农服务平台",
+    title: '绍兴市为农服务平台'
   },
-  name: "index",
+  name: 'index',
   components: {
     Header,
     RecommendHospital,
     OnlineItem,
     RecommendExpert,
     Foot,
-    [ImagePreview.Component.name]: ImagePreview.Component,
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   props: {},
   data() {
@@ -95,105 +104,117 @@ export default {
       hospitalArr: [],
       expertArr: [],
       onlineArr: [],
-      scrollInit:false,
-      shareStoreUrl:process.env.VUE_APP_SHARE_URL
-    };
+      scrollInit: false,
+      shareStoreUrl: process.env.VUE_APP_SHARE_URL,
+      h: 0
+    }
   },
   created() {},
   computed: {
-    ...mapState(["initMid"]),
+    ...mapState(['initMid'])
   },
   watch: {
     $route() {
-      this.$refs.index.scrollTo(0, 0);
-      this.setMid(this.initMid);
-    },
+      this.$refs.index.scrollTo(0, 0)
+      this.setMid(this.initMid)
+    }
   },
   mounted() {
-    this.getIndexData();
-    this.setMid(this.initMid);
-    // window.addEventListener('scroll', this.scrollHandler)
+    this.initSwiperHeight()
+    this.getIndexData()
+    this.setMid(this.initMid)
+    window.addEventListener('resize', this.initSwiperHeight)
   },
   // destroyed() { window.removeEventListener('scroll', this.scrollHandler)},
   methods: {
-    scrollHandler(){
-      this.$nextTick(() => {
-      // let l = this.onlineArr.length 
-      // let li = this.$refs.li[l - 1]
-      if(this.scrollInit){
-      var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
-      //变量windowHeight是可视区的高度
-      var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
-      //变量scrollHeight是滚动条的总高度
-      var scrollHeight = document.documentElement.scrollHeight||document.body.scrollHeight;
-        //滚动条到底部的条件
-      if(scrollTop+windowHeight == scrollHeight){
-      //到了这个就可以进行业务逻辑加载后台数据了
-      setTimeout(() => { 
-          this.$router.push({
-            path:'/index_online'
-          })},500)  
-         }  
-        }   
-      })
-      
+    initSwiperHeight() {
+      let w = this.$refs.swiper.offsetWidth
+      if (w >= 640) {
+        w = 640
+      }
+      this.h = w / (750 / 260) + 'px'
     },
-    ...mapMutations(["setMid"]),
+    scrollHandler() {
+      this.$nextTick(() => {
+        // let l = this.onlineArr.length
+        // let li = this.$refs.li[l - 1]
+        if (this.scrollInit) {
+          var scrollTop =
+            document.documentElement.scrollTop || document.body.scrollTop
+          //变量windowHeight是可视区的高度
+          var windowHeight =
+            document.documentElement.clientHeight || document.body.clientHeight
+          //变量scrollHeight是滚动条的总高度
+          var scrollHeight =
+            document.documentElement.scrollHeight || document.body.scrollHeight
+          //滚动条到底部的条件
+          if (scrollTop + windowHeight == scrollHeight) {
+            //到了这个就可以进行业务逻辑加载后台数据了
+            setTimeout(() => {
+              this.$router.push({
+                path: '/index_online'
+              })
+            }, 500)
+          }
+        }
+      })
+    },
+    ...mapMutations(['setMid']),
     getIndexData() {
       // 获取首页数据
       this.$axios
-        .fetchPost("/Mobile/Index/index", { mId: this.initMid })
-        .then((res) => {
+        .fetchPost('/Mobile/Index/index', { mId: this.initMid })
+        .then(res => {
           if (res.data.code == 0) {
-            this.swiperArr = res.data.data.list_ad;
-            this.hospitalArr = res.data.data.list_mpublic;
-            this.expertArr = res.data.data.list_expert;
-            this.onlineArr = res.data.data.list_wen;
+            this.swiperArr = res.data.data.list_ad
+            this.hospitalArr = res.data.data.list_mpublic
+            this.expertArr = res.data.data.list_expert
+            this.onlineArr = res.data.data.list_wen
             this.scrollInit = true
-            this.setMid(this.initMid);         
+            this.setMid(this.initMid)
           }
-        });
+        })
     },
     goToLive() {
-      this.setMid(this.initMid);
-      this.$router.push({ path: "/live", query: { from: "index" } });
+      this.setMid(this.initMid)
+      this.$router.push({ path: '/live', query: { from: 'index' } })
     },
     preverImg(item) {
       //网诊的图片预览
       ImagePreview({
         images: item.arr,
         startPosition: item.index,
-        closeable: true,
-      });
+        closeable: true
+      })
     },
     goToAnswer() {
       //  去首页的的网诊
-      this.$router.push({ path: "/index_online" }).catch((err) => err);
+      this.$router.push({ path: '/index_online' }).catch(err => err)
     },
     goToExpert() {
       // 找专家
-      this.$router.push({ path: "/look_expert" }).catch((err) => err);
+      this.$router.push({ path: '/look_expert' }).catch(err => err)
     },
     goToBase() {
       // 找基地
-      this.$router.push({ path: "/whole_base_list" }).catch((err) => err);
+      this.$router.push({ path: '/whole_base_list' }).catch(err => err)
     },
     lookMoreHospital() {
       // 查找更多的医院
-      this.$router.push({ path: "/into_hospital" }).catch((err) => err);
+      this.$router.push({ path: '/into_hospital' }).catch(err => err)
     },
     goToVip() {
-      this.$router.push({ path: "/vip" }).catch((err) => err);
+      this.$router.push({ path: '/vip' }).catch(err => err)
     },
     goToMessageDetail(image) {
       //轮播图去资讯详情页
       this.$router.push({
-        path: "/message_detail",
-        query: { id: image.id, catid: image.catid },
-      });
-    },
-  },
-};
+        path: '/message_detail',
+        query: { id: image.id, catid: image.catid }
+      })
+    }
+  }
+}
 </script>
 <style lang="stylus" scoped>
 .index-container
@@ -273,7 +294,6 @@ export default {
     border-bottom 1px solid #e5e5e5
   .vip-box
     width 100%
-    height 185px
     margin-bottom 10px
     padding 5px 12px
     background #fff
@@ -312,5 +332,5 @@ export default {
     line-height 30px
     font-size 14px
     color #999
-    text-align center   
+    text-align center
 </style>

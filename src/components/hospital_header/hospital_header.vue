@@ -1,122 +1,131 @@
 <template>
   <!-- 医院推荐的header -->
-  <div class="header-container van-hairline--top van-hairline--bottom">
-    <div class="left-bar" v-if="header == 'indexHeader'">
-      <p class="p1">{{ navHeader }}</p>
-      <van-icon name="wap-nav" class="hospital-icon" @click="showNavFast" />
-    </div>
-    <div class="left-bar" v-if="header == 'logoHeader'">
-      <van-image class="logo" :src="require('./1.png')"></van-image>
-      <div class="p2">绍兴市为农服务平台首页</div>
-    </div>
-    <div class="left-bar" v-if="header == 'searchHeader'">
-      <van-icon name="location-o" class="address-icon" />
-      <div class="address">{{ address }}</div>
-      <van-icon name="search" class="search" @click="goToSearchHospital" />
-    </div>
-    <div class="left-bar" v-if="
-        header != 'indexHeader' &&
-          header != 'logoHeader' &&
-          header != 'searchHeader'">
-      <slot></slot>
-    </div>
-    <div class="right-nav van-hairline--left">
-      <div class="index-icon" @click="goToIndex">
+  <div class="header-container">
+    <div class="wrap van-hairline--top van-hairline--bottom">
+      <div class="left-bar" v-if="header == 'indexHeader'">
+        <p class="p1">{{ navHeader }}</p>
+        <van-icon name="wap-nav" class="hospital-icon" @click="showNavFast" />
       </div>
-      <div class="fast-nav-icon" @click="rightIcon">
+      <div class="left-bar" v-if="header == 'logoHeader'">
+        <van-image class="logo" :src="require('./1.png')"></van-image>
+        <div class="p2">绍兴市为农服务平台首页</div>
       </div>
+      <div class="left-bar" v-if="header == 'searchHeader'">
+        <van-icon name="location-o" class="address-icon" />
+        <div class="address">{{ address }}</div>
+        <van-icon name="search" class="search" @click="goToSearchHospital" />
+      </div>
+      <div
+        class="left-bar"
+        v-if="
+          header != 'indexHeader' &&
+            header != 'logoHeader' &&
+            header != 'searchHeader'
+        "
+      >
+        <slot></slot>
+      </div>
+      <div class="right-nav van-hairline--left">
+        <div class="index-icon" @click="goToIndex"></div>
+        <div class="fast-nav-icon" @click="rightIcon"></div>
+      </div>
+      <fastNav :showFlag="flag" @changeFlag="closeFast"></fastNav>
+      <hospitalFastNav
+        :showFlag="flagHospital"
+        @changeFlag="close"
+      ></hospitalFastNav>
     </div>
-    <fastNav :showFlag="flag" @changeFlag="closeFast"></fastNav>
-    <hospitalFastNav :showFlag="flagHospital" @changeFlag="close"></hospitalFastNav>
   </div>
 </template>
 <script>
-import fastNav from "@/components/fast_nav/fast_nav";
-import hospitalFastNav from "@/components/hospital_fast_nav/hospital_fast_nav";
-import { mapState } from "vuex";
+import fastNav from '@/components/fast_nav/fast_nav'
+import hospitalFastNav from '@/components/hospital_fast_nav/hospital_fast_nav'
+import { mapState } from 'vuex'
 
 export default {
-  name: "hospitalHeaders",
+  name: 'hospitalHeaders',
   components: { fastNav, hospitalFastNav },
   props: {
     header: {
       type: String,
-      default: "indexHeader",
+      default: 'indexHeader'
     },
     navHeader: {
       type: String,
-      default: "",
+      default: ''
     },
     address: {
       type: String,
-      default: "",
-    },
+      default: ''
+    }
   },
   data() {
     return {
       flag: false,
-      flagHospital: false,
-    };
+      flagHospital: false
+    }
   },
   computed: {
-    ...mapState(["mid", "uid", "initMid"]),
+    ...mapState(['mid', 'uid', 'initMid'])
   },
   watch: {
-    $route(){
-      this.flag = false;
+    $route() {
+      this.flag = false
     }
   },
   mounted() {},
-  destroyed() {
-    
-  },
+  destroyed() {},
   methods: {
     rightIcon() {
-      this.flag = true;
-      this.$emit("rightIcon");
+      this.flag = true
+      this.$emit('rightIcon')
     },
     closeFast() {
-      this.$emit("clickFastRightIcon");
+      this.$emit('clickFastRightIcon')
       // 主要二级快速导航关闭
-      this.flag = false;
+      this.flag = false
     },
     showNavFast() {
       // 打开医院快速导航
-      this.flagHospital = true;
+      this.flagHospital = true
     },
     close(boolean) {
       // 关闭医院快速导航
-      this.flagHospital = boolean;
+      this.flagHospital = boolean
     },
     goToIndex() {
       this.$router
         .push({
-          path: "/index",
+          path: '/index'
         })
-        .catch((err) => err);
+        .catch(err => err)
     },
     goToSearchHospital() {
       this.$router
         .push({
-          path: "/search_hospital",
-          query: { location: this.address },
+          path: '/search_hospital',
+          query: { location: this.address }
         })
-        .catch((err) => err);
-    },
-  },
-};
+        .catch(err => err)
+    }
+  }
+}
 </script>
 <style lang="stylus" scoped>
 .header-container
   height 40px
   line-height 40px
-  display flex
-  background #FFFFFF
   position fixed
   top 0
   right 0
   left 0
   z-index 4
+  .wrap
+    width 100%
+    max-width 640px
+    display flex
+    background #FFFFFF
+    margin 0 auto
   .left-bar
     flex 1
     display flex

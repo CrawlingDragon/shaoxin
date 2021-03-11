@@ -1,62 +1,83 @@
 <template>
-  <div class="index_online-container" ref="online" :class="{'addressOverflow':addressFlag}">
-   
+  <div
+    class="index_online-container"
+    ref="online"
+    :class="{ addressOverflow: addressFlag }"
+  >
     <Header :tabbarActive="1"></Header>
-     <van-pull-refresh v-model="isLoading" @refresh="onRefresh" loosing-text="下拉回到首页">
+
     <van-sticky :offset-top="30" @scroll="scroll">
-    <div class="choose-box" v-show="secondNav" >
-      <div class="back" @click="goBack"></div>
-      <div class="all" @click="openBox">{{areaName}}
-        <van-icon name="arrow-down" class="down" />
-      </div>
-      <div class="crop" @click="goToChooseCrop">{{crop}}
-        <van-icon name="arrow-down" class="down" />
-      </div>
-      <div class="address-box" v-show="addressFlag">
-        <div class="wrap">
-          <div class="item" @click="chooseAddress(9999,'全部地区')">全部地区</div>
-          <div class="item" @click="chooseAddress(1111,'绍兴市')">绍兴市</div>
-          <van-icon name="cross" class="cross" @click="addressFlag = false" />
+      <div class="choose-box" v-show="secondNav">
+        <div class="back" @click="goBack"></div>
+        <div class="all" @click="openBox">
+          {{ areaName }}
+          <van-icon name="arrow-down" class="down" />
+        </div>
+        <div class="crop" @click="goToChooseCrop">
+          {{ crop }}
+          <van-icon name="arrow-down" class="down" />
+        </div>
+        <div class="address-box" v-show="addressFlag">
+          <div class="wrap">
+            <div class="item" @click="chooseAddress(9999, '全部地区')">
+              全部地区
+            </div>
+            <div class="item" @click="chooseAddress(1111, '绍兴市')">
+              绍兴市
+            </div>
+            <van-icon name="cross" class="cross" @click="addressFlag = false" />
+          </div>
         </div>
       </div>
-    </div>
     </van-sticky>
+    <!-- <van-loading v-if="onlineArr.length == 0" vertical /> -->
+    <!-- <van-pull-refresh
+      v-model="isLoading"
+      @refresh="onRefresh"
+      loosing-text="下拉刷新"
+      success-duration="1000"
+      animation-duration="600"
+    > -->
     <div class="online-box">
       <ul class="o-ul" ref="ul">
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
           <li v-for="item in onlineArr" :key="item.id">
             <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
           </li>
         </van-list>
       </ul>
     </div>
-     </van-pull-refresh>
+    <!-- </van-pull-refresh> -->
     <Foot></Foot>
-   
   </div>
 </template>
 <script>
-var Before_scollH = 0;
-import Header from "@/components/header/header.vue";
-import OnlineItem from "@/components/online_item/online_item";
-import {  ImagePreview } from "vant";
-import { mapState } from "vuex";
-import Foot from "@/components/foot/foot";
+var Before_scollH = 0
+import Header from '@/components/header/header.vue'
+import OnlineItem from '@/components/online_item/online_item'
+import { ImagePreview } from 'vant'
+import { mapState } from 'vuex'
+import Foot from '@/components/foot/foot'
 export default {
-  name: "indexOnline",
+  name: 'indexOnline',
   metaInfo: {
-    title: "网诊",
+    title: '网诊'
   },
   components: {
     Header,
     OnlineItem,
     [ImagePreview.Component.name]: ImagePreview.Component,
-    Foot,
+    Foot
   },
   beforeRouteLeave(to, from, next) {
     // ... to
-    window.scrollTo(0, 0);
-    next();
+    window.scrollTo(0, 0)
+    next()
   },
   props: {},
   data() {
@@ -64,129 +85,128 @@ export default {
       addressFlag: false,
       onlineArr: [],
       fid: this.$route.query.fid,
-      crop: this.$route.query.name || "作物",
-      areaName: "全部",
+      crop: this.$route.query.name || '作物',
+      areaName: '全部',
       page: 0,
       loading: false,
       finished: false,
-      area: "",
-      scollType:'',
-      secondNav:true,
-      isLoading:false //下拉model
-    };
+      area: '',
+      scollType: '',
+      secondNav: true
+      // isLoading: false //下拉model
+    }
   },
   computed: {
-    ...mapState(["mid", "uid", "initMid"]),
+    ...mapState(['mid', 'uid', 'initMid'])
   },
   watch: {
     fid() {
-      this.fid = this.$route.query.fid;
-      this.onlineArr = [];
-      this.page = 0;
-      this.getIndexData();
+      this.fid = this.$route.query.fid
+      this.onlineArr = []
+      this.page = 0
+      this.getIndexData()
       // console.log("1 :>> ", 1);
     },
     crop() {
-      this.crop = this.$route.query.name;
-      this.onlineArr = [];
-      this.page = 0;
-      this.getIndexData();
+      this.crop = this.$route.query.name
+      this.onlineArr = []
+      this.page = 0
+      this.getIndexData()
     },
     area() {
-      this.onlineArr = [];
-      this.page = 0;
-      this.getIndexData();
-    },
+      this.onlineArr = []
+      this.page = 0
+      this.getIndexData()
+    }
   },
   created() {},
   mounted() {
-    // this.getIndexData(this.mid, this.fid);
-   
-  window.addEventListener('scroll', this.scrollHandler)
+    window.addEventListener('scroll', this.scrollHandler)
   },
   destroyed() {
-    window.removeEventListener('scroll',this.scrollHandler);
+    window.removeEventListener('scroll', this.scrollHandler)
   },
   methods: {
-    onRefresh(){
-      setTimeout(() => {this.$router.push({path:'/index'})},500)
-      this.isLoading = false
+    scrollHandler() {
+      var After_scollH =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop
+      var differH = After_scollH - Before_scollH
+      if (differH == 0) {
+        return false
+      }
+      this.scollType = differH > 0 ? 'down' : 'up'
+      Before_scollH = After_scollH
     },
-    scrollHandler(){
-        var After_scollH = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-        var differH = After_scollH - Before_scollH;
-        if (differH == 0) {
-            return false;
-        }
-        this.scollType = differH > 0 ? 'down' : 'up';
-        Before_scollH = After_scollH;
-    },
-    scroll(val){
-      if(val.isFixed){
-        if(this.scollType == 'down'){
+    scroll(val) {
+      if (val.isFixed) {
+        if (this.scollType == 'down') {
           //显示导航
           this.secondNav = false
           // console.log('down :>> ');
-        }else{
+        } else {
           //隐藏导航
-           this.secondNav = true
+          this.secondNav = true
           // console.log('up :>> ');
         }
       }
     },
     onLoad() {
-      this.getIndexData();
+      this.getIndexData()
     },
     getIndexData() {
       // 获取首页数据
-      this.page += 1;
+      this.page += 1
       this.$axios
-        .fetchPost("/Mobile/Wen/index", {
+        .fetchPost('/Mobile/Wen/index', {
           mId: this.initMid,
           fId: this.fid,
           areaId: this.area,
           page: this.page,
           uId: this.uid,
-          isall:'all'
+          isall: 'all'
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
-            this.onlineArr = this.onlineArr.concat(res.data.data);
-            this.loading = false;
+            this.onlineArr = this.onlineArr.concat(res.data.data)
+            this.loading = false
+            // this.isLoading = false
+            // this.isLoading = false
           } else if (res.data.code == 201) {
-            this.finished = true;
+            this.finished = true
           }
-        });
+        })
     },
     chooseAddress(area, name) {
-      this.area = area;
+      this.area = area
       // this.getIndexData();
-      this.areaName = name;
-      this.finished = false;
-      this.addressFlag = false;
+      this.areaName = name
+      this.finished = false
+      this.addressFlag = false
     },
     goBack() {
-      this.$router.push({ path: "/index" });
+      this.$router.push({ path: '/index' })
     },
     openBox() {
-      this.addressFlag = !this.addressFlag;
+      this.addressFlag = !this.addressFlag
     },
     preverImg(item) {
       //网诊的图片预览
       ImagePreview({
         images: item.arr,
         startPosition: item.index,
-        closeable: true,
-      });
+        closeable: true
+      })
     },
     goToChooseCrop() {
       this.$router.push({
-        path: "/choose_crop",
-        query: { crop: this.crop },
-      });
-    },
-  },
-};
+        path: '/choose_crop',
+        query: { crop: this.crop }
+      })
+    }
+  }
+}
 </script>
 <style lang="stylus" scoped>
 .index_online-container
@@ -200,7 +220,7 @@ export default {
     right 0
     bottom 0
     z-index 2
-    padding-bottom: 0
+    padding-bottom 0
   .choose-box
     height 40px
     display flex
@@ -247,14 +267,13 @@ export default {
       right 0
       // height 75px
       bottom -3px
-      background rgba(0,0,0,0.7)
+      background rgba(0, 0, 0, 0.7)
       top 90px
       // background #fff
-     
       border-bottom 1px solid #e5e5e5
       z-index 111
       overflow hidden
-      .wrap 
+      .wrap
         height 75px
         display flex
         align-items center

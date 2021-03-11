@@ -1,4 +1,3 @@
-
 <template>
   <div class="fast_nav-conatiner" v-if="showFlag">
     <div class="title van-hairline--top van-hairline--bottom">
@@ -62,8 +61,7 @@
         <van-grid-item @click="goToAboutUs">
           <div class="p">关于我们</div>
         </van-grid-item>
-        <van-grid-item>
-        </van-grid-item>
+        <van-grid-item> </van-grid-item>
       </van-grid>
     </div>
     <div class="btns" v-if="uid == '' || uid == undefined">
@@ -71,8 +69,16 @@
       <div class="btn2" @click="goToSign">注册</div>
     </div>
     <div class="logined" v-else>
-      <van-image width="35" height="35" round :src="userAvatar" class="avator" fit="cover" @click="goToMe" />
-      <p class="name" @click="goToMe">{{userName}}</p>
+      <van-image
+        width="35"
+        height="35"
+        round
+        :src="userAvatar"
+        class="avator"
+        fit="cover"
+        @click="goToMe"
+      />
+      <p class="name" @click="goToMe">{{ userName }}</p>
       <div class="login-out" @click="loginOut">退出登录</div>
     </div>
     <div class="index-btn" @click="goToIndex">
@@ -82,25 +88,25 @@
   </div>
 </template>
 <script>
-import { mapState, mapMutations } from "vuex";
-import { Dialog } from "vant";
+import { mapState, mapMutations } from 'vuex'
+import { Dialog } from 'vant'
 export default {
-  name: "fast_nav",
+  name: 'fast_nav',
   components: {},
   props: {
     showFlag: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
-      fromStoreUrl:process.env.VUE_APP_STORE_URL,
-      shareUrl:process.env.VUE_APP_SHARE_URL
-    };
+      fromStoreUrl: process.env.VUE_APP_STORE_URL,
+      shareUrl: process.env.VUE_APP_SHARE_URL
+    }
   },
   computed: {
-    ...mapState(["uid", "initMid", "userAvatar", "userName", "aiExpertId"]),
+    ...mapState(['uid', 'initMid', 'userAvatar', 'userName', 'aiExpertId'])
     // cook(){
     //   return this.getCookie('ucenter_uid')
     // }
@@ -115,134 +121,130 @@ export default {
     //   }
     // }
   },
-  mounted() {
-  },
+  mounted() {},
   destroyed() {},
   methods: {
-   getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
+    getCookie(cname) {
+      var name = cname + '='
+      var ca = document.cookie.split(';')
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i]
         while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-         }
-        if (c.indexOf(name)  == 0) {
-            return c.substring(name.length, c.length);
-         }
-    }
-    return "";
-},
-    ...mapMutations(["setUid", "setMid",'setLogined']),
+          c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length)
+        }
+      }
+      return ''
+    },
+    ...mapMutations(['setUid', 'setMid', 'setLogined']),
     closeBox() {
-      this.$emit("changeFlag", false);
+      this.$emit('changeFlag', false)
     },
     goToLogin() {
       this.$router.push({
-        path: "/login",
-      });
+        path: '/login'
+      })
     },
     goToSign() {
       this.$router.push({
-        path: "/sign",
-      });
+        path: '/sign'
+      })
     },
-     createScript(src){
+    createScript(src) {
       let js = document.createElement('script')
-      js.setAttribute('type','text/javascript')
+      js.setAttribute('type', 'text/javascript')
       js.src = src
       document.getElementsByTagName('head')[0].appendChild(js)
     },
     loginOut() {
       Dialog.confirm({
-        message: "确认要退出登录吗",
-        cancelButtonColor:'#155BBB',
-        cancelButtonText:'确定',
-        confirmButtonText:'取消',
-        confirmButtonColor:'#999',
-        
+        message: '确认要退出登录吗',
+        cancelButtonColor: '#155BBB',
+        cancelButtonText: '确定',
+        confirmButtonText: '取消',
+        confirmButtonColor: '#999'
       })
         .then(() => {
           // on confirm
-         
           // setTimeout(()=>{this.$router.push({ path: "/login" });},100)
-          
         })
         .catch(() => {
           // on cancel
-           this.$axios.fetchPost('/Mobile/Member/logout').then(res => {
-            if(res.data.code == 0){
-              for(let i = 0;i<res.data.data.msg.length;i++){
+          this.$axios.fetchPost('/Mobile/Member/logout').then(res => {
+            if (res.data.code == 0) {
+              for (let i = 0; i < res.data.data.msg.length; i++) {
                 this.createScript(res.data.data.msg[i])
-              }    
+              }
               // setTimeout(()=>{this.setUid("");},1000)
-                  this.setUid("");
-                  this.setLogined(1)
-                  this.$router.push({ path: "/login"})
+              this.setUid('')
+              this.setLogined(1)
+              this.$router.push({ path: '/login' })
             }
           })
-        });
+        })
     },
     goToIndex() {
       // 路由 去首页
-      this.$router.push({ path: "/" }).catch((err) => err);
-      this.closeBox();
+      this.$router.push({ path: '/' }).catch(err => err)
+      this.closeBox()
     },
     goToHospital() {
-      this.$router.push({ path: "/into_hospital" }).catch((err) => err);
+      this.$router.push({ path: '/into_hospital' }).catch(err => err)
     },
     goToExpert() {
-      this.setMid(this.initMid);
-      this.$router.push({ path: "/look_expert" }).catch((err) => err);
+      this.setMid(this.initMid)
+      this.$router.push({ path: '/look_expert' }).catch(err => err)
     },
     goToLive() {
-      this.setMid(this.initMid);
+      this.setMid(this.initMid)
       this.$router
-        .push({ path: "/live", query: { from: "index" } })
-        .catch((err) => err);
+        .push({ path: '/live', query: { from: 'index' } })
+        .catch(err => err)
     },
     goToMessage() {
-      this.$router.push({ path: "/message" }).catch((err) => err);
+      this.$router.push({ path: '/message' }).catch(err => err)
     },
     goToBase() {
-      this.setMid(this.initMid);
-      this.$router.push({ path: "/whole_base_list" }).catch((err) => err);
+      this.setMid(this.initMid)
+      this.$router.push({ path: '/whole_base_list' }).catch(err => err)
     },
     goToAnswer() {
       //  去首页的的网诊
-      this.$router.push({ path: "/index_online" }).catch((err) => err);
+      this.$router.push({ path: '/index_online' }).catch(err => err)
     },
     goToZuoXun() {
       //  去坐诊巡诊页面，和我的坐诊巡诊页面是一样
-      this.$router.push({ path: "/whole_zuozhen_list" }).catch((err) => err);
+      this.$router.push({ path: '/whole_zuozhen_list' }).catch(err => err)
     },
     goToCetu() {
-      this.$router.push({ path: "/whole_cetu_list" })
+      this.$router.push({ path: '/whole_cetu_list' })
     },
     goToAsk() {
-      this.$router.push({ path: "/ask" }).catch((err) => err);
+      this.$router.push({ path: '/ask' }).catch(err => err)
     },
     goToVideo() {
-      this.$router.push({ path: "/video_list" }).catch((err) => err);
+      this.$router.push({ path: '/video_list' }).catch(err => err)
     },
     goToDiseases() {
-      this.$router.push({ path: "/diseases" }).catch((err) => err);
+      this.$router.push({ path: '/diseases' }).catch(err => err)
     },
     goToAi() {
       // 去ai页面
       this.$router
-        .push({ path: "/expert", query: { id: this.aiExpertId } })
-        .catch((err) => err);
+        .push({ path: '/expert', query: { id: this.aiExpertId } })
+        .catch(err => err)
     },
     goToAboutUs() {
-      this.$router.push({ path: "/about_us" }).catch((err) => err);
+      this.$router.push({ path: '/about_us' }).catch(err => err)
     },
     goToMe() {
-      this.closeBox();
-      this.$router.push({ path: "/me" }).catch((err) => err);
-    },
-  },
-};
+      this.closeBox()
+      this.$router.push({ path: '/me' }).catch(err => err)
+    }
+  }
+}
 </script>
 <style lang="stylus" scoped>
 .fast_nav-conatiner
@@ -250,9 +252,12 @@ export default {
   top 0
   bottom 0
   right 0
-  left 0
+  left 50%
+  transform translateX(-50%)
   background #EBEBEB
   z-index 11
+  max-width 640px
+  width 100%
   .title
     height 40px
     line-height 40px
