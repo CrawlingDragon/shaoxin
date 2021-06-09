@@ -1,9 +1,14 @@
 <template>
   <div class="searchOnlineCrop-container">
     <Header :indexHeader="false"></Header>
-    <div class="title">共{{this.$route.query.time}}次{{crop}}网诊记录</div>
+    <div class="title">共{{ this.$route.query.time }}次{{ crop }}网诊记录</div>
     <ul class="crop-ul">
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
         <li v-for="item in online" :key="item.id">
           <OnlineItem :list="item"></OnlineItem>
         </li>
@@ -14,12 +19,13 @@
 <script>
 import Header from "@/components/header/header";
 import OnlineItem from "@/components/online_item/online_item";
+import { mapState } from "vuex";
 
 export default {
   name: "searchOnlineCrop",
   metaInfo() {
     return {
-      title: this.crop + "搜索结果",
+      title: this.crop + "搜索结果"
     };
   },
   components: { Header, OnlineItem },
@@ -31,11 +37,13 @@ export default {
       online: [],
       loading: false,
       finished: false,
-      page: 0,
+      page: 0
     };
   },
   created() {},
-  computed: {},
+  computed: {
+    ...mapState(["initMid"])
+  },
   watch: {},
   mounted() {},
   destroyed() {},
@@ -46,8 +54,13 @@ export default {
     getSearchResult() {
       this.page += 1;
       this.$axios
-        .fetchPost("Mobile/Wen/index", { fId: this.fid, page: this.page,isall:"all" })
-        .then((res) => {
+        .fetchPost("API/Wen/index", {
+          fId: this.fid,
+          page: this.page,
+          isall: "all",
+          mId: this.initMid
+        })
+        .then(res => {
           if (res.data.code == 0) {
             this.loading = false;
             this.online = this.online.concat(res.data.data);
@@ -55,8 +68,8 @@ export default {
             this.finished = true;
           }
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

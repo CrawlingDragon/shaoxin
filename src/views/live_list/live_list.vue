@@ -32,7 +32,7 @@ export default {
     ...mapMutations(["setMid"]),
     getDetail() {
       this.$axios
-        .fetchPost("/Mobile/Live/getLiveMenu", { mId: this.mid })
+        .fetchPost("/API/Live/getLiveMenu", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.detail = res.data.data;

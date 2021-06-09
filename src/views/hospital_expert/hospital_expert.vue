@@ -45,7 +45,7 @@ export default {
     getList() {
       this.page += 1;
       this.$axios
-        .fetchPost("Mobile/User/expertList", { mId: this.mid, page: this.page,isall:'self' })
+        .fetchPost("API/User/expertList", { mId: this.mid, page: this.page,isall:'self' })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = this.list.concat(res.data.data);

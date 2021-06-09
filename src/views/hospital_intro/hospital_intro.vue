@@ -79,7 +79,7 @@ export default {
     ...mapMutations(["setMid"]),
     getDetail() {
       this.$axios
-        .fetchPost("/Mobile/Mpublic/getMpublicShow", {
+        .fetchPost("/API/Mpublic/getMpublicShow", {
           mId: this.mid,
           uId: this.uid,
         })

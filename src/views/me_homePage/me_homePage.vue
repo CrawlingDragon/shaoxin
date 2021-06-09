@@ -3,20 +3,34 @@
     <Header :indexHeader="false"></Header>
     <div class="person-box">
       <div class="name-bar">
-        <van-image class="avator" :src="expertData.avatar"></van-image>
-        <div class="name">{{expertData.name}}<span>{{expertData.groupname}}</span></div>
-        <div class="p1">{{expertData.company}}</div>
+        <van-image
+          class="avator"
+          :src="expertData.avatar"
+          fit="cover"
+        ></van-image>
+        <div class="name">
+          {{ expertData.name }}<span>{{ expertData.groupname }}</span>
+        </div>
+        <div class="p1">{{ expertData.company }}</div>
       </div>
       <div class="btns">
         <div class="btn-look" v-if="expertData.id != uid" @click="attention">
-          <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}</div>
-        <div class="btn-ask" v-if="expertData.identity == 1 && expertData.id != uid" @click="goToAsk">
-          <van-icon name="records" class="records" />提问</div>
+          <van-icon name="plus" class="plus" v-if="status == 0" />{{
+            status == 1 ? "已关注" : "关注"
+          }}
+        </div>
+        <div
+          class="btn-ask"
+          v-if="expertData.identity == 1 && expertData.id != uid"
+          @click="goToAsk"
+        >
+          <van-icon name="records" class="records" />提问
+        </div>
         <div class="edit" v-if="expertData.id == uid">编辑资料</div>
       </div>
       <div class="fans">
-        <div class="item">关注 {{expertData.tofollower}}</div>
-        <div class="item">粉丝 {{expertData.follower}}</div>
+        <div class="item">关注 {{ expertData.tofollower }}</div>
+        <div class="item">粉丝 {{ expertData.follower }}</div>
       </div>
     </div>
     <div class="person-info" v-if="expertData.identity == 1">
@@ -24,15 +38,20 @@
         个人简介
         <div class="look-more">详细资料 ></div>
       </div>
-      <p class="goodat">擅长：{{expertData.skill}}</p>
+      <p class="goodat">擅长：{{ expertData.skill }}</p>
       <p class="explan">
-        {{expertData.introduce}}</p>
+        {{ expertData.introduce }}
+      </p>
     </div>
-    <van-tabs v-model="active" sticky class="tabs" color="#155BBB" @click="onClickTab">
+    <van-tabs
+      v-model="active"
+      sticky
+      class="tabs"
+      color="#155BBB"
+      @click="onClickTab"
+    >
       <van-tab>
-        <template #title>
-          解答 {{expertData.posts}}
-        </template>
+        <template #title> 解答 {{ expertData.posts }} </template>
         <ul class="answer-ul">
           <li v-for="item in askedList" :key="item.id">
             <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
@@ -40,9 +59,7 @@
         </ul>
       </van-tab>
       <van-tab sticky>
-        <template #title>
-          提问 {{expertData.threads}}
-        </template>
+        <template #title> 提问 {{ expertData.threads }} </template>
         <ul class="answer-ul">
           <li v-for="item in askMeList" :key="item.id">
             <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
@@ -50,9 +67,7 @@
         </ul>
       </van-tab>
       <van-tab sticky>
-        <template #title>
-          加入的医院 {{expertData.join}}
-        </template>
+        <template #title> 加入的医院 {{ expertData.join }} </template>
         <ul class="hospital-ul">
           <li v-for="item in hospitalList" :key="item.id">
             <RecommendHospital :list="item"></RecommendHospital>
@@ -71,7 +86,7 @@ import { mapState } from "vuex";
 export default {
   metaInfo() {
     return {
-      title: "个人主页",
+      title: "个人主页"
     };
   },
   name: "meHomePage",
@@ -79,7 +94,7 @@ export default {
     Header,
     OnlineItem,
     RecommendHospital,
-    [ImagePreview.Component.name]: ImagePreview.Component,
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   props: {},
   data() {
@@ -90,16 +105,16 @@ export default {
       askedList: [], // 解答列表
       askMeList: [], // 提问立标
       hospitalList: [], // 计入的医院列表
-      status: "",
+      status: ""
     };
   },
   computed: {
-    ...mapState(["uid"]),
+    ...mapState(["uid"])
   },
   watch: {
     id(newVal) {
       this.getExpertData(newVal);
-    },
+    }
   },
   mounted() {
     this.getExpertData();
@@ -108,8 +123,8 @@ export default {
   methods: {
     getExpertData() {
       this.$axios
-        .fetchPost("Mobile/user/homepage", { id: this.uid, uId: this.uid })
-        .then((res) => {
+        .fetchPost("API/user/homepage", { id: this.uid, uId: this.uid })
+        .then(res => {
           if (res.data.code == 0) {
             this.expertData = res.data.data;
             this.status = res.data.data.status;
@@ -123,13 +138,13 @@ export default {
     getIAsked(id) {
       // 解答，==> 就是我答的接口
       this.$axios
-        .fetchPost("/Mobile/user/getWenList", {
+        .fetchPost("/API/user/getWenList", {
           uId: id,
           page: 1,
           pagesize: 12,
-          action: "answer",
+          action: "answer"
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.askedList = res.data.data;
           }
@@ -138,13 +153,13 @@ export default {
     getAskMe(id) {
       //提问 ===> 就是我
       this.$axios
-        .fetchPost("/Mobile/user/getWenList", {
+        .fetchPost("/API/user/getWenList", {
           uId: id,
           page: 1,
           pagesize: 12,
-          action: "tome",
+          action: "tome"
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.askMeList = res.data.data;
           }
@@ -153,8 +168,8 @@ export default {
     getHospitalList() {
       // 我加入的 医院
       this.$axios
-        .fetchPost("/Mobile/user/myJoinHospital", { uId: this.id })
-        .then((res) => {
+        .fetchPost("/API/user/myJoinHospital", { uId: this.id })
+        .then(res => {
           if (res.data.code == 0) {
             this.hospitalList = res.data.data.list;
           }
@@ -165,7 +180,7 @@ export default {
       ImagePreview({
         images: item.arr,
         startPosition: item.index,
-        closeable: true,
+        closeable: true
       });
     },
     onClickTab(name) {
@@ -176,14 +191,14 @@ export default {
     goToAsk() {
       // 点击提问按钮
       this.$router.push({
-        path: "/ask",
+        path: "/ask"
       });
     },
     goToPersondetail() {
       // 点击去个人详细简介
       this.$router.push({
         path: "expert_detail",
-        query: { id: this.expertData.id, uid: this.uid },
+        query: { id: this.expertData.id, uid: this.uid }
       });
     },
     attention() {
@@ -191,12 +206,12 @@ export default {
       if (status == 1) {
         //  取消
         this.$axios
-          .fetchPost("/Mobile/User/addOrCancelAttention", {
+          .fetchPost("/API/User/addOrCancelAttention", {
             uId: this.uid,
             followId: this.expertData.id,
-            action: "cancel",
+            action: "cancel"
           })
-          .then((res) => {
+          .then(res => {
             if (res.data.code == 0) {
               this.status = 0;
             }
@@ -204,19 +219,19 @@ export default {
       } else {
         //  关注
         this.$axios
-          .fetchPost("/Mobile/User/addOrCancelAttention", {
+          .fetchPost("/API/User/addOrCancelAttention", {
             uId: this.uid,
             followId: this.expertData.id,
-            action: "add",
+            action: "add"
           })
-          .then((res) => {
+          .then(res => {
             if (res.data.code == 0) {
               this.status = 1;
             }
           });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

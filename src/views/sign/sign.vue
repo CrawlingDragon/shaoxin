@@ -3,24 +3,51 @@
     <Header :indexHeader="false"></Header>
     <div class="title">快速注册</div>
     <van-form @submit="onSubmit2" class="from">
-      <van-field v-model="username" name="phone" placeholder="请输入手机号" :rules="[{validator: validatorPhone},{ required: true }]" />
-      <van-field v-model="sms" center clearable name="code" placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true }]">
+      <van-field
+        v-model="username"
+        name="phone"
+        placeholder="请输入手机号"
+        :rules="[{ validator: validatorPhone }, { required: true }]"
+      />
+      <van-field
+        v-model="sms"
+        center
+        clearable
+        name="code"
+        placeholder="请输入4位验证码"
+        maxlength="4"
+        :rules="[{ required: true }]"
+      >
         <template #button>
           <div class="btn" v-if="showBtn" @click="start">发送验证码</div>
           <div v-show="!showBtn">
-            <van-count-down ref="countDown" millisecond :time="60000" :auto-start="false" format="ss秒后重试" @finish="finish" />
+            <van-count-down
+              ref="countDown"
+              millisecond
+              :time="60000"
+              :auto-start="false"
+              format="ss秒后重试"
+              @finish="finish"
+            />
           </div>
-
         </template>
       </van-field>
-      <van-field v-model="password" type="password" name="pwd" placeholder="请输入密码（6-20位）" minlength="6" maxlength="20" :rules="[{ required: true }]" />
+      <van-field
+        v-model="password"
+        type="password"
+        name="pwd"
+        placeholder="请输入密码（6-20位）"
+        minlength="6"
+        maxlength="20"
+        :rules="[{ required: true }]"
+      />
       <div style="margin: 16px;margin-top:45px">
         <van-button round block type="info" native-type="submit">
           注册
         </van-button>
       </div>
     </van-form>
-    <div class="go-login" @click="goToLogin">已有益农宝账号，去登录 </div>
+    <div class="go-login" @click="goToLogin">已有益农宝账号，去登录</div>
   </div>
 </template>
 <script>
@@ -31,7 +58,7 @@ export default {
   name: "sign",
   components: { Header },
   metaInfo: {
-    title: "注册",
+    title: "注册"
   },
   props: {},
   data() {
@@ -40,7 +67,7 @@ export default {
       clickTrue: false,
       username: "",
       sms: "",
-      password: "",
+      password: ""
     };
   },
   created() {},
@@ -70,8 +97,8 @@ export default {
     },
     signFn(username, password, code) {
       this.$axios
-        .fetchPost("Mobile/Member/register", { username, password, code })
-        .then((res) => {
+        .fetchPost("API/Member/register", { username, password, code })
+        .then(res => {
           if (res.data.code == 0) {
             this.$router.push({ path: "/index" });
             this.setUid(res.data.data.uid);
@@ -88,10 +115,10 @@ export default {
     sendPhone() {
       //发送验证码
       this.$axios
-        .fetchPost("Mobile/Member/ServerSmsCode", {
-          mobile: this.username,
+        .fetchPost("API/Member/ServerSmsCode", {
+          mobile: this.username
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.$toast(res.data.message);
             this.clickTrue = false;
@@ -106,10 +133,10 @@ export default {
     },
     goToLogin() {
       this.$router.push({
-        path: "/login",
+        path: "/login"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

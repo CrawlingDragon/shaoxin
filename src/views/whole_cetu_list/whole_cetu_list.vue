@@ -50,7 +50,7 @@ export default {
       // 获取测土配方列表 医院
       this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/Treatment/getTestingsoil", {
+        .fetchPost("/API/Treatment/getTestingsoil", {
           uId: this.uid,
         })
         .then((res) => {
@@ -64,7 +64,7 @@ export default {
     getMeList(uid) {
       // 获取测土配方列表  个人
       this.$axios
-        .fetchPost("/Mobile/Treatment/getTestingsoil", { uId: uid })
+        .fetchPost("/API/Treatment/getTestingsoil", { uId: uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

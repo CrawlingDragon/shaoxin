@@ -61,7 +61,7 @@ export default {
   methods: {
     getPersonDetail() {
       this.$axios
-        .fetchPost("Mobile/user/homepage", { id: this.id, uId: this.uid })
+        .fetchPost("API/user/homepage", { id: this.id, uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.person = res.data.data;

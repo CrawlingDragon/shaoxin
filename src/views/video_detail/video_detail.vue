@@ -31,7 +31,7 @@ export default {
   methods: {
     getDetail() {
       this.$axios
-        .fetchPost("Mobile/Video/getVideoDetail", { id: this.id })
+        .fetchPost("API/Video/getVideoDetail", { id: this.id })
         .then((res) => {
           if (res.data.code == 0) {
             this.detail = res.data.data;

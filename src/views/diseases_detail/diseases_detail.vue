@@ -47,7 +47,7 @@ export default {
   methods: {
     getDetail() {
       this.$axios
-        .fetchPost("/Mobile/Picture/getDetail", {
+        .fetchPost("/API/Picture/getDetail", {
           catId: this.catid,
           id: this.id,
         })

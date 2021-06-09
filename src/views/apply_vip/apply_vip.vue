@@ -299,11 +299,11 @@ export default {
     },
     apply() {
       this.$axios
-        .fetchPost("Mobile/Mpublic/joinMpublic", {
+        .fetchPost("API/Mpublic/joinMpublic", {
           mId: this.mid,
           uId: this.uid,
           username: this.name,
-          mobile: this.phone,
+          API: this.phone,
           idcard: this.card,
           sex: this.sex,
           province: this.province,
@@ -349,7 +349,7 @@ export default {
     },
     getUserInfo() {
       this.$axios
-        .fetchPost("Mobile/User/userCenter", {
+        .fetchPost("API/User/userCenter", {
           uId: this.uid,
           mId: this.mid,
         })
@@ -361,7 +361,7 @@ export default {
     },
     getHospitalTown() {
       this.$axios
-        .fetchPost("Mobile/Mpublic/MpublicPage", {
+        .fetchPost("API/Mpublic/MpublicPage", {
           mId: this.mid,
           uId: this.uid,
         })

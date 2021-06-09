@@ -51,7 +51,7 @@ export default {
       this.page += 1;
       this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Mpublic/getNewslist", {
+        .fetchPost("API/Mpublic/getNewslist", {
           mId: this.mid,
           page: this.page,
         })

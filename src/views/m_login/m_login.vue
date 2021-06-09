@@ -3,17 +3,47 @@
     <Header :indexHeader="false"></Header>
     <div class="title">短信快捷登录<span @click="goToSign">注册</span></div>
     <van-form @submit="onSubmit" class="from">
-      <van-field v-model="mPhone" name="phone" placeholder="请输入手机号" :rules="[{validator:validatorPhone },{ required: true, message: '请填写手机号' }]" />
-      <van-field v-model="mCode" name="code" center clearable placeholder="请输入4位验证码" maxlength="4" :rules="[{ required: true }]">
+      <van-field
+        v-model="mPhone"
+        name="phone"
+        placeholder="请输入手机号"
+        :rules="[
+          { validator: validatorPhone },
+          { required: true, message: '请填写手机号' }
+        ]"
+      />
+      <van-field
+        v-model="mCode"
+        name="code"
+        center
+        clearable
+        placeholder="请输入4位验证码"
+        maxlength="4"
+        :rules="[{ required: true }]"
+      >
         <template #button>
           <div class="btn" v-show="showBtn" @click="start">发送验证码</div>
           <div v-show="!showBtn">
-            <van-count-down ref="countDown" millisecond :time="60000" :auto-start="false" format="ss秒后重试" @finish="finish" />
+            <van-count-down
+              ref="countDown"
+              millisecond
+              :time="60000"
+              :auto-start="false"
+              format="ss秒后重试"
+              @finish="finish"
+            />
           </div>
         </template>
       </van-field>
       <div style="margin: 16px;margin-top:45px">
-        <van-button round block type="info" native-type="submit" class="sub" :class="{'success':(this.mPhone && this.mCode)}">
+        <van-button
+          round
+          block
+          type="info"
+          native-type="submit"
+          class="sub"
+          :class="{ success: this.mPhone && this.mCode }"
+        >
           登录
         </van-button>
       </div>
@@ -27,7 +57,7 @@ import { mapMutations } from "vuex";
 export default {
   name: "mLogin",
   metaInfo: {
-    title: "短信快捷登录",
+    title: "短信快捷登录"
   },
   components: { Header },
   props: {},
@@ -37,7 +67,7 @@ export default {
       clickTrue: false,
       success: false,
       mPhone: "",
-      mCode: "",
+      mCode: ""
     };
   },
   created() {},
@@ -46,7 +76,7 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    ...mapMutations(["setUid", "setIsMember","setLogined"]),
+    ...mapMutations(["setUid", "setIsMember", "setLogined"]),
     validatorPhone(val) {
       // 验证手机号码
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(val)) {
@@ -73,10 +103,10 @@ export default {
     sendPhone() {
       //发送验证码
       this.$axios
-        .fetchPost("Mobile/Member/ServerSmsCode", {
-          mobile: this.mPhone,
+        .fetchPost("API/Member/ServerSmsCode", {
+          mobile: this.mPhone
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.$toast(res.data.message);
             this.clickTrue = false;
@@ -86,45 +116,44 @@ export default {
             }, 100);
           } else {
             this.$toast(res.data.message);
-            
           }
         });
     },
     lgoinFn(code, username) {
       this.$axios
-        .fetchPost("Mobile/Member/codelogin", { code, username })
-        .then((res) => {
+        .fetchPost("API/Member/codelogin", { code, username })
+        .then(res => {
           if (res.data.code == 0) {
             this.setUid(res.data.data.uid);
             this.setIsMember(res.data.data.ismember);
-             this.setLogined(1)
-            for(let i = 0;i<res.data.data.msg.length;i++){
-              this.createScript(res.data.data.msg[i])
+            this.setLogined(1);
+            for (let i = 0; i < res.data.data.msg.length; i++) {
+              this.createScript(res.data.data.msg[i]);
             }
             this.$router.push({
-              path: "/",
+              path: "/"
             });
           }
           this.$toast(res.data.message);
         });
     },
-    createScript(src){
-      let js = document.createElement('script')
-      js.setAttribute('type','text/javascript')
-      js.src = src
-      document.getElementsByTagName('head')[0].appendChild(js)
+    createScript(src) {
+      let js = document.createElement("script");
+      js.setAttribute("type", "text/javascript");
+      js.src = src;
+      document.getElementsByTagName("head")[0].appendChild(js);
     },
     goToSign() {
       this.$router.push({
-        path: "/sign",
+        path: "/sign"
       });
     },
     goToLogin() {
       this.$router.push({
-        path: "/login",
+        path: "/login"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

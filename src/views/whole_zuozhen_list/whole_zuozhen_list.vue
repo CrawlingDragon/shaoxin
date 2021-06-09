@@ -39,7 +39,7 @@ export default {
     getOnlineList() {
       this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/Treatment/getWenzhen", {
+        .fetchPost("/API/Treatment/getWenzhen", {
           uId: this.uid,
         })
         .then((res) => {

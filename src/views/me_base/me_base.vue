@@ -49,7 +49,7 @@ export default {
     getList() {
       this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Mpublic/getFineBaseCom", {
+        .fetchPost("API/Mpublic/getFineBaseCom", {
           uId: this.uid,
           page: 1,
           pagesize:20,

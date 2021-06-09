@@ -40,7 +40,7 @@ export default {
     getOnlineList() {
       this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/Treatment/getWenzhen", { mId: this.mid })
+        .fetchPost("/API/Treatment/getWenzhen", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

@@ -92,7 +92,7 @@ export default {
   methods: {
     getDetail(id) {
       this.$axios
-        .fetchPost("/Mobile/Treatment/testingsoilDetail", { id: id })
+        .fetchPost("/API/Treatment/testingsoilDetail", { id: id })
         .then((res) => {
           if (res.data.code == 0) {
             this.soil = res.data.data;

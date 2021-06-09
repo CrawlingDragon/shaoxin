@@ -1,8 +1,13 @@
 <template>
   <div class="look_expert-container">
-    <Header :indexHeader="false"></Header>
+    <Header></Header>
     <ul class="expert-ul">
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
         <li v-for="item in list" :key="item.id">
           <RecommendExpert :list="item"></RecommendExpert>
         </li>
@@ -18,7 +23,7 @@ import { mapState } from "vuex";
 export default {
   metaInfo() {
     return {
-      title: "专家",
+      title: "专家"
     };
   },
   name: "lookExpert",
@@ -29,12 +34,12 @@ export default {
       list: [],
       loading: false,
       finished: false,
-      page: 0,
+      page: 0
     };
   },
   created() {},
   computed: {
-    ...mapState(["mid"]),
+    ...mapState(["initMid"])
   },
   watch: {},
   mounted() {},
@@ -47,13 +52,14 @@ export default {
       // 获取专家列表
       this.page += 1;
       this.$axios
-        .fetchPost("/Mobile/User/expertList", {
-          mId: this.mid,
+        .fetchPost("/API/User/expertList", {
+          mId: this.initMid,
           pagesize: 8,
           page: this.page,
-          isall:'all'
+          isall: "all",
+          location: window.localStorage.getItem("city")
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.loading = false;
             this.list = this.list.concat(res.data.data);
@@ -61,8 +67,8 @@ export default {
             this.finished = true;
           }
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -82,6 +88,6 @@ export default {
       vertical-align top
       .recommend_expert-container
         min-height 185px
-        /deep/.time 
-          display none  
+        /deep/.time
+          display none
 </style>

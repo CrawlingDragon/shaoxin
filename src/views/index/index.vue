@@ -1,6 +1,6 @@
 <template>
   <div class="index-container" ref="index">
-    <Header></Header>
+    <Header :haveBackIcon="false" ref="header"></Header>
     <div class="swiper-box" ref="swiper">
       <van-swipe :autoplay="3000" :style="{ height: h }">
         <van-swipe-item
@@ -36,12 +36,25 @@
         <div class="icon i4"></div>
         <p>找基地</p>
       </div>
-      <div class="item" @click="goToLive">
+      <!-- <div class="item" @click="goToLive">
         <div class="icon i5"></div>
-        <p>看直播</p>
-      </div>
+        <p>直播</p>
+      </div> -->
     </div>
-    <div class="hospital-box">
+    <div class="base-box" v-show="baseList.length != 0">
+      <div class="title">
+        推荐基地
+      </div>
+      <ul class="base-ul">
+        <li v-for="item in baseList" :key="item.gid">
+          <RecommendBase :list="item"></RecommendBase>
+        </li>
+      </ul>
+    </div>
+    <div class="look-bar" @click="goToBaseList" v-show="baseList.length != 0">
+      更多 >
+    </div>
+    <div class="hospital-box" v-show="hospitalArr.length != 0">
       <div class="title">
         推荐医院<span>加入新型庄稼医院，免费享受会员服务</span>
       </div>
@@ -51,11 +64,17 @@
         </li>
       </ul>
     </div>
-    <div class="look-bar" @click="lookMoreHospital">找医院 ></div>
+    <div
+      class="look-bar"
+      @click="lookMoreHospital"
+      v-show="hospitalArr.length != 0"
+    >
+      找医院 >
+    </div>
     <div class="vip-box" @click="goToVip">
       <img src="./49.png" alt="" />
     </div>
-    <div class="online-box">
+    <div class="online-box" v-show="expertArr.length != 0">
       <div class="title">推荐专家</div>
       <ul class="e-ul">
         <li v-for="item in expertArr" :key="item.id">
@@ -63,7 +82,9 @@
         </li>
       </ul>
     </div>
-    <div class="look-bar" @click="goToExpert">找专家 ></div>
+    <div class="look-bar" @click="goToExpert" v-show="expertArr.length != 0">
+      找专家 >
+    </div>
     <div class="online-box">
       <div class="title">网诊</div>
       <ul class="o-ul">
@@ -77,20 +98,23 @@
   </div>
 </template>
 <script>
-import Header from '@/components/header/header.vue'
-import RecommendHospital from '@/components/recommend_hospital/recommend_hospital'
-import RecommendExpert from '@/components/recommend_expert/recommend_expert'
-import OnlineItem from '@/components/online_item/online_item'
-import { ImagePreview } from 'vant'
-import { mapMutations, mapState } from 'vuex'
-import Foot from '@/components/foot/foot'
+import Header from "@/components/header/header.vue";
+import RecommendBase from "@/components/recommend_base/recommend_base";
+import RecommendHospital from "@/components/recommend_hospital/recommend_hospital";
+import RecommendExpert from "@/components/recommend_expert/recommend_expert";
+import OnlineItem from "@/components/online_item/online_item";
+import { ImagePreview } from "vant";
+import { mapMutations, mapState } from "vuex";
+import Foot from "@/components/foot/foot";
+
 export default {
   metaInfo: {
-    title: '绍兴市为农服务平台'
+    title: "首页"
   },
-  name: 'index',
+  name: "index",
   components: {
     Header,
+    RecommendBase,
     RecommendHospital,
     OnlineItem,
     RecommendExpert,
@@ -100,84 +124,101 @@ export default {
   props: {},
   data() {
     return {
+      baseList: [],
       swiperArr: [],
       hospitalArr: [],
       expertArr: [],
       onlineArr: [],
       scrollInit: false,
       shareStoreUrl: process.env.VUE_APP_SHARE_URL,
-      h: 0
-    }
+      h: 0,
+      city: window.localStorage.getItem("city")
+    };
   },
   created() {},
   computed: {
-    ...mapState(['initMid'])
+    ...mapState(["initMid", "uid"])
   },
   watch: {
     $route() {
-      this.$refs.index.scrollTo(0, 0)
-      this.setMid(this.initMid)
+      this.$refs.index.scrollTo(0, 0);
+      this.setInitMid(this.initMid);
+      this.$refs.header.city = window.localStorage.getItem("city");
+      this.city = window.localStorage.getItem("city");
+    },
+    initMid() {
+      this.getIndexData();
+    },
+    city() {
+      this.getIndexData();
     }
   },
   mounted() {
-    this.initSwiperHeight()
-    this.getIndexData()
-    this.setMid(this.initMid)
-    window.addEventListener('resize', this.initSwiperHeight)
+    this.initSwiperHeight();
+    if (this.initMid != "") {
+      this.getIndexData();
+    }
+    window.addEventListener("resize", this.initSwiperHeight);
   },
   // destroyed() { window.removeEventListener('scroll', this.scrollHandler)},
   methods: {
+    ...mapMutations(["setInitMid"]),
     initSwiperHeight() {
-      let w = this.$refs.swiper.offsetWidth
+      let w = this.$refs.swiper.offsetWidth;
       if (w >= 640) {
-        w = 640
+        w = 640;
       }
-      this.h = w / (750 / 260) + 'px'
+      this.h = w / (750 / 260) + "px";
     },
-    scrollHandler() {
-      this.$nextTick(() => {
-        // let l = this.onlineArr.length
-        // let li = this.$refs.li[l - 1]
-        if (this.scrollInit) {
-          var scrollTop =
-            document.documentElement.scrollTop || document.body.scrollTop
-          //变量windowHeight是可视区的高度
-          var windowHeight =
-            document.documentElement.clientHeight || document.body.clientHeight
-          //变量scrollHeight是滚动条的总高度
-          var scrollHeight =
-            document.documentElement.scrollHeight || document.body.scrollHeight
-          //滚动条到底部的条件
-          if (scrollTop + windowHeight == scrollHeight) {
-            //到了这个就可以进行业务逻辑加载后台数据了
-            setTimeout(() => {
-              this.$router.push({
-                path: '/index_online'
-              })
-            }, 500)
-          }
-        }
-      })
-    },
-    ...mapMutations(['setMid']),
+    // scrollHandler() {
+    //   this.$nextTick(() => {
+    //     // let l = this.onlineArr.length
+    //     // let li = this.$refs.li[l - 1]
+    //     if (this.scrollInit) {
+    //       var scrollTop =
+    //         document.documentElement.scrollTop || document.body.scrollTop;
+    //       //变量windowHeight是可视区的高度
+    //       var windowHeight =
+    //         document.documentElement.clientHeight || document.body.clientHeight;
+    //       //变量scrollHeight是滚动条的总高度
+    //       var scrollHeight =
+    //         document.documentElement.scrollHeight || document.body.scrollHeight;
+    //       //滚动条到底部的条件
+    //       if (scrollTop + windowHeight == scrollHeight) {
+    //         //到了这个就可以进行业务逻辑加载后台数据了
+    //         setTimeout(() => {
+    //           this.$router.push({
+    //             path: "/index_online"
+    //           });
+    //         }, 500);
+    //       }
+    //     }
+    //   });
+    // },
+
     getIndexData() {
       // 获取首页数据
       this.$axios
-        .fetchPost('/Mobile/Index/index', { mId: this.initMid })
+        .fetchPost("/API/Index/index", {
+          mId: this.initMid,
+          uId: this.uid,
+          location: window.localStorage.getItem("city")
+        })
         .then(res => {
           if (res.data.code == 0) {
-            this.swiperArr = res.data.data.list_ad
-            this.hospitalArr = res.data.data.list_mpublic
-            this.expertArr = res.data.data.list_expert
-            this.onlineArr = res.data.data.list_wen
-            this.scrollInit = true
-            this.setMid(this.initMid)
+            this.swiperArr = res.data.data.list_ad;
+            this.hospitalArr = res.data.data.list_mpublic;
+            this.expertArr = res.data.data.list_expert;
+            this.onlineArr = res.data.data.list_wen;
+            this.baseList = res.data.data.list_gbase;
+            this.scrollInit = true;
+            this.setInitMid(this.initMid);
           }
-        })
+        });
     },
     goToLive() {
-      this.setMid(this.initMid)
-      this.$router.push({ path: '/live', query: { from: 'index' } })
+      this.setInitMid(this.initMid);
+      this.$router.push({ path: "/live", query: { from: "index" } });
     },
     preverImg(item) {
       //网诊的图片预览
@@ -185,36 +226,40 @@ export default {
         images: item.arr,
         startPosition: item.index,
         closeable: true
-      })
+      });
     },
     goToAnswer() {
       //  去首页的的网诊
-      this.$router.push({ path: '/index_online' }).catch(err => err)
+      this.$router.push({ path: "/index_online" }).catch(err => err);
     },
     goToExpert() {
       // 找专家
-      this.$router.push({ path: '/look_expert' }).catch(err => err)
+      this.$router.push({ path: "/look_expert" }).catch(err => err);
     },
     goToBase() {
       // 找基地
-      this.$router.push({ path: '/whole_base_list' }).catch(err => err)
+      this.$router.push({ path: "/whole_base_list" }).catch(err => err);
+    },
+    goToBaseList() {
+      // 找基地
+      this.$router.push({ path: "/whole_base_list" }).catch(err => err);
     },
     lookMoreHospital() {
       // 查找更多的医院
-      this.$router.push({ path: '/into_hospital' }).catch(err => err)
+      this.$router.push({ path: "/into_hospital" }).catch(err => err);
     },
     goToVip() {
-      this.$router.push({ path: '/vip' }).catch(err => err)
+      this.$router.push({ path: "/vip" }).catch(err => err);
     },
     goToMessageDetail(image) {
       //轮播图去资讯详情页
       this.$router.push({
-        path: '/message_detail',
+        path: "/message_detail",
         query: { id: image.id, catid: image.catid }
-      })
+      });
     }
   }
-}
+};
 </script>
 <style lang="stylus" scoped>
 .index-container
@@ -257,7 +302,7 @@ export default {
         &.i5
           background url('./5.png') no-repeat center
           background-size cover
-  .hospital-box
+  .hospital-box,.base-box
     background #fff
     .title
       height 40px
@@ -273,17 +318,34 @@ export default {
         color #9A9A9A
         font-size 12px
     .h-ul
+      padding 0 10px
       padding-top 10px
       padding-bottom 10px
-      height auto
+      // height auto
+      column-gap 10px
       column-count 2
-      column-gap 0
+      // margin-left 12px
+      border-bottom 1px solid #e5e5e5
+      display:inline-block;
+      width: 100%;
+      text-align: left;
+      li
+        break-inside avoid
+        // padding-right 12px
+        padding-bottom 10px
+        break-after: right
+        width 100%
+    .base-ul
+      padding-top 10px
+      padding-bottom 10px
       margin-left 12px
       border-bottom 1px solid #e5e5e5
       li
-        break-inside avoid
+        width 50%
         padding-right 12px
         padding-bottom 10px
+        display inline-block
+        vertical-align top
   .look-bar
     height 40px
     text-align center
@@ -326,6 +388,7 @@ export default {
       padding-bottom 5px
       li
         break-inside avoid
+        break-after: left
         padding-right 12px
         padding-bottom 10px
   .tips

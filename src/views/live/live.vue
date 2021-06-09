@@ -58,7 +58,7 @@ export default {
     getList() {
       this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Live/getLiveList", { mId: this.mid,isall:this.from == 'index'?'all':'self' })
+        .fetchPost("API/Live/getLiveList", { mId: this.mid,isall:this.from == 'index'?'all':'self' })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

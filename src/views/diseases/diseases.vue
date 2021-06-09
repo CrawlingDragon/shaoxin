@@ -76,7 +76,7 @@ export default {
     onLoad() {
       this.page += 1;
       this.$axios
-        .fetchPost("/Mobile/Picture/getList", {
+        .fetchPost("/API/Picture/getList", {
           catId: this.catId,
           page: this.page,
         })
@@ -91,7 +91,7 @@ export default {
     },
     getKind() {
       this.$axios
-        .fetchPost("Mobile/Picture/getCategorys", { mId: this.mid })
+        .fetchPost("API/Picture/getCategorys", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.kindList = res.data.data;

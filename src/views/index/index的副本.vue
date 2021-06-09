@@ -141,7 +141,7 @@ export default {
     getIndexData() {
       // 获取首页数据
       this.$axios
-        .fetchPost("/Mobile/Index/index", { mId: this.initMid })
+        .fetchPost("/API/Index/index", { mId: this.initMid })
         .then((res) => {
           if (res.data.code == 0) {
             this.swiperArr = res.data.data.list_ad;

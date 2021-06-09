@@ -107,7 +107,7 @@ export default {
     },
     getCropList() {
       this.$axios
-        .fetchPost("Mobile/Mpublic/getCropIndexQuery", { uId: this.uid })
+        .fetchPost("API/Mpublic/getCropIndexQuery", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

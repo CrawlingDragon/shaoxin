@@ -3,54 +3,111 @@
     <Header :indexHeader="false"></Header>
     <div class="person-box">
       <div class="name-bar">
-        <van-image class="avator" :src="expertData.avatar"></van-image>
-        <div class="name">{{expertData.name}}<span v-if="identity == 1 && id != aiExpertId">{{expertData.groupname}}</span></div>
-        <div v-if="identity == 0" @click="goToCrop" class="name-bar-crop">{{expertData.forum}}</div>
+        <van-image
+          class="avator"
+          :src="expertData.avatar"
+          fit="cover"
+        ></van-image>
+        <div class="name">
+          {{ expertData.name
+          }}<span v-if="identity == 1 && id != aiExpertId">{{
+            expertData.groupname
+          }}</span>
+        </div>
+        <div v-if="identity == 0" @click="goToCrop" class="name-bar-crop">
+          {{ expertData.forum }}
+        </div>
         <van-overlay :show="skillShow" @click="skillShow = false">
           <div class="wrapper" @click.stop @click="skillShow = false">
             <div class="avatar-box">
-              <van-image :src="expertData.avatar" fit="cover" radius="5px"></van-image>
-              <p class="avatar-p1">{{expertData.name}}</p>
+              <van-image
+                :src="expertData.avatar"
+                fit="cover"
+                radius="5px"
+              ></van-image>
+              <p class="avatar-p1">{{ expertData.name }}</p>
             </div>
             <div class="crop-lis">
               <div class="left">种植作物</div>
-              <div class="crop">{{identity == 1 ? expertData.skill : expertData.forum}}</div>
+              <div class="crop">
+                {{ identity == 1 ? expertData.skill : expertData.forum }}
+              </div>
             </div>
           </div>
         </van-overlay>
-        <div class="p1">{{expertData.company}} {{expertData.position}}</div>
+        <div class="p1">{{ expertData.company }} {{ expertData.position }}</div>
       </div>
       <div class="btns">
-        <div class="btn-look" v-if="$route.query.from != 'my' && expertData.isme == 0" @click="attention">
-          <van-icon name="plus" class="plus" v-if="status == 0" />{{status == 1? '已关注':'关注'}}
+        <div
+          class="btn-look"
+          v-if="$route.query.from != 'my' && expertData.isme == 0"
+          @click="attention"
+        >
+          <van-icon name="plus" class="plus" v-if="status == 0" />{{
+            status == 1 ? "已关注" : "关注"
+          }}
         </div>
-        <div class="btn-ask" v-if="expertData.identity == 1 && $route.query.from != 'my' && id != aiExpertId && expertData.isme != 1" @click="goToAsk">
+        <div
+          class="btn-ask"
+          v-if="
+            expertData.identity == 1 &&
+              $route.query.from != 'my' &&
+              id != aiExpertId &&
+              expertData.isme != 1
+          "
+          @click="goToAsk"
+        >
           <van-icon name="records" class="records" />提问
         </div>
-        <div class="edit" v-if="$route.query.from == 'my' || expertData.isme == 1" @click="goToMeEdit">编辑资料</div>
+        <div
+          class="edit"
+          v-if="$route.query.from == 'my' || expertData.isme == 1"
+          @click="goToMeEdit"
+        >
+          编辑资料
+        </div>
       </div>
       <div class="fans">
-        <div class="item">关注 {{expertData.tofollower}}</div>
-        <div class="item">粉丝 {{expertData.follower}}</div>
+        <div class="item">关注 {{ expertData.tofollower }}</div>
+        <div class="item">粉丝 {{ expertData.follower }}</div>
       </div>
     </div>
-    <div class="person-info" v-if="expertData.identity == 1 && (expertData.skill != '' || expertData.introduce != '')">
+    <div
+      class="person-info"
+      v-if="
+        expertData.identity == 1 &&
+          (expertData.skill != '' || expertData.introduce != '')
+      "
+    >
       <div class="title-bar" @click="goToPersondetail">
         个人简介
         <div class="look-more">详细资料 ></div>
       </div>
-      <p class="goodat" v-if="expertData.skill">擅长：{{expertData.skill}}</p>
+      <p class="goodat" v-if="expertData.skill">擅长：{{ expertData.skill }}</p>
       <p class="explan" v-if="expertData.introduce">
-        {{expertData.introduce}}</p>
+        {{ expertData.introduce }}
+      </p>
     </div>
-    <van-tabs v-model="active" sticky class="tabs" color="#155BBB" :offset-top="num" :class="{'aiTab':id == aiExpertId}" @scroll="scroll">
+    <van-tabs
+      v-model="active"
+      sticky
+      class="tabs"
+      color="#155BBB"
+      :offset-top="num"
+      :class="{ aiTab: id == aiExpertId }"
+      @scroll="scroll"
+    >
       <van-tab>
-        <template #title>
-          解答 {{expertData.posts}}
-        </template>
+        <template #title> 解答 {{ expertData.posts }} </template>
         <van-empty description="暂无解答" v-if="noData" />
         <ul class="answer-ul" v-else>
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check="false">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+            :immediate-check="false"
+          >
             <li v-for="item in askedList" :key="item.id">
               <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
             </li>
@@ -58,12 +115,16 @@
         </ul>
       </van-tab>
       <van-tab sticky v-if="id != aiExpertId">
-        <template #title>
-          提问 {{expertData.threads}}
-        </template>
+        <template #title> 提问 {{ expertData.threads }} </template>
         <van-empty description="暂无提问" v-if="noData2" />
         <ul class="answer-ul" v-show="id != aiExpertId" v-else>
-          <van-list v-model="loading2" :finished="finished2" finished-text="没有更多了" @load="onLoad2" :immediate-check="false">
+          <van-list
+            v-model="loading2"
+            :finished="finished2"
+            finished-text="没有更多了"
+            @load="onLoad2"
+            :immediate-check="false"
+          >
             <li v-for="item in askMeList" :key="item.id">
               <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
             </li>
@@ -71,12 +132,16 @@
         </ul>
       </van-tab>
       <van-tab sticky v-if="id != aiExpertId">
-        <template #title>
-          加入的医院 {{expertData.join}}
-        </template>
+        <template #title> 加入的医院 {{ expertData.join }} </template>
         <van-empty description="暂未加入医院" v-if="noData3" />
         <ul class="hospital-ul" v-show="id != aiExpertId" v-else>
-          <van-list v-model="loading3" :finished="finished3" finished-text="没有更多了" @load="onLoad3" :immediate-check="false">
+          <van-list
+            v-model="loading3"
+            :finished="finished3"
+            finished-text="没有更多了"
+            @load="onLoad3"
+            :immediate-check="false"
+          >
             <li v-for="item in hospitalList" :key="item.id">
               <RecommendHospital :list="item"></RecommendHospital>
             </li>
@@ -96,7 +161,7 @@ import { mapState } from "vuex";
 export default {
   metaInfo() {
     return {
-      title: this.expertData.name + (this.identity == 1?'专家':''),
+      title: this.expertData.name + (this.identity == 1 ? "专家" : "")
     };
   },
   name: "expert",
@@ -104,7 +169,7 @@ export default {
     Header,
     OnlineItem,
     RecommendHospital,
-    [ImagePreview.Component.name]: ImagePreview.Component,
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   props: {},
   data() {
@@ -132,18 +197,17 @@ export default {
       page3: 0,
       noData3: false,
       skillShow: false,
-      scollType:'',
-      num:0
+      scollType: "",
+      num: 0
     };
   },
   computed: {
-    ...mapState(["uid", "aiExpertId"]),
+    ...mapState(["uid", "aiExpertId"])
   },
   created() {},
   watch: {
     $route(newVal) {
-      this.from =  this.$route.query.from,
-      this.id = newVal.query.id;
+      (this.from = this.$route.query.from), (this.id = newVal.query.id);
       this.page = 0;
       this.page2 = 0;
       this.page3 = 0;
@@ -152,22 +216,24 @@ export default {
       this.hospitalList = []; // 计入的医院列表
       this.getExpertData(this.id);
     },
-    scollType(newVal){
-      if(newVal == 'down'){
-        this.num = 0
-      }else{
-        this.num = 40
+    scollType(newVal) {
+      if (newVal == "down") {
+        this.num = 0;
+      } else {
+        this.num = 40;
       }
     }
   },
   mounted() {
-     window.addEventListener('scroll', this.scrollHandler)
+    window.addEventListener("scroll", this.scrollHandler);
     this.getExpertData(this.id);
     // console.log("this.id,this.from :>> ", this.id, this.from);
   },
-  destroyed() {window.removeEventListener('scroll',this.scrollHandler);},
+  destroyed() {
+    window.removeEventListener("scroll", this.scrollHandler);
+  },
   methods: {
-    scroll(){
+    scroll() {
       // console.log('this.scollType :>> ', this.scollType);
     },
     onLoad() {
@@ -181,12 +247,12 @@ export default {
     },
     getExpertData(id) {
       this.$axios
-        .fetchPost("Mobile/User/homepage", {
+        .fetchPost("API/User/homepage", {
           from: this.from,
           id: id,
-          uId: this.uid,
+          uId: this.uid
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.identity = res.data.data.identity;
             this.expertData = res.data.data;
@@ -205,13 +271,13 @@ export default {
       this.page += 1;
       this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/User/getWenList", {
+        .fetchPost("/API/User/getWenList", {
           uId: this.expertid,
           page: this.page,
           pagesize: 12,
-          action: "answer",
+          action: "answer"
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.loading = false;
             this.askedList = this.askedList.concat(res.data.data);
@@ -228,13 +294,13 @@ export default {
       this.page2 += 1;
       this.noData2 = false;
       this.$axios
-        .fetchPost("/Mobile/User/getWenList", {
+        .fetchPost("/API/User/getWenList", {
           uId: this.expertid,
           page: this.page2,
           pagesize: 12,
-          action: "ask",
+          action: "ask"
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.loading = false;
             this.askMeList = res.data.data;
@@ -251,11 +317,11 @@ export default {
       this.page3 += 1;
       this.noData3 = false;
       this.$axios
-        .fetchPost("/Mobile/User/myJoinHospital", {
+        .fetchPost("/API/User/myJoinHospital", {
           uId: this.expertid,
-          page: this.page3,
+          page: this.page3
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.hospitalList = res.data.data.list;
             this.loading3 = false;
@@ -272,7 +338,7 @@ export default {
       ImagePreview({
         images: item.arr,
         startPosition: item.index,
-        closeable: true,
+        closeable: true
       });
     },
     // onClickTab(name) {
@@ -284,19 +350,19 @@ export default {
       // 点击提问按钮
       this.$router.push({
         path: "/ask",
-        query: { expert: this.expertData.name, expertId: this.expertData.id },
+        query: { expert: this.expertData.name, expertId: this.expertData.id }
       });
     },
     goToMeEdit() {
       this.$router.push({
-        path: "/me_edit",
+        path: "/me_edit"
       });
     },
     goToPersondetail() {
       // 点击去个人详细简介
       this.$router.push({
         path: "expert_detail",
-        query: { id: this.expertData.id, uid: this.uid },
+        query: { id: this.expertData.id, uid: this.uid }
       });
     },
     attention() {
@@ -304,12 +370,12 @@ export default {
       if (status == 1) {
         //  取消
         this.$axios
-          .fetchPost("/Mobile/User/addOrCancelAttention", {
+          .fetchPost("/API/User/addOrCancelAttention", {
             uId: this.uid,
             followId: this.expertData.id,
-            action: "cancel",
+            action: "cancel"
           })
-          .then((res) => {
+          .then(res => {
             if (res.data.code == 0) {
               this.status = 0;
             }
@@ -317,12 +383,12 @@ export default {
       } else {
         //  关注
         this.$axios
-          .fetchPost("/Mobile/User/addOrCancelAttention", {
+          .fetchPost("/API/User/addOrCancelAttention", {
             uId: this.uid,
             followId: this.expertData.id,
-            action: "add",
+            action: "add"
           })
-          .then((res) => {
+          .then(res => {
             if (res.data.code == 0) {
               this.status = 1;
             }
@@ -332,17 +398,19 @@ export default {
     goToCrop() {
       this.skillShow = true;
     },
-    scrollHandler(){
-        var After_scollH = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-        var differH = After_scollH - Before_scollH;
-        if (differH == 0) {
-            return false;
-        }
-        this.scollType = differH > 0 ? 'down' : 'up';
-        Before_scollH = After_scollH;
-    },
-
-  },
+    scrollHandler() {
+      var After_scollH =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      var differH = After_scollH - Before_scollH;
+      if (differH == 0) {
+        return false;
+      }
+      this.scollType = differH > 0 ? "down" : "up";
+      Before_scollH = After_scollH;
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -490,14 +558,14 @@ export default {
         position absolute
         bottom 0
         line-height 40px
-        left 0 
+        left 0
         right 0
         text-align center
-      /deep/.van-list__placeholder  
+      /deep/.van-list__placeholder
         position absolute
         bottom 0
         line-height 40px
-        left 0 
+        left 0
         right 0
         text-align center
 .van-overlay
@@ -546,7 +614,7 @@ export default {
     .van-tab__text--ellipsis
       width 70px
   /deep/.van-tabs__line
-    display none      
+    display none
 /deep/.van-empty__image
   display none
 </style>

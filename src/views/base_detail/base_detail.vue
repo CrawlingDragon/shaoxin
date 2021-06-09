@@ -97,7 +97,7 @@ export default {
     getBaseData() {
       // 基地详情
       this.$axios
-        .fetchPost("/Mobile/Mpublic/getBaseDetail", { id: this.id })
+        .fetchPost("/API/Mpublic/getBaseDetail", { id: this.id })
         .then((res) => {
           if (res.data.code == 0) {
             this.noData = false

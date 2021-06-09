@@ -43,7 +43,7 @@ export default {
     getRegistration() {
       this.noData = false;
       this.$axios
-        .fetchPost("/Mobile/User/getSubscribe", { uId: this.uid })
+        .fetchPost("/API/User/getSubscribe", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;

@@ -89,7 +89,7 @@ export default {
   methods: {
     getZuoDetail(id) {
       this.$axios
-        .fetchPost("/Mobile/Treatment/wenzhenDetail", { id: id })
+        .fetchPost("/API/Treatment/wenzhenDetail", { id: id })
         .then((res) => {
           if (res.data.code == 0) {
             this.zuozhen = res.data.data;

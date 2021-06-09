@@ -56,7 +56,7 @@ export default {
     hospitals() {
       this.noDataHospital = false;
       this.$axios
-        .fetchPost("Mobile/user/getFavoriteHospital", {
+        .fetchPost("API/user/getFavoriteHospital", {
           uId: this.uid,
           pagesize: 40,
         })
@@ -71,7 +71,7 @@ export default {
     experts() {
       this.noDataExpert = false;
       this.$axios
-        .fetchPost("Mobile/user/getFavoriteExpert", {
+        .fetchPost("API/user/getFavoriteExpert", {
           uId: this.uid,
           pagesize: 40,
         })
