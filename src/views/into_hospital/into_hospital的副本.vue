@@ -144,7 +144,7 @@ AMap.plugin("AMap.Geolocation", function () {
     },
     getList() {
       this.$axios
-        .fetchPost("Mobile/Entrance/index", {
+        .fetchPost("API/Entrance/index", {
           uId: this.uid,
           location: this.location,
         })
@@ -161,7 +161,7 @@ AMap.plugin("AMap.Geolocation", function () {
     },
     // getMyAddress() {
     //   this.$axios
-    //     .fetchPost("Mobile/User/userCenter", {
+    //     .fetchPost("API/User/userCenter", {
     //       uId: this.uid,
     //       mId: this.mid,
     //     })

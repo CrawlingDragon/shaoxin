@@ -1,21 +1,45 @@
 <template>
   <div class="good_base-container">
-    <Header :indexHeader="false"></Header>
+    <Header></Header>
     <ul class="base-ul" v-show="!noData">
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
-          <div class="status" :class="{'glod':item.ctype == '8','base':item.ctype == '6','none':item.ctype == '0'}">{{item.ctype == '8'?'金牌认证':(item.ctype == '6'?'基地认证':'未认证')}}</div>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <li
+          v-for="item in list"
+          :key="item.id"
+          @click="goToBaseDetail(item.qrcode)"
+        >
+          <div
+            class="status"
+            :class="{
+              glod: item.ctype == '8',
+              base: item.ctype == '6',
+              none: item.ctype == '0'
+            }"
+          >
+            {{
+              item.ctype == "8"
+                ? "金牌认证"
+                : item.ctype == "6"
+                ? "基地认证"
+                : "未认证"
+            }}
+          </div>
           <van-image class="img" :src="item.logo"></van-image>
           <div class="text">
-            <div class="h2">{{item.name}}</div>
-            <div class="p2">{{item.zwtype}} {{item.guimo}}亩</div>
+            <div class="h2">{{ item.name }}</div>
+            <div class="p2">{{ item.zwtype }} {{ item.guimo }}</div>
             <div class="join-time">
               <van-image class="avator" round :src="item.avatar"></van-image>
-              <div class="time">{{item.regtime}} 加入医院</div>
+              <div class="time">{{ item.regtime }} 加入医院</div>
             </div>
             <div class="hospital">
               <div class="icon"></div>
-              <span>{{item.mpublic}}</span>
+              <span>{{ item.mpublic }}</span>
             </div>
           </div>
         </li>
@@ -33,7 +57,7 @@ export default {
   components: { Header },
   props: {},
   metaInfo: {
-    title: "优质基地",
+    title: "优质基地"
   },
   data() {
     return {
@@ -42,10 +66,11 @@ export default {
       finished: false,
       page: 0,
       noData: false,
+      baseUrl: "http://demo.datav.114nz.com/base_code/#/?gbasecode="
     };
   },
   computed: {
-    ...mapState(["uid", "mid"]),
+    ...mapState(["uid", "initMid"])
   },
   created() {},
   watch: {},
@@ -62,14 +87,15 @@ export default {
       // 或者基地列表
       this.page += 1;
       this.$axios
-        .fetchPost("/Mobile/Mpublic/getFineBaseCom", {
-          mId: this.mid,
+        .fetchPost("/API/Mpublic/getFineBaseCom", {
+          mId: this.initMid,
           page: this.page,
-          isall:'all'
+          isall: "all",
+          location: window.localStorage.getItem("city")
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
-            this.list = res.data.data;
+            this.list = this.list.concat(res.data.data);
             this.loading = false;
           } else if (res.data.code == 201) {
             if (this.page == 1) {
@@ -79,13 +105,10 @@ export default {
           }
         });
     },
-    goToBaseDetail(id) {
-      this.$router.push({
-        path: "/base_detail",
-        query: { id: id },
-      });
-    },
-  },
+    goToBaseDetail(url) {
+      window.location.href = url;
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -155,13 +178,13 @@ export default {
           color #999999
           font-size 12px
           margin-left 2px
-          .icon 
+          .icon
             width 20px
             height 20px
             margin-right 10px
             background url(./54.png) no-repeat
             background-size 100% 100%
-            background-position center center    
+            background-position center center
   .tip
     font-size 12px
     color #999

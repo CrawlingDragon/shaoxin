@@ -1,14 +1,28 @@
 <template>
   <div class="message-container">
-    <Header v-if="mid == initMid" :indexHeader="false"></Header>
-    <HospitalHeader v-else indexHeader="indexHeader" navHeader="资讯"></HospitalHeader>
-    <ul class="message-ul">
-      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <li v-for="item in list" :key="item.id" @click="goToMessageDetail(item.id,item.catid)">
+    <Header></Header>
+    <HospitalHeader
+      v-if="false"
+      indexHeader="indexHeader"
+      navHeader="资讯"
+    ></HospitalHeader>
+    <ul class="message-ul" v-show="!noData">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <li
+          v-for="item in list"
+          :key="item.id"
+          @click="goToMessageDetail(item.id, item.catid)"
+        >
           <MessageItem :list="item" :index="true"></MessageItem>
         </li>
       </van-list>
     </ul>
+    <van-empty description="暂无资讯" v-show="noData"></van-empty>
     <Foot></Foot>
   </div>
 </template>
@@ -20,7 +34,7 @@ import { mapState } from "vuex";
 import Foot from "@/components/foot/foot";
 export default {
   metaInfo: {
-    title: "资讯列表",
+    title: "资讯列表"
   },
   name: "message",
   components: { Header, MessageItem, HospitalHeader, Foot },
@@ -31,10 +45,11 @@ export default {
       loading: false,
       finished: false,
       page: 0,
+      noData: false
     };
   },
   computed: {
-    ...mapState(["mid", "initMid"]),
+    ...mapState(["mid", "initMid"])
   },
   created() {},
   watch: {
@@ -51,16 +66,24 @@ export default {
     getList() {
       this.page += 1;
       this.$axios
-        .fetchPost("/Mobile/News/index", { mId: this.mid, page: this.page })
-        .then((res) => {
+        .fetchPost("/API/News/index", {
+          mId: this.initMid,
+          page: this.page,
+          location: window.localStorage.getItem("city")
+        })
+        .then(res => {
           if (res.data.code == 0) {
             this.loading = false;
             this.list = this.list.concat(res.data.data);
             if (res.data.data.length == 0) {
               this.finished = true;
+              if (this.list.length == 0) {
+                this.noData = true;
+              }
             }
           } else if (res.data.code == 201) {
             this.finished = true;
+            this.noData = false;
           }
         });
     },
@@ -71,19 +94,19 @@ export default {
         query: {
           id: id,
           catid: catId,
-          from: "index",
-        },
+          from: "index"
+        }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
 .message-container
-  padding-bottom 55px
-  background #fff
+   padding-bottom 55px
   .message-ul
-    margin-left 12px
+    padding-left 12px
+    background #fff
     li
       border-bottom 1px solid #e5e5e5
       &:last-child

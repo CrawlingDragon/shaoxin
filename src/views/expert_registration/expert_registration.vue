@@ -62,7 +62,7 @@ export default {
     getList() {
       // 获取挂号-医院排版
       this.$axios
-        .fetchPost("Mobile/Mpublic/getSubscribeData", { mId: this.mid })
+        .fetchPost("API/Mpublic/getSubscribeData", { mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data;
@@ -101,7 +101,7 @@ export default {
         .catch(() => {
           // on cancel
           this.$axios
-            .fetchPost("Mobile/Mpublic/AddSubscribeData", obj)
+            .fetchPost("API/Mpublic/AddSubscribeData", obj)
             .then((res) => {
               if (res.data.code == 0) {
                 this.getList();

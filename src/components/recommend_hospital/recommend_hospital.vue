@@ -2,15 +2,31 @@
   <!-- 首页推荐医院列表 -->
   <div class="recommend-hospital-wrap" @click="goToIndexHospital">
     <van-image :src="list.logo" fit="cover" class="image" lazy-load />
-    <p class="p1">{{list.title}}</p>
-    <p class="p2">{{list.level}}·{{list.issort}}医院</p>
-    <p class="p3" v-show="list.zuowu != '暂未设置'">科室：{{list.zuowu}}</p>
+    <p class="p1">{{ list.title }}</p>
+    <p class="p2">{{ list.level }}·{{ list.issort }}医院</p>
+    <p class="p3" v-show="list.zuowu != '暂未设置' && list.zuowu != ''">
+      科室：{{ list.zuowu }}
+    </p>
     <div class="number">
-      <div class="expert" v-if="list.num_expert != 0">专家 {{list.num_expert}}</div>
-      <div class="line" v-show="list.num_expert != 0 && list.num_chufang != 0">|</div>
-      <div class="online" v-if="list.num_chufang != 0">处方 {{list.num_chufang}}</div>
-      <div class="line" v-show="list.num_wen != 0 && list.isstore == 0" style="margin-left:10px">|</div>
-      <div class="online" v-if="list.num_wen != 0 && list.isstore == 0">网诊 {{list.num_wen}}</div>
+      <div class="expert" v-if="list.num_expert != 0">
+        专家 {{ list.num_expert }}
+      </div>
+      <div class="line" v-show="list.num_expert != 0 && list.num_chufang != 0">
+        |
+      </div>
+      <div class="online" v-if="list.num_chufang != 0">
+        处方 {{ list.num_chufang }}
+      </div>
+      <div
+        class="line"
+        v-show="list.num_wen != 0 && list.isstore == 0"
+        style="margin-left:10px"
+      >
+        |
+      </div>
+      <div class="online" v-if="list.num_wen != 0 && list.isstore == 0">
+        网诊 {{ list.num_wen }}
+      </div>
     </div>
     <div class="icon" v-show="list.isstore == 1"></div>
   </div>
@@ -23,10 +39,10 @@ export default {
   props: {
     list: {
       type: Object,
-      default: function () {
+      default: function() {
         return {};
-      },
-    },
+      }
+    }
   },
   data() {
     return {};
@@ -43,10 +59,10 @@ export default {
       this.setHospitalName(this.list.title);
       this.setHospitalIsStore(this.list.isstore);
       this.$router.push({
-        path: "/hospital",
+        path: "/hospital"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

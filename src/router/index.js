@@ -398,6 +398,41 @@ const routes = [
       import(
         /*webpackChunkName:"video_detail" */ "@/views/video_detail/video_detail"
       )
+  },
+  {
+    path: "/base_center",
+    name: "base_center",
+    component: () =>
+      import(
+        /*webpackChunkName:"base_center" */ "@/views/base_center/base_center"
+      )
+  },
+  {
+    path: "/base_center_fram_history",
+    name: "base_center_fram_history",
+    component: () =>
+      import(
+        /*webpackChunkName:"base_center_fram_history" */ "@/views/base_center_fram_history/base_center_fram_history"
+      )
+  },
+  {
+    path: "/base_edit",
+    name: "base_edit",
+    component: () =>
+      import(/*webpackChunkName:"base_edit" */ "@/views/base_edit/base_edit")
+  },
+  {
+    path: "/base_fram_detail",
+    name: "base_fram_detail",
+    component: () =>
+      import(
+        /*webpackChunkName:"base_fram_detail" */ "@/views/base_fram_detail/base_fram_detail"
+      )
+  },
+  {
+    path: "/area",
+    name: "area",
+    component: () => import(/*webpackChunkName:"area" */ "@/views/area/area")
   }
 ];
 
@@ -417,47 +452,46 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
 };
 
 router.beforeEach((to, from, next) => {
-    //单点登录
-    function getCookie(cname) {
-      var name = cname + "=";
-      var ca = document.cookie.split(';');
-      for(var i = 0; i < ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == ' ') {
-              c = c.substring(1);
-          }
-          if (c.indexOf(name)  == 0) {
-              return c.substring(name.length, c.length);
-          }
+  //单点登录
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == " ") {
+        c = c.substring(1);
       }
-      return "";
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
   }
 
-//判断cookie 是否存在
+  //判断cookie 是否存在
   var ucenter_uid = getCookie("ucenter_uid"); //是==>拿到uid，设置uid
-  let ucenter_islogin = getCookie('ucenter_islogin') // cookie的username
+  let ucenter_islogin = getCookie("ucenter_islogin"); // cookie的username
 
-// console.log('ucenter_uid :>> ', ucenter_uid);
-  let env = process.env.NODE_ENV == 'development'
-  if (!env) { 
-    if(!ucenter_uid) {
-      store.commit('setLogined',2)
+  // console.log('ucenter_uid :>> ', ucenter_uid);
+  let env = process.env.NODE_ENV == "development" || "production";
+  if (!env) {
+    if (!ucenter_uid) {
+      store.commit("setLogined", 2);
     }
     if (store.state.logined == 1) {
       next(true);
-    } else { 
+    } else {
       if (ucenter_uid && ucenter_islogin == 1) {
-        store.commit('setUid', ucenter_uid)
+        store.commit("setUid", ucenter_uid);
       }
       if (ucenter_islogin == 0) {
-        store.commit('setUid','')
+        store.commit("setUid", "");
       }
     }
   }
   // console.log('store.state.logined :>> ', store.state.logined);
-  
 
-//否 ==> 就不处理
+  //否 ==> 就不处理
   let uid = store.state.uid;
   if (uid == "" || uid == undefined) {
     //没登录的状态 不能去这些页面
@@ -468,17 +502,19 @@ router.beforeEach((to, from, next) => {
       to.name == "zuozhenList" ||
       to.name == "cetuList" ||
       to.name == "expertRegistration" ||
-      to.name == "wholeZuoZhenList" || 
-      to.name == 'applyVip'
+      to.name == "wholeZuoZhenList" ||
+      to.name == "applyVip"
     ) {
-      if(from.name == 'Login'){return}
+      if (from.name == "Login") {
+        return;
+      }
       next("/login");
     }
   } else {
     if (to.name == "Login" || to.name == "mLogin") {
       next("/index");
     }
-    store.commit('setLogined',1)
+    store.commit("setLogined", 1);
   }
   next(true);
 });

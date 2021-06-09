@@ -97,7 +97,7 @@ export default {
     getSearchresult(keyword) {
       this.noData = false;
       this.$axios
-        .fetchPost("Mobile/Entrance/lists", {
+        .fetchPost("API/Entrance/lists", {
           keyword: keyword,
           location: this.location,
           uId: this.uid,
@@ -114,7 +114,7 @@ export default {
     },
     getHispital() {
       this.$axios
-        .fetchPost("Mobile/Entrance/getHistory", { uId: this.uid })
+        .fetchPost("API/Entrance/getHistory", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.hispital = res.data.data;
@@ -122,7 +122,7 @@ export default {
         });
     },
     gerHot() {
-      this.$axios.fetchPost("Mobile/Entrance/getHotwords").then((res) => {
+      this.$axios.fetchPost("API/Entrance/getHotwords").then((res) => {
         if (res.data.code == 0) {
           this.hot = res.data.data;
         }
@@ -139,7 +139,7 @@ export default {
     },
     clearHispital() {
       this.$axios
-        .fetchPost("/Mobile/Entrance/clearRecord", { uId: this.uid })
+        .fetchPost("/API/Entrance/clearRecord", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.$toast(res.data.message);

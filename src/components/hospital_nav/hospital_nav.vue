@@ -4,9 +4,11 @@
     <div class="bg"></div>
     <div class="titles">
       <div class="left-title">会员服务</div>
-      <div class="right-title"> {{hospitalIsStore == 1 ?'专属会员服务，一站式解决作物问题':'网院'}}</div>
+      <div class="right-title">
+        {{ hospitalIsStore == 1 ? "专属会员服务，一站式解决作物问题" : "网院" }}
+      </div>
     </div>
-    <ul class="nav-ul" :class="{'isstore':hospitalIsStore == 0 }">
+    <ul class="nav-ul" :class="{ isstore: hospitalIsStore == 0 }">
       <li @click="goToOnline">
         <div class="icon icon01"></div>
         <p>线上网诊</p>
@@ -32,24 +34,31 @@
         <p>优质基地</p>
       </li>
       <li>
-        <a :href="shareUrl + 'Home/Company/companyDetail/ucuid/' + ucuid" target="_blank" style="display:block;color: #AED0FF;">
+        <a
+          :href="shareUrl + 'Home/Company/companyDetail/ucuid/' + ucuid"
+          target="_blank"
+          style="display:block;color: #AED0FF;"
+        >
           <div class="icon icon07"></div>
           <p>农资店铺</p>
         </a>
       </li>
-      <li v-if="hospitalIsStore == 0" @click="goToExpert() ">
+      <li v-if="hospitalIsStore == 0" @click="goToExpert()">
         <div class="icon icon04"></div>
         <p>专家</p>
       </li>
-      <li @click="goToLive" v-if="hospitalIsStore == 0">
+      <!-- <li @click="goToLive" v-if="hospitalIsStore == 0">
         <div class="icon icon12"></div>
         <p>直播</p>
-      </li>
+      </li> -->
       <li v-if="hospitalIsStore == 1 && hospitalIsMember == 1" @click="isVip">
         <div class="icon icon08"></div>
         <p>已是会员</p>
       </li>
-      <li v-if="hospitalIsStore == 1 && hospitalIsMember == 0" @click="goToApplyVip">
+      <li
+        v-if="hospitalIsStore == 1 && hospitalIsMember == 0"
+        @click="goToApplyVip"
+      >
         <div class="icon icon09"></div>
         <p class="p2">申请会员</p>
       </li>
@@ -64,21 +73,22 @@ export default {
   props: {
     ismember: {
       type: Number,
-      default: 0,
+      default: 0
     },
-    caseImg:{
-      type:String,
-      default:'http://www.114nz.com/statics/images/httpsxone.114nz.com_default.png'
+    caseImg: {
+      type: String,
+      default:
+        "http://www.114nz.com/statics/images/httpsxone.114nz.com_default.png"
     }
   },
   data() {
     return {
-      bjSrc:'',
-      shareUrl:process.env.VUE_APP_SHARE_URL
+      bjSrc: "",
+      shareUrl: process.env.VUE_APP_SHARE_URL
     };
   },
   computed: {
-    ...mapState(["hospitalIsStore", "hospitalIsMember", "uid", "mid",'ucuid']),
+    ...mapState(["hospitalIsStore", "hospitalIsMember", "uid", "mid", "ucuid"])
   },
   watch: {},
   mounted() {},
@@ -86,13 +96,13 @@ export default {
   methods: {
     goToOnline() {
       // 路由 去线上网诊
-      this.$router.push({ path: "hospital_online" }).catch((err) => err);
+      this.$router.push({ path: "hospital_online" }).catch(err => err);
     },
     goToZuo() {
       // 路由 坐诊巡诊
       if (this.uid == "" || this.uid == undefined) {
         this.$router.push({
-          path: "/zuozhen_list",
+          path: "/zuozhen_list"
         });
         return;
       }
@@ -102,24 +112,24 @@ export default {
             message: "抱歉坐诊巡诊是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
-            cancelButtonColor:'#155BBB',
-            confirmButtonColor:'#999'
+            cancelButtonColor: "#155BBB",
+            confirmButtonColor: "#999"
           })
           .then(() => {})
           .catch(() => {
             this.$router.push({
-              path: "/apply_vip",
+              path: "/apply_vip"
             });
           });
       } else {
-        this.$router.push({ path: "zuozhen_list" }).catch((err) => err);
+        this.$router.push({ path: "zuozhen_list" }).catch(err => err);
       }
     },
     goToCeTu() {
       // 路由 测土配方
       if (this.uid == "" || this.uid == undefined) {
         this.$router.push({
-          path: "/cetu_list",
+          path: "/cetu_list"
         });
         return;
       }
@@ -129,8 +139,8 @@ export default {
             message: "抱歉测土配方是会员服务，请先申请再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
-            cancelButtonColor:'#155BBB',
-            confirmButtonColor:'#999'
+            cancelButtonColor: "#155BBB",
+            confirmButtonColor: "#999"
           })
           .then(() => {
             // on confirm
@@ -140,14 +150,14 @@ export default {
             this.$router.push({ path: "/apply_vip" });
           });
       } else {
-        this.$router.push({ path: "cetu_list" }).catch((err) => err);
+        this.$router.push({ path: "cetu_list" }).catch(err => err);
       }
     },
     goToRegistration() {
       // 路由 专家挂号
       if (this.uid == "" || this.uid == undefined) {
         this.$router.push({
-          path: "/expert_registration",
+          path: "/expert_registration"
         });
         return;
       }
@@ -157,8 +167,8 @@ export default {
             message: "抱歉专家挂号是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
-            cancelButtonColor:'#155BBB',
-            confirmButtonColor:'#999'
+            cancelButtonColor: "#155BBB",
+            confirmButtonColor: "#999"
           })
           .then(() => {
             // on confirm
@@ -166,18 +176,18 @@ export default {
           .catch(() => {
             // on cancel
             this.$router.push({
-              path: "/apply_vip",
+              path: "/apply_vip"
             });
           });
       } else {
-        this.$router.push({ path: "/expert_registration" }).catch((err) => err);
+        this.$router.push({ path: "/expert_registration" }).catch(err => err);
       }
     },
     goToAsk() {
       // 路由 提问
       if (this.uid == "" || this.uid == undefined) {
         this.$router.push({
-          path: "/ask",
+          path: "/ask"
         });
         return;
       }
@@ -187,8 +197,8 @@ export default {
             message: "抱歉会员提问是会员服务，请先申请加入医院再访问",
             cancelButtonText: "申请加入会员",
             confirmButtonText: "好的",
-            cancelButtonColor:'#155BBB',
-            confirmButtonColor:'#999'
+            cancelButtonColor: "#155BBB",
+            confirmButtonColor: "#999"
           })
           .then(() => {
             // on confirm
@@ -196,40 +206,42 @@ export default {
           .catch(() => {
             // on cancel
             this.$router.push({
-              path: "/apply_vip",
+              path: "/apply_vip"
             });
           });
       } else {
-        this.$router.push({ path: "/ask" ,query:{from:'hospital'}}).catch((err) => err);
+        this.$router
+          .push({ path: "/ask", query: { from: "hospital" } })
+          .catch(err => err);
       }
     },
     goToExpert() {
       // 路由 医院专家
       this.$router
         .push({
-          path: "/hospital_expert",
+          path: "/hospital_expert"
         })
-        .catch((err) => err);
+        .catch(err => err);
     },
     goToGoodBase() {
       // 路由 优质基地
       this.$router
         .push({
-          path: "/good_base",
+          path: "/good_base"
         })
-        .catch((err) => err);
+        .catch(err => err);
     },
     goToApplyVip() {
       // 路由 申请会员
       this.$router
         .push({
-          path: "/apply_vip",
+          path: "/apply_vip"
         })
-        .catch((err) => err);
+        .catch(err => err);
     },
     goToLive() {
       // 路由 直播
-      this.$router.push({ path: "/live" }).catch((err) => err);
+      this.$router.push({ path: "/live" }).catch(err => err);
     },
     isVip() {
       this.$dialog
@@ -237,8 +249,8 @@ export default {
           message: "您已是新型庄稼医院会员",
           cancelButtonText: "查看会员权益",
           confirmButtonText: "好的",
-          cancelButtonColor:'#155BBB',
-            confirmButtonColor:'#999'
+          cancelButtonColor: "#155BBB",
+          confirmButtonColor: "#999"
         })
         .then(() => {
           // on confirm
@@ -246,11 +258,11 @@ export default {
         .catch(() => {
           // on cancel
           this.$router.push({
-            path: "/vip",
+            path: "/vip"
           });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -372,8 +384,8 @@ export default {
         margin 0 auto 10px
       .p2
         color #ff6600
-/deep/.van-dialog__content 
-  font-size 16px 
-  /deep/.van-dialog__message 
+/deep/.van-dialog__content
+  font-size 16px
+  /deep/.van-dialog__message
     font-size 16px
 </style>

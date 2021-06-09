@@ -39,7 +39,7 @@ export default {
     getList() {
       this.page += 1;
       this.$axios
-        .fetchPost("Mobile/Video/getVideoList", {
+        .fetchPost("API/Video/getVideoList", {
           page: this.page,
           pagesize: 7,
         })

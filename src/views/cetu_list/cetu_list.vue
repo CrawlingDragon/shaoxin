@@ -77,7 +77,7 @@ export default {
     //   // 获取测土配方列表 医院
     //   this.noData = false;
     //   this.$axios
-    //     .fetchPost("/Mobile/Treatment/getTestingsoil", { mId: this.mid,page:this.page })
+    //     .fetchPost("/API/Treatment/getTestingsoil", { mId: this.mid,page:this.page })
     //     .then((res) => {
     //       if (res.data.code == 0) {
     //         this.list = res.data.data;
@@ -90,7 +90,7 @@ export default {
       // 获取测土配方列表  个人
       this.page += 1
       this.$axios
-        .fetchPost("/Mobile/Treatment/getTestingsoil", { uId: this.meUid ,mId:this.mid,page:this.page})
+        .fetchPost("/API/Treatment/getTestingsoil", { uId: this.meUid ,mId:this.mid,page:this.page})
         .then((res) => {
           if (res.data.code == 0) {
             this.loading = false;

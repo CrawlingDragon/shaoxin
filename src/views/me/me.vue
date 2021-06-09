@@ -3,7 +3,12 @@
     <Header :indexHeader="false"></Header>
     <div class="user-box" @click="goToExpert()">
       <!-- info.uid -->
-      <van-image class="avator" round fit="cover" :src="info.avatar"></van-image>
+      <van-image
+        class="avator"
+        round
+        fit="cover"
+        :src="info.avatar"
+      ></van-image>
       <div class="mid">
         <p class="p1">
           {{ info.realname }}<span>{{ info.grouptitle }}</span>
@@ -25,13 +30,17 @@
           <div class="icon02"></div>
         </template>
       </van-cell>
-      <van-cell title="我的基地" :to="{path:'/base_detail',query:{id:info.bid}}" is-link>
+      <van-cell
+        title="基地中心"
+        :to="{ path: '/base_center', query: { id: info.bid } }"
+        is-link
+      >
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon03"></div>
         </template>
       </van-cell>
-      <van-cell title="土壤检测" :to="{path:'/whole_cetu_list'}" is-link>
+      <van-cell title="土壤检测" :to="{ path: '/whole_cetu_list' }" is-link>
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon04"></div>
@@ -50,7 +59,12 @@
         </template>
       </van-cell>
     </div>
-    <van-cell title="个人主页" :to="{ path: '/expert', query: { from: 'my',id:uid }}" is-link style="margin-top:10px">
+    <van-cell
+      title="个人主页"
+      :to="{ path: '/expert', query: { from: 'my', id: uid } }"
+      is-link
+      style="margin-top:10px"
+    >
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon07"></div>
@@ -62,7 +76,12 @@
         <div class="icon08"></div>
       </template>
     </van-cell>
-    <van-cell title="联系客服 4008596318" is-link style="margin-top:10px" @click="callPhone">
+    <van-cell
+      title="联系客服 4008596318"
+      is-link
+      style="margin-top:10px"
+      @click="callPhone"
+    >
       <!-- 使用 right-icon 插槽来自定义右侧图标 -->
       <template #icon>
         <div class="icon09"></div>
@@ -84,11 +103,11 @@ export default {
   data() {
     return {
       info: "",
-      active: 4,
+      active: 4
     };
   },
   computed: {
-    ...mapState(["uid", "initMid"]),
+    ...mapState(["uid", "initMid"])
   },
   created() {},
   watch: {},
@@ -99,11 +118,11 @@ export default {
   methods: {
     getInfo() {
       this.$axios
-        .fetchPost("/Mobile/User/userCenter", {
+        .fetchPost("/API/User/userCenter", {
           uId: this.uid,
-          mId: this.initMid,
+          mId: this.initMid
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.info = res.data.data;
           }
@@ -111,7 +130,7 @@ export default {
     },
     goToEdit() {
       this.$router.push({
-        path: "/me_edit",
+        path: "/me_edit"
       });
     },
     callPhone() {
@@ -120,10 +139,10 @@ export default {
     goToExpert() {
       this.$router.push({
         path: "/expert",
-        query: { id: this.uid, from: "my" },
+        query: { id: this.uid, from: "my" }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

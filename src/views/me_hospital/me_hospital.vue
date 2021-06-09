@@ -42,7 +42,7 @@ export default {
     getList() {
       this.noData = false;
       this.$axios
-        .fetchPost("Mobile/user/myJoinHospital", { uId: this.uid })
+        .fetchPost("API/user/myJoinHospital", { uId: this.uid })
         .then((res) => {
           if (res.data.code == 0) {
             this.list = res.data.data.list;

@@ -49,7 +49,7 @@ export default {
   methods: {
     getMessageDetail() {
       this.$axios
-        .fetchPost("/Mobile/News/detail", {
+        .fetchPost("/API/News/detail", {
           mId: this.mid,
           Id: this.id,
           catId: this.catid,

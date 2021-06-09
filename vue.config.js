@@ -1,10 +1,12 @@
 module.exports = {
   publicPath: "./",
   filenameHashing: true,
-  configureWebpack:{
-    externals:{
-      'AMap':"AMap"
-    }
+
+  configureWebpack: {
+    externals: {
+      AMap: "AMap"
+    },
+    devtool: "source-map"
   },
   devServer: {
     hot: true,

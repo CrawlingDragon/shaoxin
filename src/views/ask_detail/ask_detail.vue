@@ -1,69 +1,126 @@
 <template>
-  <div class="ask_detail-container" :class="{'jiashicang':from == 'jiashicang'}">
+  <div
+    class="ask_detail-container"
+    :class="{ jiashicang: from == 'jiashicang' }"
+  >
     <Header :indexHeader="false"></Header>
     <div class="online-box">
       <div class="top">
-        <van-image round class="avator" :src="detail.avatar" @click="goToExpert(0,detail.authorid)"></van-image>
+        <van-image
+          round
+          class="avator"
+          :src="detail.avatar"
+          @click="goToExpert(0, detail.authorid)"
+        ></van-image>
         <div class="name">
-          {{detail.author}}
-          <div class="time">{{detail.addtime}} · {{detail.area}}</div>
+          {{ detail.author }}
+          <div class="time">{{ detail.addtime }} {{ detail.area }}</div>
         </div>
       </div>
       <div class="subsidy" v-if="detail.isbenefit == 1" @click="benefit"></div>
-      <div class="text">{{detail.content}}</div>
+      <div class="text">{{ detail.content }}</div>
       <div class="img-list">
-        <div class="item" v-for="(item,index) in detail.urls_tiny" :key="item" @click="preview(detail.urls,index)">
+        <div
+          class="item"
+          v-for="(item, index) in detail.urls_tiny"
+          :key="item"
+          @click="preview(detail.urls, index)"
+        >
           <van-image class="img" fit="cover" :src="item" lazy-load></van-image>
         </div>
       </div>
       <div class="bottom">
         <div class="left">
           <div class="icon icon1"></div>
-          <div class="content">{{detail.name}}</div>
+          <div class="content">{{ detail.name }}</div>
         </div>
         <div class="right" v-if="detail.ishaveexpert">
           <div class="content">咨询专家</div>
-          <van-image class="icon icon3" :src="detail.ishaveexpert.avatar" round @click="goToExpert(0,detail.ishaveexpert.expertid)"></van-image>
+          <van-image
+            class="icon icon3"
+            :src="detail.ishaveexpert.avatar"
+            round
+            @click="goToExpert(0, detail.ishaveexpert.expertid)"
+          ></van-image>
         </div>
       </div>
     </div>
     <div class="answer-box" v-if="detail.replies != 0">
-      <div class="title">解答 {{detail.replies}}</div>
+      <div class="title">解答 {{ detail.replies }}</div>
       <ul class="answer-ul">
         <li v-for="item in detail.answers" :key="item.pid">
           <div class="top">
-            <van-image round fit="cover" :src="item.avatar" class="avator" @click="goToExpert(item.isexpert,item.authorid)"></van-image>
-            <div class="name">{{item.name}}<span v-show="item.groupname != ''">({{item.groupname}})</span></div>
-            <div class="time">{{item.addtime}}</div>
+            <van-image
+              round
+              fit="cover"
+              :src="item.avatar"
+              class="avator"
+              @click="goToExpert(item.isexpert, item.authorid)"
+            ></van-image>
+            <div class="name">
+              {{ item.name
+              }}<span v-show="item.groupname != ''"
+                >({{ item.groupname }})</span
+              >
+            </div>
+            <div class="time">{{ item.addtime }}</div>
           </div>
-          <div class="text">{{item.content}}</div>
+          <div class="text">{{ item.content }}</div>
           <div class="image-ul">
-            <div class="item" v-for="(it,index) in item.pic_urls_tiny" :key="it.id" @click="preview(item.urls,index)">
+            <div
+              class="item"
+              v-for="(it, index) in item.pic_urls_tiny"
+              :key="it.id"
+              @click="preview(item.urls, index)"
+            >
               <van-image :src="it" fit="cover" class="answer-img"></van-image>
             </div>
           </div>
-          <div class="lookat-yinongbao">{{item.add_wenlist_tips}}</div>
-          <div class="rote" @click="showPopupRote(item)" v-if="detail.isself == 1 && item.isself == 0 && item.score == '' && item.isexpert != 0">
+          <div class="lookat-yinongbao">{{ item.add_wenlist_tips }}</div>
+          <div
+            class="rote"
+            @click="showPopupRote(item)"
+            v-if="
+              detail.isself == 1 &&
+                item.isself == 0 &&
+                item.score == '' &&
+                item.isexpert != 0
+            "
+          >
             <div class="icon"></div>
             评分
           </div>
-          <div class="roted-box" v-if="item.score != '' && item.score.viewstatus == 1">
+          <div
+            class="roted-box"
+            v-if="item.score != '' && item.score.viewstatus == 1"
+          >
             <div class=" top">
-              <van-image round :src="item.score.avatar" fit="cover" class="img" @click="goToExpert(item.isexpert,detail.authorid)"></van-image>
+              <van-image
+                round
+                :src="item.score.avatar"
+                fit="cover"
+                class="img"
+                @click="goToExpert(item.isexpert, detail.authorid)"
+              ></van-image>
               <div class="rig">
-                <p class="p1">{{item.score.name}}</p>
-                <p class="p2">{{item.score.addtime}}</p>
+                <p class="p1">{{ item.score.name }}</p>
+                <p class="p2">{{ item.score.addtime }}</p>
               </div>
             </div>
             <div class="star">
-              <van-rate v-model="item.score.score" color="#ff6600" readonly size="27px" />
+              <van-rate
+                v-model="item.score.score"
+                color="#ff6600"
+                readonly
+                size="27px"
+              />
               <span v-if="item.score.score == 1">解答非常差</span>
               <span v-if="item.score.score == 2">解答差</span>
               <span v-if="item.score.score == 3">解答一般</span>
               <span v-if="item.score.score == 4">解答好</span>
               <span v-if="item.score.score == 5">解答很好</span>
             </div>
-            <div class="txt">{{item.score.content}}</div>
+            <div class="txt">{{ item.score.content }}</div>
           </div>
         </li>
       </ul>
@@ -71,22 +128,55 @@
     <div class="answer-bar" @click="showPopup">
       <div class="border">我来回答</div>
     </div>
-    <van-popup v-model="show" closeable close-icon-position="top-left" position="bottom" :style="{ height: '220px' }" class="van-popup-box">
-      <div class="sub subText" @click="sub" :class="{'content':message}">提交</div>
+    <van-popup
+      v-model="show"
+      closeable
+      close-icon-position="top-left"
+      position="bottom"
+      :style="{ height: '220px' }"
+      class="van-popup-box"
+    >
+      <div class="sub subText" @click="sub" :class="{ content: message }">
+        提交
+      </div>
       <div class="message-box">
-        <van-field v-model="message" rows="5" autosize type="textarea" maxlength="600" placeholder="我来回答" show-word-limit class="message" />
+        <van-field
+          v-model="message"
+          rows="5"
+          autosize
+          type="textarea"
+          maxlength="600"
+          placeholder="我来回答"
+          show-word-limit
+          class="message"
+        />
       </div>
     </van-popup>
-    <van-popup v-model="showRote" position="bottom" :style="{ height: '234px' }" class="rotes">
-      <div class="sub subText" :class="{'content':true}" @click="subRemark">发表</div>
-      <div class="title">评价 {{author}}</div>
+    <van-popup
+      v-model="showRote"
+      position="bottom"
+      :style="{ height: '234px' }"
+      class="rotes"
+    >
+      <div class="sub subText" :class="{ content: true }" @click="subRemark">
+        发表
+      </div>
+      <div class="title">评价 {{ author }}</div>
       <van-rate v-model="roteValue" color="#ff6600" size="27px" />
       <span v-if="roteValue == 1" class="rote-text">解答非常差</span>
       <span v-if="roteValue == 2" class="rote-text">解答差</span>
       <span v-if="roteValue == 3" class="rote-text">解答一般</span>
       <span v-if="roteValue == 4" class="rote-text">解答好</span>
       <span v-if="roteValue == 5" class="rote-text">解答很好</span>
-      <van-field v-model="messageRote" rows="3" type="textarea" maxlength="200" :placeholder="'请评价'+author" show-word-limit class="message" />
+      <van-field
+        v-model="messageRote"
+        rows="3"
+        type="textarea"
+        maxlength="200"
+        :placeholder="'请评价' + author"
+        show-word-limit
+        class="message"
+      />
     </van-popup>
   </div>
 </template>
@@ -99,7 +189,7 @@ export default {
   components: { Header, [ImagePreview.Component.name]: ImagePreview.Component },
   props: {},
   metaInfo: {
-    title: "问答详情",
+    title: "问答详情"
   },
   data() {
     return {
@@ -112,18 +202,18 @@ export default {
       messageRote: "",
       detail: "",
       pid: "",
-      author: "",
+      author: ""
     };
   },
   computed: {
-    ...mapState(["uid", "uid"]),
+    ...mapState(["uid", "uid"])
   },
   created() {},
   watch: {
     $route() {
       this.tid = this.$route.query.tid;
       this.getDetail();
-    },
+    }
   },
   mounted() {
     this.getDetail();
@@ -134,8 +224,8 @@ export default {
     getDetail() {
       // 解答详情
       this.$axios
-        .fetchPost("Mobile/Wen/detail", { tId: this.tid, uId: this.uid })
-        .then((res) => {
+        .fetchPost("API/Wen/detail", { tId: this.tid, uId: this.uid })
+        .then(res => {
           if (res.data.code == 0) {
             this.detail = res.data.data;
           }
@@ -150,12 +240,12 @@ export default {
         return;
       }
       this.$axios
-        .fetchPost("/Mobile/Wen/addQuestionAnswers", {
+        .fetchPost("/API/Wen/addQuestionAnswers", {
           uId: this.uid,
           content: this.message,
-          tId: this.tid,
+          tId: this.tid
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.getDetail();
             this.message = "";
@@ -172,14 +262,14 @@ export default {
     subRemark() {
       // 发表评级
       this.$axios
-        .fetchPost("Mobile/User/pushAppraises", {
+        .fetchPost("API/User/pushAppraises", {
           uId: this.uid, // 用户id
           tId: this.tid, //问题id
           pId: this.pid, // 问题pid
           score: this.roteValue, //星级
-          comment: this.messageRote, //回答内容
+          comment: this.messageRote //回答内容
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.showRote = false;
             this.getDetail();
@@ -197,7 +287,7 @@ export default {
       ImagePreview({
         images: item,
         startPosition: index,
-        closeable: true,
+        closeable: true
       });
     },
     goToExpert(isExpert, id) {
@@ -205,12 +295,12 @@ export default {
       if (isExpert == 0 || isExpert == 1) {
         this.$router.push({
           path: "/expert",
-          query: { id: id },
+          query: { id: id }
         });
       } else if (isExpert == 2) {
         this.setMid(id);
         this.$router.push({
-          path: "/hospital",
+          path: "/hospital"
         });
       }
     },
@@ -220,13 +310,13 @@ export default {
         .alert({
           message: "回答该问题，能获得平台补助",
           confirmButtonText: "知道了",
-          confirmButtonColor:"#155BBB",
+          confirmButtonColor: "#155BBB"
         })
         .then(() => {
           // on close
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -480,65 +570,65 @@ export default {
         height 30px
         margin-left 15px
 .subText
-  &.content 
-    color #81b4f3 !important      
-.ask_detail-container        
+  &.content
+    color #81b4f3 !important
+.ask_detail-container
   &.jiashicang
-    background #080f3e 
-    top 0 
+    background #080f3e
+    top 0
     padding-top 30px
     .header-container
-      background  #0c3387 
+      background  #0c3387
       max-width 1200px
       margin 0 auto
       /deep/.no_index_header
         color #fff
     .answer-bar
-      background  #0c3387 
+      background  #0c3387
       max-width 1200px
       margin 0 auto
     .online-box
-      background  #0c3387 
+      background  #0c3387
       max-width 1200px
       margin 0 auto
-      .name 
+      .name
         color #81b4f3
       .time
         color #81b4f3
       .text
         color #81b4f3
-      .bottom 
+      .bottom
         color #81b4f3
-    .answer-box  
-      background  #0c3387 
+    .answer-box
+      background  #0c3387
       color #81b4f3
       max-width: 1200px;
       margin: 0 auto;
       .name
         color #81b4f3 !important
       .time
-        color #81b4f3 !important 
+        color #81b4f3 !important
       .text
-        color #81b4f3 !important 
+        color #81b4f3 !important
       .lookat-yinongbao
-        color #81b4f3 !important  
+        color #81b4f3 !important
       .title
         color #81b4f3
-        border-bottom 1px solid #9d9d9d !important 
-        background  #0c3387 
-      .roted-box  
+        border-bottom 1px solid #9d9d9d !important
+        background  #0c3387
+      .roted-box
         background: #010f47 !important
         .p1,.p2,.star,.txt
-          color #81b4f3 !important  
+          color #81b4f3 !important
     .van-popup,.van-cell
-      background  #0c3387 
+      background  #0c3387
       .sub
-       color #81b4f3 !important     
+       color #81b4f3 !important
     /deep/.van-field__control
-      color #fff      
+      color #fff
     .answer-ul li
-      border-bottom 1px solid #9d9d9d !important 
-      background  #0c3387 
-    .border  
-      border 1px solid #9d9d9d !important 
+      border-bottom 1px solid #9d9d9d !important
+      background  #0c3387
+    .border
+      border 1px solid #9d9d9d !important
 </style>

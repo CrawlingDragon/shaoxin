@@ -87,7 +87,7 @@ export default {
     ...mapMutations(["setJoinTime", "setHospitalIsMember",'setUcUid',"setHospitalIsStore","setHospitalName","setHospitalLogo"]),
     getHospitalData(mid) {
       this.$axios
-        .fetchPost("Mobile/Mpublic/MpublicPage", {
+        .fetchPost("API/Mpublic/MpublicPage", {
           mId: mid,
           uId: this.uid,
         })

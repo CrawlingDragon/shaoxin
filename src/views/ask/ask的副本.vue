@@ -122,7 +122,7 @@ export default {
       let formData = new FormData();
       formData.append("urls[]", file.file);
       this.$axios
-        .fetchPost("/Mobile/Wen/OssUploadFile", formData)
+        .fetchPost("/API/Wen/OssUploadFile", formData)
         .then((res) => {
           // console.log("res :>> ", res);
           if (res.data.code == 0) {
@@ -137,7 +137,7 @@ export default {
       // this.imgPress(file).then(res => {
       // formData.append("urls[]", res.filePress);
       // this.$axios
-      //   .fetchPost("/Mobile/Wen/OssUploadFile", formData)
+      //   .fetchPost("/API/Wen/OssUploadFile", formData)
       //   .then((res) => {
       //     // console.log("res :>> ", res);
       //     if (res.data.code == 0) {
@@ -169,7 +169,7 @@ export default {
       };
       if(this.submitBoolean){
       this.submitBoolean = false
-      this.$axios.fetchPost("Mobile/Wen/addWenQuestion", obj).then((res) => {
+      this.$axios.fetchPost("API/Wen/addWenQuestion", obj).then((res) => {
         this.$toast(res.data.message);
         if (res.data.code == 0) {
           setTimeout(() => {
@@ -186,7 +186,7 @@ export default {
     getMyAddress() {
       // 获取我的地址，是否加入医院
       this.$axios
-        .fetchPost("Mobile/User/userCenter", { uId: this.uid, mId: this.mid })
+        .fetchPost("API/User/userCenter", { uId: this.uid, mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             let myAddress = res.data.data.ismember;

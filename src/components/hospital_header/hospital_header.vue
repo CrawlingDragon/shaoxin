@@ -38,78 +38,78 @@
   </div>
 </template>
 <script>
-import fastNav from '@/components/fast_nav/fast_nav'
-import hospitalFastNav from '@/components/hospital_fast_nav/hospital_fast_nav'
-import { mapState } from 'vuex'
+import fastNav from "@/components/fast_nav/fast_nav";
+import hospitalFastNav from "@/components/hospital_fast_nav/hospital_fast_nav";
+import { mapState } from "vuex";
 
 export default {
-  name: 'hospitalHeaders',
+  name: "hospitalHeaders",
   components: { fastNav, hospitalFastNav },
   props: {
     header: {
       type: String,
-      default: 'indexHeader'
+      default: "indexHeader"
     },
     navHeader: {
       type: String,
-      default: ''
+      default: ""
     },
     address: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   data() {
     return {
       flag: false,
       flagHospital: false
-    }
+    };
   },
   computed: {
-    ...mapState(['mid', 'uid', 'initMid'])
+    ...mapState(["mid", "uid", "initMid"])
   },
   watch: {
     $route() {
-      this.flag = false
+      this.flag = false;
     }
   },
   mounted() {},
   destroyed() {},
   methods: {
     rightIcon() {
-      this.flag = true
-      this.$emit('rightIcon')
+      this.flag = true;
+      this.$emit("rightIcon");
     },
     closeFast() {
-      this.$emit('clickFastRightIcon')
+      this.$emit("clickFastRightIcon");
       // 主要二级快速导航关闭
-      this.flag = false
+      this.flag = false;
     },
     showNavFast() {
       // 打开医院快速导航
-      this.flagHospital = true
+      this.flagHospital = true;
     },
     close(boolean) {
       // 关闭医院快速导航
-      this.flagHospital = boolean
+      this.flagHospital = boolean;
     },
     goToIndex() {
       this.$router
         .push({
-          path: '/index'
+          path: "/index"
         })
-        .catch(err => err)
+        .catch(err => err);
     },
     goToSearchHospital() {
       this.$router
         .push({
-          path: '/search_hospital',
+          path: "/search_hospital",
           query: { location: this.address }
         })
-        .catch(err => err)
+        .catch(err => err);
     }
   }
-}
+};
 </script>
 <style lang="stylus" scoped>
 .header-container
@@ -126,6 +126,7 @@ export default {
     display flex
     background #FFFFFF
     margin 0 auto
+    height 100%
   .left-bar
     flex 1
     display flex

@@ -50,7 +50,7 @@ export default {
     getBaseList(mid) {
       // 或者基地列表
       this.$axios
-        .fetchPost("/Mobile/Mpublic/getFineBaseCom", {
+        .fetchPost("/API/Mpublic/getFineBaseCom", {
           mId: mid,
           uId: this.uid,
           pagesize: 50,

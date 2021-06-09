@@ -4,12 +4,12 @@
     ref="online"
     :class="{ addressOverflow: addressFlag }"
   >
-    <Header :tabbarActive="1"></Header>
+    <Header></Header>
 
     <van-sticky :offset-top="30" @scroll="scroll">
       <div class="choose-box" v-show="secondNav">
         <div class="back" @click="goBack"></div>
-        <div class="all" @click="openBox">
+        <div class="all" @click="openBox" v-if="false">
           {{ areaName }}
           <van-icon name="arrow-down" class="down" />
         </div>
@@ -17,7 +17,7 @@
           {{ crop }}
           <van-icon name="arrow-down" class="down" />
         </div>
-        <div class="address-box" v-show="addressFlag">
+        <div class="address-box" v-show="addressFlag" v-if="false">
           <div class="wrap">
             <div class="item" @click="chooseAddress(9999, '全部地区')">
               全部地区
@@ -53,31 +53,30 @@
       </ul>
     </div>
     <!-- </van-pull-refresh> -->
-    <Foot></Foot>
+    <!-- <Foot></Foot> -->
   </div>
 </template>
 <script>
-var Before_scollH = 0
-import Header from '@/components/header/header.vue'
-import OnlineItem from '@/components/online_item/online_item'
-import { ImagePreview } from 'vant'
-import { mapState } from 'vuex'
-import Foot from '@/components/foot/foot'
+var Before_scollH = 0;
+import Header from "@/components/header/header.vue";
+import OnlineItem from "@/components/online_item/online_item";
+import { ImagePreview } from "vant";
+import { mapState } from "vuex";
+// import Foot from "@/components/foot/foot";
 export default {
-  name: 'indexOnline',
+  name: "indexOnline",
   metaInfo: {
-    title: '网诊'
+    title: "网诊"
   },
   components: {
     Header,
     OnlineItem,
-    [ImagePreview.Component.name]: ImagePreview.Component,
-    Foot
+    [ImagePreview.Component.name]: ImagePreview.Component
   },
   beforeRouteLeave(to, from, next) {
     // ... to
-    window.scrollTo(0, 0)
-    next()
+    window.scrollTo(0, 0);
+    next();
   },
   props: {},
   data() {
@@ -85,111 +84,112 @@ export default {
       addressFlag: false,
       onlineArr: [],
       fid: this.$route.query.fid,
-      crop: this.$route.query.name || '作物',
-      areaName: '全部',
+      crop: this.$route.query.name || "作物",
+      areaName: "全部",
       page: 0,
       loading: false,
       finished: false,
-      area: '',
-      scollType: '',
+      area: "",
+      scollType: "",
       secondNav: true
       // isLoading: false //下拉model
-    }
+    };
   },
   computed: {
-    ...mapState(['mid', 'uid', 'initMid'])
+    ...mapState(["mid", "uid", "initMid"])
   },
   watch: {
     fid() {
-      this.fid = this.$route.query.fid
-      this.onlineArr = []
-      this.page = 0
-      this.getIndexData()
+      this.fid = this.$route.query.fid;
+      this.onlineArr = [];
+      this.page = 0;
+      this.getIndexData();
       // console.log("1 :>> ", 1);
     },
     crop() {
-      this.crop = this.$route.query.name
-      this.onlineArr = []
-      this.page = 0
-      this.getIndexData()
+      this.crop = this.$route.query.name;
+      this.onlineArr = [];
+      this.page = 0;
+      this.getIndexData();
     },
     area() {
-      this.onlineArr = []
-      this.page = 0
-      this.getIndexData()
+      this.onlineArr = [];
+      this.page = 0;
+      this.getIndexData();
     }
   },
   created() {},
   mounted() {
-    window.addEventListener('scroll', this.scrollHandler)
+    window.addEventListener("scroll", this.scrollHandler);
   },
   destroyed() {
-    window.removeEventListener('scroll', this.scrollHandler)
+    window.removeEventListener("scroll", this.scrollHandler);
   },
   methods: {
     scrollHandler() {
       var After_scollH =
         window.pageYOffset ||
         document.documentElement.scrollTop ||
-        document.body.scrollTop
-      var differH = After_scollH - Before_scollH
+        document.body.scrollTop;
+      var differH = After_scollH - Before_scollH;
       if (differH == 0) {
-        return false
+        return false;
       }
-      this.scollType = differH > 0 ? 'down' : 'up'
-      Before_scollH = After_scollH
+      this.scollType = differH > 0 ? "down" : "up";
+      Before_scollH = After_scollH;
     },
     scroll(val) {
       if (val.isFixed) {
-        if (this.scollType == 'down') {
+        if (this.scollType == "down") {
           //显示导航
-          this.secondNav = false
+          this.secondNav = false;
           // console.log('down :>> ');
         } else {
           //隐藏导航
-          this.secondNav = true
+          this.secondNav = true;
           // console.log('up :>> ');
         }
       }
     },
     onLoad() {
-      this.getIndexData()
+      this.getIndexData();
     },
     getIndexData() {
       // 获取首页数据
-      this.page += 1
+      this.page += 1;
       this.$axios
-        .fetchPost('/Mobile/Wen/index', {
+        .fetchPost("/API/Wen/index", {
           mId: this.initMid,
           fId: this.fid,
           areaId: this.area,
           page: this.page,
           uId: this.uid,
-          isall: 'all'
+          isall: "all",
+          location: window.localStorage.getItem("city")
         })
         .then(res => {
           if (res.data.code == 0) {
-            this.onlineArr = this.onlineArr.concat(res.data.data)
-            this.loading = false
+            this.onlineArr = this.onlineArr.concat(res.data.data);
+            this.loading = false;
             // this.isLoading = false
             // this.isLoading = false
           } else if (res.data.code == 201) {
-            this.finished = true
+            this.finished = true;
           }
-        })
+        });
     },
     chooseAddress(area, name) {
-      this.area = area
+      this.area = area;
       // this.getIndexData();
-      this.areaName = name
-      this.finished = false
-      this.addressFlag = false
+      this.areaName = name;
+      this.finished = false;
+      this.addressFlag = false;
     },
     goBack() {
-      this.$router.push({ path: '/index' })
+      this.$router.push({ path: "/index" });
     },
     openBox() {
-      this.addressFlag = !this.addressFlag
+      this.addressFlag = !this.addressFlag;
     },
     preverImg(item) {
       //网诊的图片预览
@@ -197,16 +197,16 @@ export default {
         images: item.arr,
         startPosition: item.index,
         closeable: true
-      })
+      });
     },
     goToChooseCrop() {
       this.$router.push({
-        path: '/choose_crop',
+        path: "/choose_crop",
         query: { crop: this.crop }
-      })
+      });
     }
   }
-}
+};
 </script>
 <style lang="stylus" scoped>
 .index_online-container

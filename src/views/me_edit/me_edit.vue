@@ -162,7 +162,7 @@ export default {
         formData.append("urls[]",res.filePress);
         formData.append("uId", this.uid);
         this.$axios
-          .fetchPost("/Mobile/Wen/OssUploadFile", formData)
+          .fetchPost("/API/Wen/OssUploadFile", formData)
           .then((res) => {
             // console.log("res :>> ", res);
             if (res.data.code == 0) {
@@ -177,7 +177,7 @@ export default {
     },
     getInfo() {
       this.$axios
-        .fetchPost("/Mobile/User/userCenter", { uId: this.uid, mId: this.mid })
+        .fetchPost("/API/User/userCenter", { uId: this.uid, mId: this.mid })
         .then((res) => {
           if (res.data.code == 0) {
             let data = res.data.data;
@@ -196,7 +196,7 @@ export default {
     upDate() {
       //分开上传
       this.$axios
-        .fetchPost("Mobile/User/updateInfo", {
+        .fetchPost("API/User/updateInfo", {
           uId: this.uid,
           gender: this.sex,
           realname: this.name,

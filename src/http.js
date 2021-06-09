@@ -13,7 +13,7 @@ axios.interceptors.request.use(
   config => {
     //在发送请求之前做什么事
 
-    if (config.url === "/Mobile/Wen/OssUploadFile") {
+    if (config.url === "/API/Wen/OssUploadFile") {
       return config;
     }
     if (config.method === "post") {

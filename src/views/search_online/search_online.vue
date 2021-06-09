@@ -2,22 +2,39 @@
   <div class="search-online">
     <Header :indexHeader="false"></Header>
     <form action="/">
-      <van-search v-model="value" show-action clearable placeholder="搜索问答/搜索作物" @search="onSearch" @cancel="onCancel" />
+      <van-search
+        v-model="value"
+        show-action
+        clearable
+        placeholder="搜索问答/搜索作物"
+        @search="onSearch"
+        @cancel="onCancel"
+      />
     </form>
     <div class="content01" v-if="zuowu != ''">
       <div class="title">作物</div>
-      <div class="text-box" v-for="item in zuowu" :key="item.fid" @click="goToCrop(item.name,item.threads,item.fid)">
+      <div
+        class="text-box"
+        v-for="item in zuowu"
+        :key="item.fid"
+        @click="goToCrop(item.name, item.threads, item.fid)"
+      >
         <van-image class="img" :src="item.icon"></van-image>
         <div class="text">
-          <div class="p1">{{item.name}}</div>
-          <div class="p2">网诊：{{item.threads}}次</div>
+          <div class="p1">{{ item.name }}</div>
+          <div class="p2">网诊：{{ item.threads }}次</div>
         </div>
       </div>
     </div>
     <div class="content02" v-if="online.length != ''">
       <div class="title">线上网诊</div>
       <ul class="online-ul">
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
           <li v-for="item in online" :key="item.id">
             <OnlineItem :list="item"></OnlineItem>
           </li>
@@ -30,10 +47,11 @@
 <script>
 import Header from "@/components/header/header";
 import OnlineItem from "@/components/online_item/online_item";
+import { mapState } from "vuex";
 export default {
   name: "searchOnline",
   metaInfo: {
-    title: "搜索网诊",
+    title: "搜索网诊"
   },
   components: { Header, OnlineItem },
   props: {},
@@ -45,26 +63,26 @@ export default {
       noData: false,
       loading: true,
       finished: false,
-      page: 0,
+      page: 0
     };
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     // ...
-    if(from.name != 'askDetail'){
+    if (from.name != "askDetail") {
       // this.value = ''
       next(vm => {
-        vm.value = ''
-        vm.zuowu = []
-        vm.online = []
-      })
+        vm.value = "";
+        vm.zuowu = [];
+        vm.online = [];
+      });
     }
-    next()
+    next();
   },
   created() {},
-  computed: {},
-  watch: {
-   
+  computed: {
+    ...mapState(["initMid"])
   },
+  watch: {},
   mounted() {},
   destroyed() {},
   methods: {
@@ -84,8 +102,13 @@ export default {
       this.noData = false;
       this.page += 1;
       this.$axios
-        .fetchPost("Mobile/Wen/index", { keyword: this.value, page: this.page,isall:'all' })
-        .then((res) => {
+        .fetchPost("API/Wen/index", {
+          keyword: this.value,
+          page: this.page,
+          isall: "all",
+          mId: this.initMid
+        })
+        .then(res => {
           if (res.data.code == 0) {
             this.loading = false;
             this.zuowu = res.data.zwdata;
@@ -102,16 +125,16 @@ export default {
     },
     onCancel() {
       this.$router.push({
-        path: "/index",
+        path: "/index"
       });
     },
     goToCrop(name, time, fid) {
       this.$router.push({
         path: "/searchOnlineCrop",
-        query: { crop: name, time: time, fid: fid },
+        query: { crop: name, time: time, fid: fid }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
