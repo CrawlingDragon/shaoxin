@@ -1,19 +1,41 @@
 <template>
   <div class="choose_crop-container">
-
     <form action="/" class="from">
-      <van-search v-model="value" show-action placeholder="请输入作物名" @search="onSearch" @cancel="onCancel" clearable @input="onSearch" />
+      <van-search
+        v-model="value"
+        show-action
+        placeholder="请输入作物名"
+        @search="onSearch"
+        @cancel="onCancel"
+        clearable
+        @input="onSearch"
+      />
     </form>
-    <van-index-bar class="bar" :index-list="letterList" v-show="!searchResultShow">
+    <van-index-bar
+      class="bar"
+      :index-list="letterList"
+      v-show="!searchResultShow"
+    >
       <div v-for="item in list" :key="item.id">
         <van-index-anchor :index="item.letter" />
-        <van-cell :title="it.name" v-for="it in item.index" :key="it.fid" @click="choose(it)" />
+        <van-cell
+          :title="it.name"
+          v-for="it in item.index"
+          :key="it.fid"
+          @click="choose(it)"
+        />
       </div>
     </van-index-bar>
     <ul class="search_result-ul" v-show="searchResultShow">
-      <div class="noData" v-show="noResult">抱歉没有该作物,可选择<span class="other" @click="choose({name:'其他',fid:195})">其他</span> </div>
+      <div class="noData" v-show="noResult">
+        抱歉没有该作物,可选择<span
+          class="other"
+          @click="choose({ name: '其他', fid: 195 })"
+          >其他</span
+        >
+      </div>
       <li v-for="item in searchResult" :key="item.fid" @click="choose(item)">
-        {{item.name}}
+        {{ item.name }}
       </li>
     </ul>
   </div>
@@ -24,10 +46,15 @@ import { mapState } from "vuex";
 export default {
   name: "askChooseCrop",
   metaInfo: {
-    title: "选择作物",
+    title: "选择作物"
   },
   components: {},
-  props: {},
+  props: {
+    baseEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       value: "",
@@ -36,7 +63,7 @@ export default {
       cropName: this.$route.query.crop,
       searchResult: [],
       searchResultShow: false,
-      noResult: false,
+      noResult: false
     };
   },
   created() {},
@@ -44,18 +71,18 @@ export default {
     ...mapState(["uid"]),
     letterList() {
       let arr = [];
-      this.list.forEach((el) => {
+      this.list.forEach(el => {
         arr.push(el.letter);
       });
       return arr;
     },
     crops() {
       let arr = [];
-      this.list.forEach((el) => {
+      this.list.forEach(el => {
         arr = arr.concat(el.index);
       });
       return arr;
-    },
+    }
   },
   watch: {
     searchResult(newVal) {
@@ -64,7 +91,7 @@ export default {
       } else {
         this.noResult = false;
       }
-    },
+    }
   },
   mounted() {
     this.getCropList();
@@ -73,7 +100,7 @@ export default {
   methods: {
     onSearch(val) {
       this.searchResult = [];
-      this.crops.forEach((el) => {
+      this.crops.forEach(el => {
         if (el.name.indexOf(val) >= 0) {
           this.searchResult.push(el);
         }
@@ -85,25 +112,32 @@ export default {
     },
     choose(item) {
       //搜索历史 选择作物
-      this.$router.go(-1);
+      if (!this.baseEdit) {
+        this.$router.go(-1);
+      }
+
       this.$emit("getCrop", item);
       this.searchResultShow = false;
     },
     onCancel() {
-      this.$router.go(-1);
+      if (!this.baseEdit) {
+        this.$router.go(-1);
+      }
+      let item = "cancel";
+      this.$emit("getCrop", item);
       this.searchResultShow = false;
     },
     getCropList() {
       this.$axios
         .fetchPost("API/Mpublic/getCropIndexQuery", { uId: this.uid })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.list = res.data.data;
             this.hispitalList = res.data.historydata;
           }
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>
@@ -118,6 +152,8 @@ export default {
   bottom 0
   z-index 333333
   overflow auto
+  /deep/.van-field__control
+    text-align left !important
   .content
     height auto
   .from

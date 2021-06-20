@@ -12,7 +12,10 @@
           class="case"
           readonly
           clickable
+          autosize
           name="case"
+          type="textarea"
+          rows="1"
           :value="caseValue"
           label="方案"
           placeholder="请选择"
@@ -74,12 +77,12 @@
             </template>
           </van-field>
         </div>
-        <div class="use-medicine" v-if="false">
+        <div class="use-medicine">
           <div class="title">用药</div>
           <div
             class="add-box van-hairline--bottom"
             v-for="(item, index) in medicine"
-            :key="item"
+            :key="item.specid"
           >
             <van-icon
               name="cross"
@@ -91,17 +94,19 @@
                 readonly
                 clickable
                 name="picker"
-                :value="value"
+                :value="item.name"
                 label="名称"
                 placeholder="请选择药品"
-                @click="showPicker = true"
+                @click="clickChooseDrug(index)"
+                :rules="[{ required: true, message: '药品名称不能为空' }]"
               />
-              <van-popup v-model="showPicker" position="bottom">
+              <van-popup v-model="drugPicker" position="bottom">
+                <!-- 选择药品 -->
                 <van-picker
                   show-toolbar
-                  :columns="columns"
-                  @confirm="onConfirm"
-                  @cancel="showPicker = false"
+                  :columns="medicineColumns"
+                  @confirm="onDrugConfirm"
+                  @cancel="drugPicker = false"
                 />
               </van-popup>
             </div>
@@ -110,26 +115,28 @@
                 readonly
                 clickable
                 name="picker"
-                :value="value"
+                :value="item.spec"
                 label="规格"
                 placeholder="请选择规格"
-                @click="showPicker = true"
+                @click="clickChooseDrugSize(index)"
+                :rules="[{ required: true, message: '规格不能为空' }]"
               />
-              <van-popup v-model="showPicker" position="bottom">
+              <van-popup v-model="guigeShow" position="bottom">
                 <van-picker
                   show-toolbar
-                  :columns="columns"
-                  @confirm="onConfirm"
-                  @cancel="showPicker = false"
+                  :columns="afterDrugSizeColumns"
+                  @confirm="onDrugSizeConfirm"
+                  @cancel="guigeShow = false"
                 />
               </van-popup>
             </div>
             <van-field
-              v-model="username"
-              name="数量"
-              label="数量"
-              placeholder="请输入"
+              v-model="item.quantity"
+              name="用量/用法"
+              label="用量/用法"
+              placeholder="请输入用量/用法"
               class="number"
+              :rules="[{ required: true, message: '用量/用法不能为空' }]"
             />
           </div>
           <div class="add-btn-title" @click="addMedicine">增加</div>
@@ -152,15 +159,17 @@
 <script>
 import Header from "@/components/header/header";
 import { mapState } from "vuex";
-import EXIF from "exif-js";
-import { imgPress } from "@/common/js/util";
+// import EXIF from "exif-js";
+import { exifImg } from "@/common/js/util";
 export default {
+  metaInfo: {
+    title: "发布农事"
+  },
   name: "base_edit",
   components: { Header },
   props: {},
   data() {
     return {
-      id: "", //编辑时，农事记录的id
       eitdObj: "", //编辑内容对象
       caseValue: "",
       caseId: "",
@@ -173,33 +182,86 @@ export default {
       message: "",
       uploader: [],
       imgList: [],
-      medicine: [1, 2],
-      haveMedicine: false
+      medicine: [],
+      drugValue: "",
+      medicineColumns: [],
+      drugSizeValue: "", // 规格
+      // drugSizeColumns: [],
+      drugNumber: 0,
+      haveMedicine: false,
+      drugPicker: false,
+      guigeShow: false,
+      chooseDrugActiveIndex: 0, //选中的点击用药索引
+      chooseDrugSizeActive: 0
     };
   },
   computed: {
-    ...mapState(["mid", "uid"])
+    ...mapState(["mid", "uid"]),
+    classId() {
+      //获取路由classId参数
+      return this.$route.query.classId;
+    },
+    id() {
+      // 获取路由id参数
+      return this.$route.query.id;
+    },
+    afterDrugSizeColumns() {
+      // 找到对应的规格pciker数据
+      let arr = [];
+      this.medicineColumns.forEach(item => {
+        if (
+          this.medicine[this.chooseDrugSizeActive].productid == item.productid
+        ) {
+          arr = item.spec_list;
+        }
+      });
+      return arr;
+    },
+    druginfo_product_ids() {
+      // 调整用药productid数组，用于发布数据使用
+      let arr = [];
+      this.medicine.forEach(item => {
+        arr.push(item.productid);
+      });
+      return arr;
+    },
+    druginfo_spec_ids() {
+      // 调整用药规格id数组，用于发布数据使用
+      let arr = [];
+      this.medicine.forEach(item => {
+        arr.push(item.spec);
+      });
+      return arr;
+    },
+    druginfo_product_quantity() {
+      // 调整用药数量id数组，用于发布数据使用
+      let arr = [];
+      this.medicine.forEach(item => {
+        arr.push(item.quantity);
+      });
+      return arr;
+    }
   },
   watch: {},
   mounted() {
     this.getCase();
-    if (this.$route.query.id) {
+    this.getDrugChooseCase();
+    if (this.id) {
       this.getEditData();
     }
-
-    // console.log("object :>> ", this.$refs.cases.getValues());
+    if (this.classId) {
+      this.getOneCaseData();
+    }
   },
   destroyed() {},
   methods: {
     beforeRead(file) {
       return new Promise(resolve => {
-        EXIF.getData(file, function() {
-          let Orientation;
-          Orientation = EXIF.getTag(this, "Orientation");
-          imgPress({ file: file, Orientation: Orientation }).then(res => {
-            resolve(res.filePress);
-          });
+        let img = exifImg(file).then(res => {
+          console.log("res :>> ", res);
+          return res;
         });
+        resolve(img);
       });
     },
     afterRead(file, detail) {
@@ -222,7 +284,7 @@ export default {
       return true;
     },
     getEditData() {
-      this.id = this.$route.query.id;
+      // 获取整条农事数据
       this.$axios
         .fetchGet("API/User/getfarmerdata", {
           Id: this.id
@@ -233,10 +295,34 @@ export default {
             this.caseValue = data.point_name;
             this.date = `${data.starttime}/${data.endtime}`;
             this.message = data.content;
+            this.medicine = data.druginfo_list;
             data.thumb_urls.forEach(item => {
               this.uploader.push({ url: item });
               this.imgList.push(item);
             });
+          }
+        });
+    },
+    getOneCaseData() {
+      // 获取节点农事数据
+      this.$axios
+        .fetchGet("/API/User/getProjectPointData", {
+          classId: this.classId,
+          uId: this.uid
+        })
+        .then(res => {
+          if (res.data.code == 0) {
+            let data = res.data.data;
+            this.caseValue = data.point_name;
+            this.date = `${data.starttime}/${data.endtime}`;
+            this.message = data.content;
+            this.medicine = data.druginfo_list;
+            if (data.thumb_urls) {
+              data.thumb_urls.forEach(item => {
+                this.uploader.push({ url: item });
+                this.imgList.push(item);
+              });
+            }
           }
         });
     },
@@ -259,7 +345,6 @@ export default {
       this.show = false;
       this.date = `${this.formatDate(start)}/${this.formatDate(end)}`;
     },
-
     onSubmit(values) {
       console.log("submit", values);
       this.issueFramData();
@@ -269,14 +354,17 @@ export default {
       let options = {};
       let sucessMessage = "";
       let url = "";
-      if (this.$route.query.id) {
+      if (this.id) {
         // 修改农事 接口参数
         options = {
           planer: this.caseId,
-          Id: this.$route.query.id,
+          Id: this.id,
           starttoendtime: this.date,
           content: this.message,
-          picurl: this.imgList.join(",")
+          picurl: this.imgList.join(","),
+          druginfo_product_ids: this.druginfo_product_ids,
+          druginfo_spec_ids: this.druginfo_spec_ids,
+          druginfo_product_quantity: this.druginfo_product_quantity
         };
         sucessMessage = "修改成功";
         url = "/API/User/subfarmerdata";
@@ -287,7 +375,10 @@ export default {
           uId: this.uid,
           starttoendtime: this.date,
           content: this.message,
-          picurl: this.imgList.join(",")
+          picurl: this.imgList.join(","),
+          druginfo_product_ids: this.druginfo_product_ids,
+          druginfo_spec_ids: this.druginfo_spec_ids,
+          druginfo_product_quantity: this.druginfo_product_quantity
         };
         sucessMessage = "发布成功";
         url = "/API/User/addfarmerdata";
@@ -313,11 +404,60 @@ export default {
           }
         });
     },
+    getDrugChooseCase() {
+      //获取用药的方案内容数组
+      this.$axios
+        .fetchGet("/API/User/getBaseDruginfo", { uId: this.uid })
+        .then(res => {
+          let data = res.data;
+          if (data.code === 0) {
+            this.medicineColumns = data.data;
+          }
+        });
+    },
+    clickChooseDrug(index) {
+      //点击选择用药
+      this.chooseDrugActiveIndex = index;
+      this.drugPicker = true;
+    },
+
+    onDrugConfirm(val) {
+      // 选择用药
+      this.drugPicker = false;
+      this.medicine[this.chooseDrugActiveIndex].name = val.name;
+      this.medicine[this.chooseDrugActiveIndex].drugId = val.productid;
+      this.medicine[this.chooseDrugActiveIndex].productid = val.productid;
+    },
+    clickChooseDrugSize(index) {
+      //点击选择规格
+      this.chooseDrugSizeActive = index;
+      this.guigeShow = true;
+    },
+    onDrugSizeConfirm(val) {
+      // 选择药品规格
+      this.medicine[this.chooseDrugActiveIndex].spec = val.spec;
+      this.guigeShow = false;
+    },
     closeMedicine(index) {
-      console.log("index :>> ", index);
+      // 删除用药
+      this.$dialog
+        .confirm({
+          title: "删除用药",
+          message: "是否要删除用药"
+        })
+        .then(() => {
+          // on close
+          this.medicine.splice(index, 1);
+        });
     },
     addMedicine() {
-      this.medicine.push(1);
+      this.medicine.push({
+        name: "",
+        spec: "",
+        quantity: "",
+        drugId: "",
+        productid: ""
+      });
     },
     goBack() {
       this.$router.go(-1);
@@ -353,7 +493,7 @@ export default {
           top 10px
           color: #999999;
           font-size 20px
-          z-index 99999
+          z-index 9
           padding 5px
       & > .title
         margin-left 12px

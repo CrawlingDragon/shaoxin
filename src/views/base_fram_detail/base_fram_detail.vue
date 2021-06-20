@@ -199,7 +199,6 @@ export default {
   props: {},
   data() {
     return {
-      id: "", //编辑时，农事记录的id
       eitdObj: "", //编辑内容对象
       caseValue: "",
       caseId: "",
@@ -221,7 +220,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["mid", "uid"])
+    ...mapState(["mid", "uid"]),
+    id() {
+      return this.$route.query.id;
+    }
   },
   watch: {
     message(newVal) {
@@ -231,7 +233,6 @@ export default {
           if (h >= 73) {
             this.ifHaveMoreText = true;
           }
-          console.log("h :>> ", h);
         }, 100);
       }
     }
@@ -282,7 +283,6 @@ export default {
       return true;
     },
     getEditData() {
-      this.id = this.$route.query.id;
       this.$axios
         .fetchGet("API/User/getfarmerdata", {
           Id: this.id

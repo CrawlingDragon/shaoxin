@@ -1,3 +1,9 @@
+<!-- 预览的获取 ref，undefined -->
+
+<!-- 分享二维码 -->
+
+<!-- 农事记录 无数据 -->
+
 # shaoxing
 
 ## Project setup

@@ -83,8 +83,8 @@ export default {
 </script>
 <style lang="stylus">
 #app
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
+  // -webkit-font-smoothing antialiased
+  // -moz-osx-font-smoothing grayscale
   text-align left
   background #EBEBEB
   min-height 100%

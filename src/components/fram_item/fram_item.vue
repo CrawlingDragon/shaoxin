@@ -97,6 +97,7 @@ export default {
   display flex
   margin-bottom 17px
   padding-bottom 15px
+
   .left-time
     width 97px
     font-size: 14px;

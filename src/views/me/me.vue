@@ -32,12 +32,21 @@
       </van-cell>
       <van-cell
         title="基地中心"
-        :to="{ path: '/base_center', query: { id: info.bid } }"
+        :to="{ path: '/base_center', query: { id: info.uid } }"
         is-link
       >
         <!-- 使用 right-icon 插槽来自定义右侧图标 -->
         <template #icon>
           <div class="icon03"></div>
+        </template>
+      </van-cell>
+      <van-cell
+        title="作物解决方案"
+        :to="{ path: '/solution', query: { id: info.bid } }"
+        is-link
+      >
+        <template #icon>
+          <div class="icon_zuowu"></div>
         </template>
       </van-cell>
       <van-cell title="土壤检测" :to="{ path: '/whole_cetu_list' }" is-link>
@@ -146,6 +155,7 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
+@import '../../common/css/base.styl';
 .me-container
   padding-bottom 60px
   .user-box
@@ -195,9 +205,14 @@ export default {
     .icon03
       width 18px
       height 18px
-      background url('./61.png') no-repeat
+      bj-image('./15')
       background-size 100%
       background-position center
+      margin-right 10px
+    .icon_zuowu
+      width 16px
+      height 20px
+      bj-image('./16')
       margin-right 10px
     .icon04
       width 18px

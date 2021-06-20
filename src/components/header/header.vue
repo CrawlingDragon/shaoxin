@@ -35,9 +35,21 @@
           网诊
         </div>
       </div> -->
-      <div class="no_index_header" v-if="!indexHeader" @click="clickLogo">
+      <div
+        class="no_index_header"
+        v-if="!indexHeader && !goBackHeader"
+        @click="clickLogo"
+      >
         <van-image :src="headerLogo" class="logo"></van-image>
         {{ headerText }}
+      </div>
+      <div
+        class="no_index_header"
+        v-if="!indexHeader && goBackHeader"
+        @click="routerBack"
+      >
+        <van-icon name="arrow-left" class="arrow-left" size="16" />
+        <span class="back">返回</span>
       </div>
       <div class="right-nav van-hairline--left">
         <div class="index-icon" @click.stop="goToIndex">
@@ -60,6 +72,10 @@ export default {
     indexHeader: {
       type: Boolean,
       default: true
+    },
+    goBackHeader: {
+      type: Boolean,
+      default: false
     },
     haveBackIcon: {
       type: Boolean,
@@ -150,6 +166,9 @@ export default {
     clickLogo() {
       this.$emit("clickLogoImg");
       this.$router.push({ path: "/index" }).catch(err => err);
+    },
+    routerBack() {
+      this.$router.go(-1);
     },
     goToSearch() {
       // 路由  搜索网诊
@@ -274,4 +293,11 @@ export default {
       height 20px
       margin-left 12px
       margin-right 10px
+    .arrow-left
+      color #999999
+      margin-right 5px
+      padding-left 12px
+    .back
+      color #999
+      padding-right 5px
 </style>

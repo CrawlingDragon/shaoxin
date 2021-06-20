@@ -42,8 +42,15 @@
       </div> -->
     </div>
     <div class="base-box" v-show="baseList.length != 0">
-      <div class="title">
+      <div class="title van-hairline--bottom">
         推荐基地
+        <div
+          class="look-bar"
+          @click="goToBaseList"
+          v-show="baseList.length != 0"
+        >
+          更多 >
+        </div>
       </div>
       <ul class="base-ul">
         <li v-for="item in baseList" :key="item.gid">
@@ -51,12 +58,16 @@
         </li>
       </ul>
     </div>
-    <div class="look-bar" @click="goToBaseList" v-show="baseList.length != 0">
-      更多 >
-    </div>
     <div class="hospital-box" v-show="hospitalArr.length != 0">
-      <div class="title">
-        推荐医院<span>加入新型庄稼医院，免费享受会员服务</span>
+      <div class="title van-hairline--bottom">
+        推荐医院
+        <div
+          class="look-bar"
+          @click="lookMoreHospital"
+          v-show="hospitalArr.length != 0"
+        >
+          找医院 >
+        </div>
       </div>
       <ul class="h-ul">
         <li v-for="item in hospitalArr" :key="item.id">
@@ -64,37 +75,41 @@
         </li>
       </ul>
     </div>
-    <div
-      class="look-bar"
-      @click="lookMoreHospital"
-      v-show="hospitalArr.length != 0"
-    >
-      找医院 >
-    </div>
     <div class="vip-box" @click="goToVip">
       <img src="./49.png" alt="" />
     </div>
     <div class="online-box" v-show="expertArr.length != 0">
-      <div class="title">推荐专家</div>
+      <div class="title van-hairline--bottom">
+        推荐专家
+        <div
+          class="look-bar"
+          @click="goToExpert"
+          v-show="expertArr.length != 0"
+        >
+          找专家 >
+        </div>
+      </div>
       <ul class="e-ul">
         <li v-for="item in expertArr" :key="item.id">
           <RecommendExpert :list="item"></RecommendExpert>
         </li>
       </ul>
     </div>
-    <div class="look-bar" @click="goToExpert" v-show="expertArr.length != 0">
-      找专家 >
-    </div>
     <div class="online-box">
-      <div class="title">网诊</div>
+      <div class="title van-hairline--bottom">
+        网诊
+        <div class="look-bar" @click="goToAnswer">找答案 ></div>
+      </div>
       <ul class="o-ul">
         <li v-for="item in onlineArr" :key="item.id" ref="li">
           <OnlineItem :list="item" @preImage="preverImg"></OnlineItem>
         </li>
       </ul>
     </div>
-    <div class="look-bar" @click="goToAnswer">找答案 ></div>
     <Foot></Foot>
+    <van-overlay :show="overlayShow" z-index="3">
+      <van-loading type="spinner" class="loading" color="#333" />
+    </van-overlay>
   </div>
 </template>
 <script>
@@ -132,12 +147,20 @@ export default {
       scrollInit: false,
       shareStoreUrl: process.env.VUE_APP_SHARE_URL,
       h: 0,
-      city: window.localStorage.getItem("city")
+      city: window.localStorage.getItem("city"),
+      overlay: false
     };
   },
   created() {},
   computed: {
-    ...mapState(["initMid", "uid"])
+    ...mapState(["initMid", "uid"]),
+    overlayShow() {
+      if (this.baseList.length === 0 && !this.overlay) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
   watch: {
     $route() {
@@ -147,6 +170,7 @@ export default {
       this.city = window.localStorage.getItem("city");
     },
     initMid() {
+      this.overlay = false;
       this.getIndexData();
     },
     city() {
@@ -198,6 +222,7 @@ export default {
 
     getIndexData() {
       // 获取首页数据
+      this.overlay = false;
       this.$axios
         .fetchPost("/API/Index/index", {
           mId: this.initMid,
@@ -205,6 +230,7 @@ export default {
           location: window.localStorage.getItem("city")
         })
         .then(res => {
+          this.overlay = true;
           if (res.data.code == 0) {
             this.swiperArr = res.data.data.list_ad;
             this.hospitalArr = res.data.data.list_mpublic;
@@ -307,16 +333,25 @@ export default {
     .title
       height 40px
       padding-left 12px
-      border-bottom 1px solid #E5E5E5
       line-height 40px
       font-size 17px
       color #343434
       overflow hidden
       box-sizing border-box
+      position relative
       span
         margin-left 10px
         color #9A9A9A
         font-size 12px
+      .look-bar
+        position absolute
+        right 12px
+        top 0
+        height 40px
+        text-align center
+        color #165CBC
+        font-size 12px
+        line-height 40px
     .h-ul
       padding 0 10px
       padding-top 10px
@@ -336,24 +371,11 @@ export default {
         break-after: right
         width 100%
     .base-ul
-      padding-top 10px
-      padding-bottom 10px
-      margin-left 12px
+      padding 10px 12px
       border-bottom 1px solid #e5e5e5
       li
-        width 50%
-        padding-right 12px
-        padding-bottom 10px
-        display inline-block
-        vertical-align top
-  .look-bar
-    height 40px
-    text-align center
-    color #165CBC
-    font-size 12px
-    line-height 40px
-    background #fff
-    border-bottom 1px solid #e5e5e5
+        width 100%
+        margin-bottom 10px
   .vip-box
     width 100%
     margin-bottom 10px
@@ -372,8 +394,17 @@ export default {
       height 40px
       line-height 40px
       padding-left 12px
-      border-bottom 1px solid #e5e5e5
       background #fff
+      position relative
+      .look-bar
+        position absolute
+        right 12px
+        top 0
+        height 40px
+        text-align center
+        color #165CBC
+        font-size 12px
+        line-height 40px
     .o-ul
       margin-left 12px
       li
@@ -396,4 +427,11 @@ export default {
     font-size 14px
     color #999
     text-align center
+.van-overlay
+  background rgba(235, 235, 235, .4)
+  .loading
+    position absolute
+    left 50%
+    top 50%
+    transform translate(-50%,-50%)
 </style>

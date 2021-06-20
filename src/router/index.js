@@ -316,6 +316,38 @@ const routes = [
     component: () => import(/*webpackChunkName:"me" */ "@/views/me/me")
   },
   {
+    path: "/solution",
+    component: () =>
+      import(/* webpackChunkName:"solution" */ "@/views/solution/solution"),
+    children: [
+      {
+        path: "/",
+        redirect: "/takeCase"
+      },
+      {
+        path: "/allCase",
+        component: () =>
+          import(
+            /* webpackChunkName:"allCase" */ "@/views/solution/all_case/all_case.vue"
+          )
+      },
+      {
+        path: "/takeCase",
+        component: () =>
+          import(
+            /* webpackChunkName:"takeCase" */ "@/views/solution/take_case/take_case"
+          )
+      }
+    ]
+  },
+  {
+    path: "/preview",
+    component: () =>
+      import(
+        /* webpackChunkName:"preview" */ "@/views/solution/preview/preview"
+      )
+  },
+  {
     path: "/me_edit",
     name: "meEdit",
     component: () =>
@@ -399,13 +431,51 @@ const routes = [
         /*webpackChunkName:"video_detail" */ "@/views/video_detail/video_detail"
       )
   },
+
   {
     path: "/base_center",
     name: "base_center",
     component: () =>
       import(
         /*webpackChunkName:"base_center" */ "@/views/base_center/base_center"
-      )
+      ),
+    children: [
+      {
+        path: "/",
+        redirect: "/center"
+      },
+      {
+        path: "/center",
+        component: () =>
+          import(
+            /* webpackChunkName:"center" */ "@/views/base_center/center/center"
+          )
+      },
+      {
+        path: "/baseInfoEdit",
+        name: "baseEdit",
+        component: () =>
+          import(
+            /* webpackChunkName:"baseEdit" */ "@/views/base_center/base_info_edit/base_info_edit"
+          )
+      },
+      {
+        path: "/cropManagement",
+        name: "cropManagement",
+        component: () =>
+          import(
+            /* webpackChunkName:"cropManagement" */ "@/views/base_center/crop_management/crop_management"
+          )
+      },
+      {
+        path: "/cropRecord",
+        name: "cropRecord",
+        component: () =>
+          import(
+            /* webpackChunkName:"cropRecord" */ "@/views/base_center/crop_record/crop_record"
+          )
+      }
+    ]
   },
   {
     path: "/base_center_fram_history",

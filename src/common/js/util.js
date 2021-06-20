@@ -1,3 +1,4 @@
+import EXIF from "exif-js";
 export function inWeixin() {
   var ua = navigator.userAgent.toLowerCase();
   if (ua.match(/MicroMessenger/i) == "micromessenger") {
@@ -14,7 +15,19 @@ export function getIsApp() {
   }
   return false;
 }
-export function imgPress({
+
+export function exifImg(file) {
+  return new Promise(resolve => {
+    EXIF.getData(file, function() {
+      let Orientation;
+      Orientation = EXIF.getTag(this, "Orientation");
+      imgPress({ file: file, Orientation: Orientation }).then(res => {
+        resolve(res.filePress);
+      });
+    });
+  });
+}
+function imgPress({
   file,
   Orientation,
   rate = 1,

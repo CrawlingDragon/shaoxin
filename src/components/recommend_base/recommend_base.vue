@@ -1,7 +1,7 @@
 <template>
   <div class="recommend_base-container" @click="goToDetail(list.qrcode)">
     <!-- 192 -->
-    <van-image class="img" :src="list.logo" fit="cover"></van-image>
+    <van-image class="img" :src="list.logo" fit="scale-down"></van-image>
     <div class="info-bar">
       <div class="name">{{ list.companyname }}</div>
       <div class="scale">规模：{{ list.guimo }}</div>
@@ -38,32 +38,35 @@ export default {
 <style lang="stylus" scoped>
 .recommend_base-container
     font-size 0
+    background #F6F6F6
     .img
-        width 100%
-        height 140px
+        width 50%
+        height 105px
         background #999999
+        display inline-block
+        vertical-align top
     .info-bar
+        display inline-block
+        width 50%
         background #F6F6F6
         height 88px
-        padding 0 10px
+        padding 13px 10px 0
+        vertical-align top
+        line-height 1.2
         .name
-            font-size: 14px;
-            font-family: Microsoft YaHei;
+            font-size: 16px;
             font-weight: 400;
             color: #333333;
             overflow hidden
             text-overflow ellipsis
             white-space nowrap
             word-break break-all
-            padding 8px 0
+            padding-bottom 10px
         .scale,.crop
-            font-size: 12px;
-            font-family: Microsoft YaHei;
+            font-size: 14px;
             font-weight: 400;
             color: #999999;
-            overflow hidden
-            text-overflow ellipsis
-            white-space nowrap
-            word-break break-all
             margin-bottom 5px
+        .scale
+          margin-bottom 2px
 </style>
