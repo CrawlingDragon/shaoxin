@@ -119,7 +119,7 @@ export default {
   top 0
   right 0
   left 0
-  z-index 4
+  z-index 100
   .wrap
     width 100%
     max-width 640px

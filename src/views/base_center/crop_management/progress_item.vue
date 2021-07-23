@@ -20,7 +20,7 @@ export default {
     item: {
       type: Object,
       default: function() {
-        return { classname: "", percent: 0 };
+        return { classname: "", percent: 0, id: "" };
       }
     }
   },
@@ -38,9 +38,10 @@ export default {
 .progress-item
   display flex
   align-items center
-  height 31px
+  min-height 21px
+  margin-bottom 10px
   .left
-    width 100px
+    width 150px
     font-size 14px
     color #333
     padding 0 10px 0 10px
@@ -48,8 +49,8 @@ export default {
     flex 1
     min-width 0
   .right
-    width auto
-    text-align left
+    width 70px
+    text-align center
     padding-left 15px
     color #155BBB
     font-size 14px

@@ -22,7 +22,11 @@
       >
     </div>
     <div class="progress-box van-hairline--bottom" ref="h2">
-      <div v-for="it in navProgressList" :key="it.classname">
+      <div
+        v-for="(it, index) in navProgressList"
+        :key="it.classname"
+        @click="clickProgress(index)"
+      >
         <ProgressItem :item="it"></ProgressItem>
       </div>
     </div>
@@ -53,7 +57,9 @@
           :key="item.clasname"
           class="periods"
         >
-          <Period :period="item"></Period>
+          <div :ref="item.id">
+            <Period :period="item"></Period>
+          </div>
         </div>
       </div>
     </div>
@@ -70,7 +76,7 @@ export default {
   props: {},
   data() {
     return {
-      w: 0,
+      w: 10,
       management: [],
       active1: 0,
       active: 0,
@@ -92,7 +98,8 @@ export default {
           arr.push({
             classname: item.classname,
             percent: item.percent,
-            option: this.topArr[index]
+            option: this.topArr[index],
+            id: item.id
           });
         }
       });
@@ -116,13 +123,15 @@ export default {
     window.removeEventListener("scroll", this.scrollHander, false);
   },
   methods: {
+    clickProgress(index) {
+      this.clickHandle(1, index);
+    },
     stickyChange(obj) {
       this.isFixed = obj.isFixed;
     },
     clickHandle(top, index) {
       this.$nextTick(() => {
         this.top = this.$refs.periods[index].offsetTop;
-
         window.scrollTo({
           top: this.top - 70,
           behavior: "smooth"

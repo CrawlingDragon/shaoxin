@@ -40,8 +40,9 @@
                 <van-image class="img" :src="drug.thumb" fit="fill"></van-image>
                 <div class="pharmacy-text">
                   <div class="p1">{{ drug.name }}</div>
-                  <div class="p2">{{ drug.spec }}×{{ drug.price }}</div>
+                  <div class="p2">用法用量说明：{{ drug.quantity }}</div>
                 </div>
+                <a :href="drug.url" class="bug">购买</a>
               </div>
             </div>
           </div>
@@ -160,7 +161,7 @@ export default {
           let w1 = it.offsetWidth;
           this.w += w1;
         });
-        this.$refs.title.style.width = this.w + "px";
+        this.$refs.title.style.width = this.w + 20 + "px";
       });
     }
   }
@@ -267,6 +268,8 @@ export default {
             .pharmacy-item
               display flex
               margin-top 10px
+              position relative
+              padding-right 55px
               .img
                 width 60px
                 height 60px
@@ -282,4 +285,12 @@ export default {
                 .p2
                   color #999999
                   font-size 14px
+              .bug
+                position absolute
+                right 10px
+                bottom 10px
+                color #ff6600
+                border 1px solid #ff6600
+                border-radius 10px
+                padding 5px
 </style>

@@ -164,8 +164,9 @@
             <div class="mid">
               <p class="p1">{{ item.name }}</p>
               <p class="p2">规格：{{ item.spec }}</p>
+              <div class="p2">用法用量说明:{{ item.quantity }}</div>
             </div>
-            <div class="right">×{{ item.quantity }}</div>
+            <!-- <div class="right"></div> -->
             <div class="bug-btn" @click="goToBug(item.url)">购买</div>
           </li>
         </ul>
@@ -457,6 +458,7 @@ export default {
         .mid
           min-width 0
           flex 1
+          margin-right 60px
           .p1
             font-size: 18px;
             font-family: Microsoft YaHei;
@@ -468,7 +470,7 @@ export default {
             font-family: Microsoft YaHei;
             font-weight: 400;
             color: #999999;
-            margin-top 10px
+            margin-top 5px
         .right
           width auto
           margin 0 5px

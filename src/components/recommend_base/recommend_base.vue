@@ -40,14 +40,17 @@ export default {
     font-size 0
     background #F6F6F6
     .img
-        width 50%
+        width 105px
         height 105px
         background #999999
         display inline-block
         vertical-align top
+        border 1px solid #e5e5e5
     .info-bar
         display inline-block
-        width 50%
+        flex 1
+        min-width 0
+        padding-right 20px
         background #F6F6F6
         height 88px
         padding 13px 10px 0

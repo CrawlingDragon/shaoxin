@@ -4,7 +4,7 @@ import QS from "qs";
 axios.defaults.timeout = 8000;
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded;charset=utf-8";
-axios.defaults.baseURL = process.env.VUE_APP_API
+axios.defaults.baseURL = process.env.VUE_APP_API;
 //配置接口地址
 // console.log(axios.defaults.baseURL);
 
@@ -34,6 +34,12 @@ axios.interceptors.response.use(
     if (res.data.success) {
       return Promise.resolve(res);
     }
+    setTimeout(() => {
+      let arr = [...document.getElementsByClassName("van-image__img")];
+      for (let i = 0; i < arr.length; i++) {
+        arr[i].setAttribute("webp", true);
+      }
+    }, 100);
     return res;
   },
   error => {

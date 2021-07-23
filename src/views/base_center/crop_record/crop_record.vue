@@ -21,14 +21,30 @@
         >农事记录</router-link
       >
     </div>
-    <div class="farm-record-content">
-      <FramItem
-        v-for="item in list"
-        :key="item.id"
-        :item="item"
-        @priview="imagePriview"
-        @deteleHistory="updateDeteleHistory"
-      ></FramItem>
+    <div class="farm-record-content" v-show="!noData">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <FramItem
+          v-for="item in list"
+          :key="item.id"
+          :item="item"
+          @priview="imagePriview"
+          @deteleHistory="updateDeteleHistory"
+        ></FramItem>
+      </van-list>
+      <div class="bottom-bar">
+        <div class="issue-btn1" @click="goToIssueFram">
+          <van-icon name="plus" class="issue-icon" />
+          <span>发布农事</span>
+        </div>
+      </div>
+    </div>
+    <div class="no-take-wrap" v-show="noData">
+      <p>暂无记录</p>
     </div>
   </div>
 </template>
@@ -45,7 +61,11 @@ export default {
   props: {},
   data() {
     return {
-      list: []
+      list: [],
+      noData: false,
+      page: 0,
+      loading: false,
+      finished: false
     };
   },
   computed: {
@@ -59,13 +79,34 @@ export default {
   },
   destroyed() {},
   methods: {
+    onLoad() {
+      this.getHistoryList();
+    },
+    goLook() {
+      this.$router.replace({
+        path: "/into_hospital"
+      });
+    },
     getHistoryList() {
       this.id = this.$route.query.id;
+      this.page++;
+      this.loading = true;
       this.$axios
-        .fetchGet("API/User/getgbaserecordlist", { uId: this.gId })
+        .fetchGet("API/User/getgbaserecordlist", {
+          uId: this.gId,
+          page: this.page
+        })
         .then(res => {
           if (res.data.code == 0) {
-            this.list = res.data.data;
+            this.list = this.list.concat(res.data.data);
+            this.loading = false;
+          }
+          if (res.data.code == 201) {
+            if (this.page == 1) {
+              this.noData = true;
+            } else {
+              this.finished = true;
+            }
           }
         });
     },
@@ -120,5 +161,57 @@ export default {
           margin-left -15px
 .farm-record-content
   background #fff
-  padding-top 15px
+  padding 15px 12px 0
+.no-take-wrap
+  height 300px
+  p
+    padding-top 150px
+    color #666666
+    font-size 15px
+    text-align center
+  .p2
+    color #333
+    font-size 13px
+    line-height 20px
+    text-align center
+  .btn
+    width: 112px;
+    height: 40px;
+    background: #155BBB;
+    border: 1px solid #155BBB;
+    border-radius: 40px;
+    font-size 15px
+    color #fff
+    text-align center
+    line-height 40px
+    margin 0 auto
+    margin-top 30px
+.bottom-bar
+  padding 0 12px 5px
+  position fixed
+  bottom 0
+  left 0
+  right 0
+  background #fff
+  .issue-btn1
+    width 100%
+    display inline-block
+    height 40px
+    border: 1px solid #155BBB;
+    border-radius: 8px;
+    text-align center
+    line-height 40px
+    font-size: 16px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: #155BBB;
+    .issue-icon
+      font-size 18px
+      font-weight bold
+      top 2px
+      margin-right 3px
+/deep/.van-list__finished-text,
+.van-list__loading
+  line-height 1.2
+  padding-bottom 50px
 </style>

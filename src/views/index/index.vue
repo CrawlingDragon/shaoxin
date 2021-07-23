@@ -18,7 +18,7 @@
         <div class="icon i1"></div>
         <p>找答案</p>
       </div>
-      <div class="item">
+      <!-- <div class="item">
         <a
           :href="shareStoreUrl"
           target="_blank"
@@ -27,6 +27,10 @@
           <div class="icon i2"></div>
           <p>找农资</p>
         </a>
+      </div> -->
+      <div class="item" @click="goToHospital">
+        <div class="icon i2"></div>
+        <p>找医院</p>
       </div>
       <div class="item" @click="goToExpert">
         <div class="icon i3"></div>
@@ -257,6 +261,9 @@ export default {
     goToAnswer() {
       //  去首页的的网诊
       this.$router.push({ path: "/index_online" }).catch(err => err);
+    },
+    goToHospital() {
+      this.$router.push({ path: "/into_hospital" }).catch(err => err);
     },
     goToExpert() {
       // 找专家

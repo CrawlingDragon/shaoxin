@@ -4,8 +4,8 @@
       <ProgressItem
         :item="{ classname: period.classname, percent: period.percent }"
       >
-        <span class="p1">{{ period.classname }}</span></ProgressItem
-      >
+        <!-- <span class="p1">{{ period.classname }}</span> -->
+      </ProgressItem>
     </div>
     <div class="item" v-for="item in period.lists" :key="item.id">
       <div class="left">{{ item.classname }}</div>
@@ -25,6 +25,23 @@
         <div class="btn btn1" @click="issue(item)" v-else>发布</div>
       </div>
     </div>
+    <van-dialog
+      v-model="show"
+      message="该农事管理内容为选填，可点击确认直接完成"
+      show-confirm-button
+      show-cancel-button
+      confirm-button-text="直接完成"
+      cancel-button-text="去发布"
+      @confirm="confirmDialog"
+      @cancel="cancelDialog"
+    >
+      <div class="van-dialog__message">
+        该农事管理内容为选填，可点击确认直接完成
+      </div>
+      <div class="close" @click.stop @click="show = false">
+        <van-icon name="close" size="25" />
+      </div>
+    </van-dialog>
   </div>
 </template>
 <script>
@@ -43,7 +60,7 @@ export default {
     }
   },
   data() {
-    return {};
+    return { show: false, activeItem: "" };
   },
   computed: {
     ...mapState(["uid"])
@@ -52,24 +69,43 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
+    confirmDialog() {
+      this.confirmIssue(this.activeItem.id, this.uid);
+    },
+    cancelDialog() {
+      this.$router.push({
+        path: "/base_edit",
+        query: { classId: this.activeItem.id, editCase: "no" }
+      });
+    },
     issue(item) {
       let iswrite = item.iswrite;
+      this.activeItem = item;
       if (iswrite == 0) {
         // 弹窗
+        this.show = true;
         //确定农事记录
-        this.$dialog
-          .confirm({
-            message: "该农事管理内容为选填，可点击确认直接完成"
-          })
-          .then(() => {
-            // on close
-            this.confirmIssue(item.id, this.uid);
-          });
+        // this.$dialog
+        //   .confirm({
+        //     message: "该农事管理内容为选填，可点击确认直接完成",
+        //     confirmButtonText: "直接完成",
+        //     cancelButtonText: "去发布"
+        //   })
+        //   .then(() => {
+        //     // on close
+        //     this.confirmIssue(item.id, this.uid);
+        //   })
+        //   .catch(() => {
+        //     this.$router.push({
+        //       path: "/base_edit",
+        //       query: { classId: item.id, editCase: "no" }
+        //     });
+        //   });
       } else {
         // 编辑农事发布
         this.$router.push({
           path: "/base_edit",
-          query: { classId: item.id }
+          query: { classId: item.id, editCase: "no" }
         });
       }
     },
@@ -107,13 +143,13 @@ export default {
     align-items flex-start
     padding-bottom 20px
     .left
-      flex 1
+      width 150px
       min-width 0
       font-size 17px
       color #333333
       margin-right 20px
     .mid
-      width 85px
+      flex 1
       .finished
         font-size 14px
         color #999999
@@ -133,7 +169,7 @@ export default {
           position relative
           top 4px
     .right
-      width 55px
+      width auto
       height 25px
       .btn
         width: 55px;
@@ -150,4 +186,12 @@ export default {
           border 1px solid #FF6600
           background #FF6600
           color #fff
+.close
+  position absolute
+  top 2px
+  right 2px
+  color #999
+  /deep/.progress-item
+    /deep/.right
+      width auto !important
 </style>

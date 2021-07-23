@@ -267,6 +267,7 @@ export default {
       let formData = new FormData();
       formData.append("urls[]", file.file);
       formData.append("uId", this.uid);
+      formData.append("type", "company");
       this.$axios.fetchPost("/API/Wen/OssUploadFile", formData).then(res => {
         if (res.data.code == 0) {
           // this.imgList.push(res.data.data);
@@ -404,6 +405,7 @@ export default {
           address: this.address,
           types: this.typesnameId,
           genre: this.genre,
+          products: this.sell,
           logo: this.uploader[0].url
         })
         .then(res => {

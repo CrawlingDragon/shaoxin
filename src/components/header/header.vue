@@ -219,7 +219,7 @@ export default {
   top 0
   right 0
   left 0
-  z-index 2
+  z-index 100
   width 100%
   .wrap
     display flex

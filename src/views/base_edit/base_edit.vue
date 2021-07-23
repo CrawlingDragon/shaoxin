@@ -19,7 +19,7 @@
           :value="caseValue"
           label="方案"
           placeholder="请选择"
-          @click="showPicker = true"
+          @click="clickCase"
           :rules="[{ required: true, message: '方案不能为空' }]"
         />
         <van-popup v-model="showPicker" position="bottom">
@@ -229,7 +229,7 @@ export default {
       // 调整用药规格id数组，用于发布数据使用
       let arr = [];
       this.medicine.forEach(item => {
-        arr.push(item.spec);
+        arr.push(item.specid);
       });
       return arr;
     },
@@ -240,6 +240,9 @@ export default {
         arr.push(item.quantity);
       });
       return arr;
+    },
+    editCase() {
+      return this.$route.query.editCase;
     }
   },
   watch: {},
@@ -255,6 +258,11 @@ export default {
   },
   destroyed() {},
   methods: {
+    clickCase() {
+      //点击选择方案
+      if (this.editCase === "no") return;
+      this.showPicker = true;
+    },
     beforeRead(file) {
       return new Promise(resolve => {
         let img = exifImg(file).then(res => {
@@ -295,7 +303,7 @@ export default {
             this.caseValue = data.point_name;
             this.date = `${data.starttime}/${data.endtime}`;
             this.message = data.content;
-            this.medicine = data.druginfo_list;
+            this.medicine = data.druginfo;
             data.thumb_urls.forEach(item => {
               this.uploader.push({ url: item });
               this.imgList.push(item);
@@ -314,9 +322,10 @@ export default {
           if (res.data.code == 0) {
             let data = res.data.data;
             this.caseValue = data.point_name;
+            this.caseId = data.point_name_ids;
             this.date = `${data.starttime}/${data.endtime}`;
             this.message = data.content;
-            this.medicine = data.druginfo_list;
+            this.medicine = data.druginfo;
             if (data.thumb_urls) {
               data.thumb_urls.forEach(item => {
                 this.uploader.push({ url: item });
@@ -329,6 +338,7 @@ export default {
     onCaseConfirm(value) {
       // 选择方案
       let r = this.$refs.casePick.getValues();
+      console.log("r :>> ", r);
       if (r[2].pid == "") {
         this.caseId = r[0].id + "_" + r[1].id;
       } else {
@@ -378,7 +388,8 @@ export default {
           picurl: this.imgList.join(","),
           druginfo_product_ids: this.druginfo_product_ids,
           druginfo_spec_ids: this.druginfo_spec_ids,
-          druginfo_product_quantity: this.druginfo_product_quantity
+          druginfo_product_quantity: this.druginfo_product_quantity,
+          rtype: this.classId ? "plan" : ""
         };
         sucessMessage = "发布成功";
         url = "/API/User/addfarmerdata";
@@ -397,7 +408,7 @@ export default {
     getCase() {
       // 获取方案的节点数据
       this.$axios
-        .fetchGet("API/User/getProjectlist", { mId: this.mid, pId: 16 })
+        .fetchGet("API/User/getProjectlist", { mId: this.mid, uId: this.uid })
         .then(res => {
           if (res.data.code == 0) {
             this.caseColumns = res.data.data;
@@ -419,23 +430,34 @@ export default {
       //点击选择用药
       this.chooseDrugActiveIndex = index;
       this.drugPicker = true;
+      this.chooseDrugSizeActive = index;
     },
 
     onDrugConfirm(val) {
-      // 选择用药
+      // 确认用药
       this.drugPicker = false;
+      //选中的用药的index -》 判断出当前index的规格-》用这个规格去对比val.规格数组-> true 就不操作，false就选择数组的【0】位
       this.medicine[this.chooseDrugActiveIndex].name = val.name;
-      this.medicine[this.chooseDrugActiveIndex].drugId = val.productid;
       this.medicine[this.chooseDrugActiveIndex].productid = val.productid;
+      let spec = this.medicine[this.chooseDrugActiveIndex].spec;
+      let r = val.spec_list.filter(item => {
+        return item.spec == spec;
+      });
+      if (r.length == 0) {
+        this.medicine[this.chooseDrugActiveIndex].spec = val.spec_list[0].spec;
+        this.medicine[this.chooseDrugActiveIndex].specid = val.spec_list[0].id;
+      }
     },
     clickChooseDrugSize(index) {
       //点击选择规格
       this.chooseDrugSizeActive = index;
+      this.chooseDrugActiveIndex = index;
       this.guigeShow = true;
     },
     onDrugSizeConfirm(val) {
       // 选择药品规格
       this.medicine[this.chooseDrugActiveIndex].spec = val.spec;
+      this.medicine[this.chooseDrugActiveIndex].specid = val.id;
       this.guigeShow = false;
     },
     closeMedicine(index) {
@@ -454,6 +476,7 @@ export default {
       this.medicine.push({
         name: "",
         spec: "",
+        specid: "",
         quantity: "",
         drugId: "",
         productid: ""

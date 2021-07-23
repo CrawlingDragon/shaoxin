@@ -16,21 +16,24 @@
         <van-grid-item @click="goToBase">
           <div class="p">找基地</div>
         </van-grid-item>
-        <van-grid-item>
+        <van-grid-item @click="goToAnswer">
+          <div class="p">找答案</div>
+        </van-grid-item>
+        <van-grid-item v-if="false">
           <a :href="shareUrl" class="p" target="_blank">专享商城</a>
         </van-grid-item>
       </van-grid>
       <van-grid :column-num="4" :border="false">
-        <van-grid-item @click="goToAnswer">
+        <van-grid-item @click="goToAnswer" v-if="false">
           <div class="p">找答案</div>
         </van-grid-item>
-        <van-grid-item @click="goToZuoXun">
+        <van-grid-item @click="goToZuoXun" v-if="false">
           <div class="p">坐诊巡诊</div>
         </van-grid-item>
-        <van-grid-item @click="goToCetu">
+        <van-grid-item @click="goToCetu" v-if="false">
           <div class="p">测土配方</div>
         </van-grid-item>
-        <van-grid-item @click="goToAsk">
+        <van-grid-item @click="goToAsk" v-if="false">
           <div class="p">提问</div>
         </van-grid-item>
       </van-grid>
@@ -38,7 +41,7 @@
     <div class="nav-list">
       <div class="small-title">平台服务</div>
       <van-grid :column-num="4" :border="false">
-        <van-grid-item>
+        <van-grid-item v-if="false">
           <a :href="fromStoreUrl" class="p" target="_blank">农资商城</a>
         </van-grid-item>
         <van-grid-item @click="goToVideo">
@@ -47,18 +50,24 @@
         <van-grid-item @click="goToDiseases">
           <div class="p">病虫害</div>
         </van-grid-item>
-        <!-- <van-grid-item @click="goToLive">
-          <div class="p">直播</div>
-        </van-grid-item> -->
-      </van-grid>
-      <van-grid :column-num="4" :border="false">
         <van-grid-item>
           <div class="p" @click="goToMessage">资讯</div>
         </van-grid-item>
         <van-grid-item @click="goToAi">
           <div class="p">AI智能专家</div>
         </van-grid-item>
-        <van-grid-item @click="goToAboutUs">
+        <!-- <van-grid-item @click="goToLive">
+          <div class="p">直播</div>
+        </van-grid-item> -->
+      </van-grid>
+      <van-grid :column-num="4" :border="false">
+        <van-grid-item v-if="false">
+          <div class="p" @click="goToMessage">资讯</div>
+        </van-grid-item>
+        <van-grid-item @click="goToAi" v-if="false">
+          <div class="p">AI智能专家</div>
+        </van-grid-item>
+        <van-grid-item @click="goToAboutUs" v-if="false">
           <div class="p">关于我们</div>
         </van-grid-item>
         <van-grid-item> </van-grid-item>

@@ -25,12 +25,17 @@ export default {
       pId: ""
     };
   },
-  computed: { ...mapState(["uid"]) },
-  watch: {
-    action() {
-      this.getCase();
+  computed: {
+    ...mapState(["uid"]),
+    from() {
+      let re = "";
+      if (this.action === "dingyue" || this.action === "templatedel") {
+        re = "minelist";
+      }
+      return re;
     }
   },
+  watch: {},
   mounted() {
     this.getCase();
   },
@@ -41,13 +46,15 @@ export default {
       console.log("caseStatus :>> ", caseStatus);
       this.action = caseStatus.status;
       this.pId = caseStatus.pId;
+      this.getCase("click");
     },
-    getCase() {
+    getCase(click) {
       axios
         .fetchGet("/API/User/getUserproject", {
           uId: this.uid,
           action: this.action,
-          pId: this.pId
+          pId: this.pId,
+          from: this.from
         })
         .then(res => {
           let data = res.data;
@@ -57,8 +64,8 @@ export default {
               this.noData = true;
             }
           }
-          if (data.errcode) {
-            alert(data.message);
+          if (data.code === 201 && click) {
+            this.$toast(data.message);
           }
         });
     }
