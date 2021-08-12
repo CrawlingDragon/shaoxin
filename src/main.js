@@ -12,7 +12,7 @@ import Vant from "vant";
 import { Dialog } from "vant";
 import "vant/lib/index.css";
 import { Lazyload } from "vant";
-// import VConsole from "vconsole/dist/vconsole.min.js";
+import VConsole from "vconsole/dist/vconsole.min.js";
 Vue.use(Vant, Lazyload, Dialog);
 
 import axios from "@/http.js";
@@ -22,7 +22,12 @@ Vue.prototype.$dialog = Dialog;
 
 if (process.env.NODE_ENV == "development") {
   // eslint-disable-next-line no-unused-vars
-  // var vsconsole = new VConsole()
+  new VConsole();
+} else {
+  let meta = document.createElement("meta");
+  meta.httpEquiv = "Content-Security-Policy";
+  meta.content = "upgrade-insecure-requests";
+  document.getElementsByTagName("head")[0].appendChild(meta);
 }
 
 //vsconsole 手机真级打印

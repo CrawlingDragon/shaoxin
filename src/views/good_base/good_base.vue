@@ -2,15 +2,34 @@
   <div class="good_base-container">
     <Header indexHeader="indexHeader" navHeader="优质基地"></Header>
     <ul class="base-ul" v-if="!noData">
-      <li v-for="item in list" :key="item.id" @click="goToBaseDetail(item.id)">
-        <div class="status" :class="{'glod':item.ctype == '8','base':item.ctype == '6','none':item.ctype == '0'}">{{item.ctype == '8'?'金牌认证':(item.ctype == '6'?'基地认证':'未认证')}}</div>
+      <li
+        v-for="item in list"
+        :key="item.id"
+        @click="goToBaseDetail(item.qrcode)"
+      >
+        <div
+          class="status"
+          :class="{
+            glod: item.ctype == '8',
+            base: item.ctype == '6',
+            none: item.ctype == '0'
+          }"
+        >
+          {{
+            item.ctype == "8"
+              ? "金牌认证"
+              : item.ctype == "6"
+              ? "基地认证"
+              : "未认证"
+          }}
+        </div>
         <van-image class="img" :src="item.logo"></van-image>
         <div class="text">
-          <div class="h2">{{item.name}}</div>
-          <div class="p2">{{item.zwtype}} {{item.guimo}}亩</div>
+          <div class="h2">{{ item.name }}</div>
+          <div class="p2">{{ item.zwtype }} {{ item.guimo }}亩</div>
           <div class="join-time">
             <van-image class="avator" round :src="item.avatar"></van-image>
-            <div class="time">{{item.regtime}} 加入医院</div>
+            <div class="time">{{ item.regtime }} 加入医院</div>
           </div>
         </div>
       </li>
@@ -28,16 +47,16 @@ export default {
   components: { Header },
   props: {},
   metaInfo: {
-    title: "优质基地",
+    title: "优质基地"
   },
   data() {
     return {
       list: [],
-      noData: false,
+      noData: false
     };
   },
   computed: {
-    ...mapState(["uid", "mid"]),
+    ...mapState(["uid", "mid"])
   },
   created() {},
   watch: {},
@@ -54,9 +73,9 @@ export default {
           mId: mid,
           uId: this.uid,
           pagesize: 50,
-          isall:'self'
+          isall: "self"
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.code == 0) {
             this.list = res.data.data;
           } else if (res.data.code == 201) {
@@ -64,13 +83,10 @@ export default {
           }
         });
     },
-    goToBaseDetail(id) {
-      this.$router.push({
-        path: "/base_detail",
-        query: { id: id },
-      });
-    },
-  },
+    goToBaseDetail(href) {
+      window.location.href = href;
+    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

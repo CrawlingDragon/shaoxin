@@ -271,7 +271,7 @@ export default {
       this.$axios.fetchPost("/API/Wen/OssUploadFile", formData).then(res => {
         if (res.data.code == 0) {
           // this.imgList.push(res.data.data);
-          this.uploader = [{ url: res.data.data }];
+          this.uploader = [{ url: res.data.data_tiny }];
           console.log("res.data :>> ", res.data);
         } else {
           this.$toast(res.data.message);

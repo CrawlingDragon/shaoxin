@@ -62,9 +62,9 @@
   </div>
 </template>
 <script>
-import AMap from "AMap";
 import fastNav from "@/components/fast_nav/fast_nav";
 import { mapMutations, mapState } from "vuex";
+import { getCityAddress } from "@/common/js/map.js";
 export default {
   name: "headers",
   components: { fastNav },
@@ -112,35 +112,44 @@ export default {
       this.initLoca();
     }
   },
+  created() {},
   destroyed() {},
   methods: {
-    initLoca() {
+    async initLoca() {
       let session_city = window.localStorage.getItem("city");
       let session_level = window.localStorage.getItem("level");
       if (this.locationAddress == "init") {
         //定位城市
-        let that = this;
-        AMap.plugin("AMap.CitySearch", function() {
-          var citySearch = new AMap.CitySearch();
-          citySearch.getLocalCity(function(status, result) {
-            if (status === "complete" && result.info === "OK") {
-              // 查询成功，result即为当前所在城市信息
-
-              that.city = result.city;
-              that.changeCity(result.city, 2);
-              that.setLocationAddress(result.city);
-              window.localStorage.setItem("city", result.city);
-              window.localStorage.setItem("level", 2);
-            } else {
-              let errorCity = "定位失败";
-              that.city = errorCity;
-              that.changeCity(errorCity, 2);
-              that.setLocationAddress(errorCity);
-              window.localStorage.setItem("city", errorCity);
-              window.localStorage.setItem("level", 2);
-            }
-          });
-        });
+        let city = await getCityAddress();
+        if (!city) {
+          city = "定位失败";
+        }
+        this.city = city;
+        this.changeCity(city, 2);
+        this.setLocationAddress(city);
+        window.localStorage.setItem("city", city);
+        window.localStorage.setItem("level", 2);
+        // let that = this;
+        // AMap.plugin("AMap.CitySearch", function() {
+        //   var citySearch = new AMap.CitySearch();
+        //   citySearch.getLocalCity(function(status, result) {
+        //     if (status === "complete" && result.info === "OK") {
+        //       // 查询成功，result即为当前所在城市信息
+        //       that.city = result.city;
+        //       that.changeCity(result.city, 2);
+        //       that.setLocationAddress(result.city);
+        //       window.localStorage.setItem("city", result.city);
+        //       window.localStorage.setItem("level", 2);
+        //     } else {
+        //       let errorCity = "定位失败";
+        //       that.city = errorCity;
+        //       that.changeCity(errorCity, 2);
+        //       that.setLocationAddress(errorCity);
+        //       window.localStorage.setItem("city", errorCity);
+        //       window.localStorage.setItem("level", 2);
+        //     }
+        //   });
+        // });
         return;
       }
       if (session_city) {

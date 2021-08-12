@@ -70,6 +70,7 @@ export default {
   position relative
   padding-bottom 15px
   background #F5F5F5
+  height 100%
   .image
     width 100%
     height 140px
@@ -95,6 +96,10 @@ export default {
     font-size 12px
     line-height 16px
     padding-left 10px
+    display -webkit-box
+    -webkit-line-clamp 2
+    -webkit-box-orient vertical
+    overflow hidden
   .number
     font-size 12px
     color #343434

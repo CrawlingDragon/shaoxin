@@ -55,6 +55,7 @@
         </div>
         <van-icon name="arrow" class="arrow" />
       </div>
+      <div id="allmap" style="width:100px;height:100px"></div>
       <div class="sub">
         <van-button round block type="info" native-type="submit" class="btn">
           提交
@@ -63,6 +64,7 @@
       <div id="container" style="width:100px;height:0"></div>
     </van-form>
     <router-view @getCrop="getCrop"></router-view>
+
     <Foot></Foot>
   </div>
 </template>
@@ -72,7 +74,7 @@ import Header from "@/components/header/header";
 import HospitalHeader from "@/components/hospital_header/hospital_header";
 import { mapState } from "vuex";
 import Foot from "@/components/foot/foot";
-import AMap from "AMap";
+import { geolocation } from "@/common/js/map.js";
 import EXIF from "exif-js";
 export default {
   name: "ask",
@@ -215,86 +217,12 @@ export default {
         });
     },
     reLocation() {
-      // this.getLocation();
       this.getCity();
     },
-    getCity() {
-      let that = this;
-      AMap.plugin("AMap.CitySearch", function() {
-        var citySearch = new AMap.CitySearch();
-        citySearch.getLocalCity(function(status, result) {
-          if (status === "complete" && result.info === "OK") {
-            // 查询成功，result即为当前所在城市信息
-            that.address = result.province + "," + result.city;
-            // console.log("result :>> ", result);
-          } else {
-            that.address = "定位失败";
-          }
-        });
-      });
-    },
-    getLocation() {
-      let that = this;
-      var map = new AMap.Map("container", {
-        resizeEnable: true, //是否监控地图容器尺寸变化
-        zoom: 13 //初始地图级别
-      });
-      AMap.plugin("AMap.Geolocation", function() {
-        var geolocation = new AMap.Geolocation({
-          enableHighAccuracy: true, //是否使用高精度定位，默认:true
-          timeout: 10000, //超过10秒后停止定位，默认：无穷大
-          maximumAge: 0, //定位结果缓存0毫秒，默认：0
-          convert: true, //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
-          showButton: false, //显示定位按钮，默认：true
-          buttonPosition: "LB", //定位按钮停靠位置，默认：'LB'，左下角
-          buttonOffset: new AMap.Pixel(10, 20) //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-        });
-        //替换方法
-        map.addControl(geolocation);
-        geolocation.getCurrentPosition(function(status, result) {
-          if (status == "complete") {
-            onComplete(result);
-          } else {
-            onError(result);
-          }
-        });
-        function onComplete(data) {
-          // data是具体的定位信息
-          AMap.plugin("AMap.Geocoder", function() {
-            var geocoder = new AMap.Geocoder({});
-            var lnglat = [data.position.lng, data.position.lat];
-            geocoder.getAddress(lnglat, function(status, result) {
-              if (status === "complete" && result.info === "OK") {
-                // result为对应的地理位置详细信息
-                that.address = `${result.regeocode.addressComponent.province},${result.regeocode.addressComponent.city},${result.regeocode.addressComponent.district}`;
-              }
-            });
-          });
-        }
-        function onError(error) {
-          // 定位出错
-          if (that.locationTime == "first") {
-            that.address = "定位失败";
-            that.locationTime = "noFirst";
-            return;
-          }
-          if (error.message == "Geolocation permission denied") {
-            //定位权限未打开
-            //个人资料地址为空
-            that.$dialog
-              .alert({
-                title: "定位失败",
-                message: "检测到您未打开定位服务",
-                confirmButtonText: "不显示地址",
-                confirmButtonColor: "#155BBB"
-              })
-              .then(() => {
-                // on close
-                that.address = "定位失败";
-              });
-          }
-        }
-      });
+    async getCity() {
+      //精确定位地址
+      let address = await geolocation();
+      this.address = address;
     },
     imgPress({
       file,

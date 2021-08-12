@@ -4,7 +4,8 @@ module.exports = {
 
   configureWebpack: {
     externals: {
-      AMap: "AMap"
+      AMap: "AMap",
+      BMapGL: "BMapGL"
     },
     devtool: "source-map"
   },

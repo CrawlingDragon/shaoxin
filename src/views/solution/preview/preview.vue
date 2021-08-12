@@ -31,7 +31,7 @@
               {{ it.content }}
             </div>
             <div class="pharmacy" v-if="it.druginfo.length !== 0">
-              <div class="pharmacy-title">用药推荐：</div>
+              <div class="pharmacy-title">用肥用药：</div>
               <div
                 class="pharmacy-item"
                 v-for="drug in it.druginfo"

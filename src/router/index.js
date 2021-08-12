@@ -216,14 +216,14 @@ const routes = [
         /*webpackChunkName:"base_detail" */ "@/views/base_detail/base_detail"
       )
   },
-  {
-    path: "/base_location",
-    name: "baseLocation",
-    component: () =>
-      import(
-        /*webpackChunkName:"base_location" */ "@/views/base_location/base_location"
-      )
-  },
+  // {
+  //   path: "/base_location",
+  //   name: "baseLocation",
+  //   component: () =>
+  //     import(
+  //       /*webpackChunkName:"base_location" */ "@/views/base_location/base_location"
+  //     )
+  // },
   {
     path: "/message",
     name: "message",

@@ -360,23 +360,17 @@ export default {
         font-size 12px
         line-height 40px
     .h-ul
-      padding 0 10px
-      padding-top 10px
-      padding-bottom 10px
-      // height auto
-      column-gap 10px
-      column-count 2
-      // margin-left 12px
-      border-bottom 1px solid #e5e5e5
-      display:inline-block;
-      width: 100%;
-      text-align: left;
+      margin-left: 12px;
+      margin-top: 10px;
+      margin-bottom 10px
       li
-        break-inside avoid
-        // padding-right 12px
-        padding-bottom 10px
-        break-after: right
-        width 100%
+        width: 50%;
+        display: inline-block;
+        padding-right: 12px;
+        padding-bottom: 12px;
+        height: 285px;
+        vertical-align: top;
+        position: relative;
     .base-ul
       padding 10px 12px
       border-bottom 1px solid #e5e5e5
